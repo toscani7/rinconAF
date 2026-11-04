@@ -505,6 +505,17 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
   </main>
 </section>
 
+<!-- Ventana para empezar una conversación privada -->
+<div class="modal-fondo" id="modal-nueva-conv" hidden>
+  <div class="modal" role="dialog" aria-labelledby="nueva-conv-t" aria-modal="true">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h2 id="nueva-conv-t" style="font-size:17px">nueva conversación</h2>
+      <button type="button" class="btn" id="nueva-conv-cerrar" aria-label="Cerrar">×</button></div>
+    <div><label class="lbl" for="nueva-conv-txt">¿con quién? escribí un nick</label>
+      <input class="field" id="nueva-conv-txt" type="search" autocomplete="off" placeholder="ej: npc3, flor…"></div>
+    <div id="nueva-conv-res"></div>
+  </div>
+</div>
+
 <!-- Ventana para crear un grupo -->
 <div class="modal-fondo" id="modal-grupo" hidden>
   <form class="modal" id="grupo-form" role="dialog" aria-labelledby="grupo-t" aria-modal="true">
@@ -689,6 +700,7 @@ async function cargarTodo(){
   lk.forEach(x => { const q = feed.find(f => f.id === x.posteo), u = P(x.usuario); if (q && u) q.likes.push(u.id); });
   co.forEach(x => { const q = feed.find(f => f.id === x.posteo), u = P(x.autor); if (q && u) q.comentarios.push({id:x.id, de:u.id, texto:x.texto, cuando:Date.parse(x.creado)}); });
   feed.forEach(q => q.comentarios.sort((a,b) => a.cuando - b.cuando));
+  privadas.forEach(c => c.otro = porUid(c.otro.uid) || c.otro);
 }
 
 /* ---------- Perfiles de todos ---------- */
@@ -979,63 +991,257 @@ function achicarBlob(file, max, q = .8){ return new Promise((ok, mal) => { const
   im.onerror = () => { URL.revokeObjectURL(u); mal(); }; im.src = u; }); }
 const mb = n => (n / 1048576).toFixed(n < 10485760 ? 1 : 0) + ' MB';
 
-/* ---------- Chat: privados con amigos + grupos ---------- */
+/* ---------- Chat ----------
+   Privados: Supabase (tablas conversaciones / conversacion_participantes / mensajes) + Realtime.
+   Grupos: todavía se guardan en este navegador (se pasan a Supabase en una etapa siguiente). */
 let grupos = cargar(K.grupos, []), chatCon = null, infoAbierta = false, grupoFoto = '';
 const guardarGrupos = () => { try { localStorage.setItem(K.grupos, JSON.stringify(grupos)); return true; } catch { return false; } };
 const gruposDe = yo => grupos.filter(g => g.miembros.includes(yo.id));
-const clave = (yo, c) => c.g ? 'g' + c.g.id : claveChat(yo.id, c.p.id);
-const llaveLeido = c => c.g ? 'g' + c.g.id : c.p.id;
-const convsDe = yo => [...amigosDe(yo).map(p => ({p})), ...gruposDe(yo).map(g => ({g}))];
-const noLeidosC = (yo, c) => { const t = yo.leidos[llaveLeido(c)] || 0; return (chats[clave(yo, c)] || []).filter(m => m.de !== yo.id && m.tipo !== 'sistema' && m.cuando > t).length; };
+const clave = (yo, c) => 'g' + c.g.id;                         // solo los grupos usan almacenamiento local
+const llaveLeido = c => c.g ? 'g' + c.g.id : 'p' + c.p.id;
 const avatarGrupo = (el, g) => { ponerAvatar(el, {apodo:g.nombre, avatar:g.foto, avatarForma:'circulo'}); el.classList.add('grupo'); el.setAttribute('aria-label', 'foto del grupo ' + g.nombre); };
 function msgSistema(g, texto){ const k = 'g' + g.id; (chats[k] = chats[k] || []).push({de:0, tipo:'sistema', texto, cuando:Date.now()}); guardarChats(); }
 
+// --- Estado de los privados ---
+const BUCKET_CHAT = 'chat';
+let privadas = [], privadasCargadas = false, privadasError = '', canalChat = null, rtEstado = '';
+const msgsPriv = {};                                           // conversación -> {lista, cargando, error}
+const urlsChat = new Map();                                    // archivo -> link temporal
+const porUid = uid => usuarios[uid]?.perfil;
+const convsDe = yo => [...privadas.map(c => ({conv:c, p:c.otro})), ...gruposDe(yo).map(g => ({g}))];
+const noLeidosC = (yo, c) => { if (!c.g) return c.conv.noLeidos || 0;
+  const t = yo.leidos[llaveLeido(c)] || 0; return (chats[clave(yo, c)] || []).filter(m => m.de !== yo.id && m.tipo !== 'sistema' && m.cuando > t).length; };
+const armarPerfil = x => { const d = x.datos || {}; return {...base(), ...d, uid:x.id, id:x.numero, apodo:x.apodo, visitas:x.visitas, creado:Date.parse(x.creado),
+  fotos:(d.fotos || []).map(f => ({...f, firmas:[]})), ff:[], recibidas:[], notis:[], fans:[], leidos:d.leidos || {}}; };
+async function asegurarPerfiles(uids){ const faltan = [...new Set(uids)].filter(u => u && !usuarios[u]); if (!faltan.length) return;
+  const r = await Promise.all(faltan.map(u => sb.from('profiles').select('*').eq('id', u)));
+  r.forEach(({data}) => (data || []).forEach(x => usuarios[x.id] = {perfil: armarPerfil(x)})); }
+const deFila = r => ({id:r.id, otro:porUid(r.otro), actualizado:Date.parse(r.actualizado),
+  ultimo: r.ultimo_tipo ? {texto:r.ultimo_texto || '', tipo:r.ultimo_tipo, autor:r.ultimo_autor} : null, noLeidos:Number(r.no_leidos) || 0});
+
+async function cargarPrivadas(){
+  if (!sesion) return;
+  const {data, error} = await sb.rpc('mis_conversaciones');
+  if (error){ console.error('mis_conversaciones', error); privadasError = 'no se pudieron cargar tus conversaciones.'; }
+  else { await asegurarPerfiles(data.map(r => r.otro)); privadasError = '';
+    const abierta = chatCon?.conv?.id;
+    privadas = data.map(deFila).filter(c => c.otro).sort((a,b) => b.actualizado - a.actualizado);
+    if (abierta){ const c = privadas.find(x => x.id === abierta); if (c){ chatCon.conv = c; if (chatAbierta(c)) marcarLeido(c); } } }
+  privadasCargadas = true; refrescarChat();
+}
+function conectarRealtime(){
+  if (canalChat) sb.removeChannel(canalChat);
+  // La seguridad (RLS) hace que solo lleguen mensajes de conversaciones donde participás
+  canalChat = sb.channel('chat-' + sesion)
+    .on('postgres_changes', {event:'INSERT', schema:'public', table:'mensajes'}, ({new: m}) => recibirMensaje(m))
+    .subscribe(st => { const antes = rtEstado; rtEstado = st;
+      if (st === 'SUBSCRIBED' && antes && antes !== 'SUBSCRIBED'){ cargarPrivadas(); if (chatCon?.conv) cargarMensajes(chatCon.conv, true); }   // al reconectar, se pone al día
+      pintarEstadoChat(); });
+}
+function cerrarChat(){ if (canalChat){ sb.removeChannel(canalChat); canalChat = null; } privadas = []; privadasCargadas = false; rtEstado = ''; chatCon = null;
+  Object.keys(msgsPriv).forEach(k => delete msgsPriv[k]); urlsChat.clear(); }
+const chatAbierta = c => chatCon?.conv?.id === c.id && $('#chat').classList.contains('activa') && !document.hidden;
+async function recibirMensaje(m){
+  const yo = perfil(); if (!yo) return;
+  let c = privadas.find(x => x.id === m.conversacion);
+  if (!c){ await cargarPrivadas(); return; }        // conversación nueva: la lista ya llega con el mensaje y los no leídos contados por el servidor
+  const box = msgsPriv[c.id];
+  if (box && !box.cargando && !box.lista.some(x => x.id === m.id)){
+    const pend = m.autor === yo.uid && box.lista.find(x => x.pendiente && x.tipo === m.tipo && (x.texto || '') === (m.texto || '') && (x.adjunto_path || '') === (m.adjunto_path || ''));
+    if (pend) Object.assign(pend, m, {pendiente:false, error:false}); else box.lista.push(m); }
+  c.actualizado = Date.parse(m.creado); c.ultimo = {texto:m.texto || '', tipo:m.tipo, autor:m.autor};
+  if (m.autor !== yo.uid){ if (chatAbierta(c)){ marcarLeido(c); if (m.tipo === 'zumbido') sacudir(); } else c.noLeidos++; }
+  privadas.sort((a,b) => b.actualizado - a.actualizado); refrescarChat();
+}
+const tLeido = {};
+function marcarLeido(c){ c.noLeidos = 0; actualizarMenu(); clearTimeout(tLeido[c.id]);
+  tLeido[c.id] = setTimeout(() => sb.rpc('marcar_leido', {conv:c.id}).then(({error}) => { if (error) console.error('marcar_leido', error); }), 400); }
+async function abrirPrivado(p){
+  let c = privadas.find(x => x.otro.id === p.id);
+  if (!c){
+    const {data:id, error} = await sb.rpc('iniciar_conversacion', {otro:p.uid});
+    if (error){ console.error('iniciar_conversacion', error); if (chatCon?.p === p){ chatCon.error = 'no se pudo abrir la conversación.'; pintarChat(); } return; }
+    c = privadas.find(x => x.id === id);
+    if (!c){ c = {id, otro:p, actualizado:Date.now(), ultimo:null, noLeidos:0}; privadas.unshift(c); }
+  }
+  if (chatCon?.p !== p) return;                               // el usuario ya se fue a otro chat
+  chatCon = {conv:c, p:c.otro}; pintarChat(); cargarMensajes(c);
+}
+async function cargarMensajes(c, silencioso){
+  const box = msgsPriv[c.id] = msgsPriv[c.id] || {lista:[], cargando:true, error:''};
+  if (!silencioso){ box.cargando = !box.lista.length; box.error = ''; pintarMensajesPriv(c); }
+  const {data, error} = await sb.from('mensajes').select('*').eq('conversacion', c.id).order('creado', {ascending:false}).limit(300);
+  box.cargando = false;
+  if (error){ console.error('mensajes', error); box.error = 'no se pudieron cargar los mensajes.'; }
+  else { const pendientes = box.lista.filter(x => x.pendiente || x.error); box.lista = data.reverse().concat(pendientes); box.error = ''; }
+  if (chatAbierta(c)) marcarLeido(c);
+  pintarMensajesPriv(c);
+}
+function sacudir(){ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
+  $('#chat-grid').animate([{transform:'translateX(0)'},{transform:'translateX(-8px)'},{transform:'translateX(8px)'},{transform:'translateX(0)'}], {duration:280, iterations:2}); }
+async function enviarPrivado(c, fila, temp){
+  const yo = perfil(), box = msgsPriv[c.id] = msgsPriv[c.id] || {lista:[], cargando:false, error:''};
+  if (!temp){ temp = {id:'tmp' + Date.now() + Math.random().toString(36).slice(2,6), conversacion:c.id, autor:yo.uid, creado:new Date().toISOString(), ...fila, fila}; box.lista.push(temp); }
+  temp.pendiente = true; temp.error = false; pintarMensajesPriv(c);
+  const {data, error} = await sb.from('mensajes').insert({conversacion:c.id, ...fila}).select();
+  if (error){ console.error('enviar', error); temp.pendiente = false; temp.error = true; pintarMensajesPriv(c); return false; }
+  const real = data[0];
+  if (box.lista.some(x => x.id === real.id)) box.lista.splice(box.lista.indexOf(temp), 1);   // ya llegó por Realtime
+  else Object.assign(temp, real, {pendiente:false, error:false});
+  c.actualizado = Date.parse(real.creado); c.ultimo = {texto:real.texto || '', tipo:real.tipo, autor:real.autor};
+  privadas.sort((a,b) => b.actualizado - a.actualizado); refrescarChat(); return true;
+}
+function refrescarChat(){ actualizarMenu(); if ($('#chat').classList.contains('activa')) pintarChat(); }
+function pintarEstadoChat(){ const e = $('#chat-rt'); if (!e) return;
+  e.textContent = rtEstado && rtEstado !== 'SUBSCRIBED' ? 'reconectando… los mensajes nuevos van a aparecer en cuanto vuelva la conexión.' : ''; }
+function cargarMediaPriv(el){ const path = el.dataset.adj;
+  const usar = u => { const tipo = el.dataset.tipo, m = document.createElement(tipo === 'video' ? 'video' : 'img'); m.className = 'adjunto'; m.src = u;
+    if (tipo === 'video'){ m.controls = true; m.playsInline = true; m.preload = 'metadata'; m.setAttribute('aria-label', el.dataset.alt); } else m.alt = el.dataset.alt;
+    el.replaceWith(m); };
+  const g = urlsChat.get(path); if (g && g.vence > Date.now()) return usar(g.url);
+  sb.storage.from(BUCKET_CHAT).createSignedUrl(path, 3600).then(({data, error}) => {
+    if (error || !data?.signedUrl){ el.textContent = 'no se pudo cargar el archivo'; return; }
+    urlsChat.set(path, {url:data.signedUrl, vence:Date.now() + 50 * 60000}); usar(data.signedUrl); }); }
+
 function pintarChat(){
   const yo = perfil(); if (!yo) return;
-  if (chatCon?.p && !sonAmigos(yo, chatCon.p)) chatCon = null;
   if (chatCon?.g && !chatCon.g.miembros.includes(yo.id)) chatCon = null;
-  if (chatCon){ yo.leidos[llaveLeido(chatCon)] = Date.now(); guardar(); }
-  const ult = c => (chats[clave(yo, c)] || []).at(-1);
-  const convs = convsDe(yo).sort((a,b) => (ult(b)?.cuando || b.g?.creado || 0) - (ult(a)?.cuando || a.g?.creado || 0));
+  if (chatCon?.g){ yo.leidos[llaveLeido(chatCon)] = Date.now(); guardar(); }
+  const ultG = g => (chats['g' + g.id] || []).at(-1);
+  const cuando = c => c.g ? (ultG(c.g)?.cuando || c.g.creado || 0) : c.conv.actualizado;
+  const convs = convsDe(yo).sort((a,b) => cuando(b) - cuando(a));
   const lista = $('#chat-lista'); lista.innerHTML = '';
+  lista.insertAdjacentHTML('beforeend', '<button type="button" class="crear-grupo" id="abrir-nueva-conv">+ nueva conversación</button>');
   if (amigosDe(yo).length) lista.insertAdjacentHTML('beforeend', '<button type="button" class="crear-grupo" id="abrir-grupo">+ crear grupo</button>');
-  if (!convs.length) lista.insertAdjacentHTML('beforeend', '<p class="muted chico" style="padding:12px;margin:0">el chat es solo con tus amigos. entrá al perfil de alguien y mandale una solicitud.</p>');
-  convs.forEach(c => { const m = ult(c), n = noLeidosC(yo, c), el = document.createElement('a'); el.className = 'conv-item';
+  if (!privadasCargadas) lista.insertAdjacentHTML('beforeend', '<p class="muted chico" style="padding:12px;margin:0">cargando conversaciones…</p>');
+  if (privadasError) lista.insertAdjacentHTML('beforeend', `<p class="muted chico" style="padding:12px;margin:0">${privadasError} <button type="button" class="borrar" id="reintentar-convs">reintentar</button></p>`);
+  if (privadasCargadas && !convs.length) lista.insertAdjacentHTML('beforeend', '<p class="muted chico" style="padding:12px;margin:0">todavía no tenés conversaciones. tocá «+ nueva conversación» para escribirle a alguien.</p>');
+  convs.forEach(c => { const n = noLeidosC(yo, c), el = document.createElement('a'); el.className = 'conv-item';
     el.href = '#chat/' + (c.g ? 'g' + c.g.id : c.p.id);
     if (chatCon && llaveLeido(chatCon) === llaveLeido(c)) el.setAttribute('aria-current','page');
     const av = document.createElement('span'); av.className = 'avatar'; c.g ? avatarGrupo(av, c.g) : ponerAvatar(av, c.p);
-    const quien = m && (m.de === yo.id ? 'vos: ' : c.g && m.de ? (porId(m.de)?.apodo || '') + ': ' : '');
-    const prev = !m ? (c.g ? `grupo · ${c.g.miembros.length} integrantes` : 'todavía no hablaron') : m.tipo === 'zumbido' ? '* zumbido *' : m.tipo === 'sistema' ? m.texto : m.tipo === 'imagen' ? quien + '[foto]' : m.tipo === 'video' ? quien + '[video]' : quien + m.texto;
+    let prev;
+    if (c.g){ const m = ultG(c.g), quien = m && (m.de === yo.id ? 'vos: ' : m.de ? (porId(m.de)?.apodo || '') + ': ' : '');
+      prev = !m ? `grupo · ${c.g.miembros.length} integrantes` : m.tipo === 'zumbido' ? '* zumbido *' : m.tipo === 'sistema' ? m.texto : m.tipo === 'imagen' ? quien + '[foto]' : m.tipo === 'video' ? quien + '[video]' : quien + m.texto; }
+    else { const m = c.conv.ultimo, quien = m && m.autor === yo.uid ? 'vos: ' : '';
+      prev = !m ? 'todavía no hablaron' : m.tipo === 'zumbido' ? '* zumbido *' : m.tipo === 'imagen' ? quien + '[foto]' : m.tipo === 'video' ? quien + '[video]' : m.tipo === 'archivo' ? quien + '[archivo]' : quien + m.texto; }
     const t = document.createElement('span'); t.style.minWidth = '0'; t.style.flex = '1';
     t.innerHTML = `<b>${esc(c.g ? c.g.nombre : c.p.apodo)}</b><span class="prev">${esc(prev)}</span>`;
     el.append(av, t); if (n){ const k = document.createElement('span'); k.className = 'cuenta'; k.textContent = n; k.setAttribute('aria-label', n + ' sin leer'); el.appendChild(k); }
     lista.appendChild(el); });
+  $('#abrir-nueva-conv').onclick = abrirNuevaConv;
   const btnG = $('#abrir-grupo'); if (btnG) btnG.onclick = abrirCrearGrupo;
+  const rc = $('#reintentar-convs'); if (rc) rc.onclick = () => { privadasCargadas = false; privadasError = ''; pintarChat(); cargarPrivadas(); };
   const grid = $('#chat-grid'), conv = $('#chat-conv');
-  if (!chatCon){ grid.dataset.modo = 'lista'; conv.innerHTML = `<p class="muted" style="padding:16px;margin:auto">${convs.length ? 'elegí un chat.' : ''}</p>`; return; }
-  grid.dataset.modo = 'conv'; const c = chatCon, g = c.g, k = clave(yo, c), msgs = chats[k] || [];
-  const nombre = g ? g.nombre : c.p.apodo;
+  if (!chatCon){ grid.dataset.modo = 'lista'; conv.dataset.conv = ''; conv.innerHTML = `<p class="muted" style="padding:16px;margin:auto">${convs.length ? 'elegí un chat.' : ''}</p>`; return; }
+  grid.dataset.modo = 'conv';
+  if (chatCon.g) return pintarGrupo(yo);
+  if (!chatCon.conv){                                            // abriendo la conversación…
+    conv.dataset.conv = ''; conv.innerHTML = `<div class="conv-cab"><a href="#chat" class="chico volver" style="min-height:44px;display:inline-flex;align-items:center">‹ chats</a><span class="avatar"></span><div style="flex:1;min-width:0"><a href="${linkPerfil(chatCon.p)}"><b>${esc(chatCon.p.apodo)}</b></a></div></div>
+      <div class="lineas"><p class="sistema">${chatCon.error ? esc(chatCon.error) + ' <a href="#chat">volver</a>' : 'abriendo chat…'}</p></div>`;
+    ponerAvatar(conv.querySelector('.conv-cab .avatar'), chatCon.p); return; }
+  const c = chatCon.conv, nombre = c.otro.apodo;
+  if (conv.dataset.conv !== c.id){                               // se arma la conversación una sola vez; después solo se actualizan los mensajes
+    conv.dataset.conv = c.id;
+    conv.innerHTML = `<div class="conv-cab"><a href="#chat" class="chico volver" style="min-height:44px;display:inline-flex;align-items:center">‹ chats</a><span class="avatar"></span>
+        <div style="flex:1;min-width:0"><a href="${linkPerfil(c.otro)}"><b>${esc(nombre)}</b></a></div></div>
+      <div class="lineas" id="lineas"></div>
+      <form class="composer" id="chat-form"><label class="sr" for="chat-txt">Mensaje para ${esc(nombre)}</label>
+        <input class="field" id="chat-txt" placeholder="escribile a ${esc(nombre)}…" autocomplete="off" maxlength="500" style="flex:1;min-width:0">
+        <label class="btn file-btn" style="display:inline-flex;align-items:center" title="mandar foto o video">+ foto/video<input type="file" accept="image/*,video/*" id="chat-adj" aria-label="Mandar foto o video"></label>
+        <button class="btn" type="button" id="zumbido">zumbido</button><button class="btn lleno" type="submit">enviar</button></form>
+      <p class="subiendo" id="chat-estado" role="status"></p><p class="subiendo" id="chat-rt" role="status"></p>`;
+    ponerAvatar(conv.querySelector('.conv-cab .avatar'), c.otro);
+    $('#chat-form').onsubmit = e => { e.preventDefault(); const i = $('#chat-txt'), t = i.value.trim(); if (!t) return;   // nunca mensajes vacíos
+      i.value = ''; i.focus(); enviarPrivado(c, {tipo:'texto', texto:t}); };
+    $('#zumbido').onclick = () => { enviarPrivado(c, {tipo:'zumbido'}); sacudir(); };
+    $('#chat-adj').onchange = async e => { const f = e.target.files[0]; if (!f) return; const est = $('#chat-estado'), esVideo = f.type.startsWith('video/'); e.target.value = '';
+      if (esVideo && f.size > MAX_VIDEO_MB * 1048576){ est.textContent = `ese video pesa ${mb(f.size)}. el máximo es ${MAX_VIDEO_MB} MB: probá con uno más corto.`; return; }
+      if (!esVideo && !f.type.startsWith('image/')){ est.textContent = 'por ahora se pueden mandar fotos y videos.'; return; }
+      try {
+        est.textContent = esVideo ? `subiendo video (${mb(f.size)})…` : 'achicando y subiendo la foto…';
+        const blob = esVideo ? f : await achicarBlob(f, MAX_FOTO_LADO, .8), ext = esVideo ? ((f.name.split('.').pop() || 'mp4').toLowerCase()) : 'jpg';
+        const path = `${c.id}/${sesion}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+        const {error} = await sb.storage.from(BUCKET_CHAT).upload(path, blob, {contentType: blob.type || undefined, upsert:false}); if (error) throw error;
+        const texto = $('#chat-txt').value.trim(); $('#chat-txt').value = ''; est.textContent = '';
+        enviarPrivado(c, {tipo: esVideo ? 'video' : 'imagen', texto: texto || null, adjunto_path:path, adjunto_mime:blob.type || null, adjunto_peso:blob.size});
+      } catch (er){ console.error(er); est.textContent = 'no se pudo subir el archivo. probá de nuevo.'; } };
+  }
+  pintarMensajesPriv(c); pintarEstadoChat();
+}
+function pintarMensajesPriv(c){
+  if ($('#chat-conv')?.dataset.conv !== c.id) return;
+  const yo = perfil(), ln = $('#lineas'), box = msgsPriv[c.id] || {lista:[], cargando:true}, abajo = ln.scrollHeight - ln.scrollTop - ln.clientHeight < 80;
+  ln.innerHTML = '';
+  if (box.cargando){ ln.innerHTML = '<p class="sistema">cargando mensajes…</p>'; return; }
+  if (box.error) ln.insertAdjacentHTML('beforeend', `<p class="sistema">${box.error} <button type="button" class="borrar" data-recargar-msgs>reintentar</button></p>`);
+  if (!box.lista.length && !box.error) ln.innerHTML = `<p class="sistema">este es el comienzo de tu chat con ${esc(c.otro.apodo)}.</p>`;
+  box.lista.forEach(m => { const d = document.createElement('div'), mio = m.autor === yo.uid, autor = mio ? yo : c.otro, t = Date.parse(m.creado);
+    if (m.tipo === 'zumbido'){ d.className = 'sistema'; d.textContent = `${autor.apodo} mandó un zumbido · ${hora(t)}`; }
+    else { d.className = 'linea' + (mio ? ' yo' : ''); const h = document.createElement('span'); h.className = 'hora'; h.textContent = `${fecha(t)} ${hora(t)}`;
+      const q = document.createElement('b'); q.textContent = autor.apodo + ':'; d.append(h, q);
+      if (m.adjunto_path && (m.tipo === 'imagen' || m.tipo === 'video')){
+        const adj = Object.assign(document.createElement('span'), {className:'cargando-media', textContent: m.tipo === 'video' ? 'cargando video…' : 'cargando foto…'});
+        adj.dataset.adj = m.adjunto_path; adj.dataset.tipo = m.tipo; adj.dataset.alt = `${m.tipo === 'video' ? 'video' : 'foto'} de ${autor.apodo}`;
+        d.appendChild(adj); if (m.texto) d.appendChild(document.createTextNode(m.texto)); }
+      else d.appendChild(document.createTextNode(' ' + (m.texto || ''))); }
+    if (m.pendiente) d.insertAdjacentHTML('beforeend', ' <span class="muted chico">· enviando…</span>');
+    if (m.error){ d.insertAdjacentHTML('beforeend', ' <span class="muted chico">· no se envió ·</span> '); const r = document.createElement('button'); r.type = 'button'; r.className = 'borrar'; r.textContent = 'reintentar';
+      r.onclick = () => enviarPrivado(c, m.fila, m); d.appendChild(r); }
+    ln.appendChild(d); });
+  ln.querySelectorAll('[data-adj]').forEach(cargarMediaPriv);
+  const rb = ln.querySelector('[data-recargar-msgs]'); if (rb) rb.onclick = () => cargarMensajes(c);
+  if (abajo || box.lista.at(-1)?.autor === yo.uid) ln.scrollTop = ln.scrollHeight;
+}
+// Volver a la pestaña: marca como leída la conversación abierta y se pone al día
+document.addEventListener('visibilitychange', () => { if (document.hidden || !sesion) return;
+  if (chatCon?.conv && chatAbierta(chatCon.conv) && chatCon.conv.noLeidos) marcarLeido(chatCon.conv); cargarPrivadas(); });
+
+// Nueva conversación: cualquier usuario registrado
+async function refrescarPerfiles(){ const {data, error} = await sb.from('profiles').select('*'); if (error){ console.error('profiles', error); return false; }
+  data.forEach(x => { if (!usuarios[x.id]) usuarios[x.id] = {perfil: armarPerfil(x)}; }); return true; }   // suma a quienes se registraron después
+let buscandoGente = false;
+async function abrirNuevaConv(){ $('#nueva-conv-txt').value = ''; buscandoGente = true; pintarNuevaConv(); $('#modal-nueva-conv').hidden = false; $('#nueva-conv-txt').focus();
+  const ok = await refrescarPerfiles(); buscandoGente = false; pintarNuevaConv(ok ? '' : 'no se pudo actualizar la lista de usuarios.'); }
+const cerrarNuevaConv = () => { $('#modal-nueva-conv').hidden = true; };
+function pintarNuevaConv(error){ const yo = perfil(), q = $('#nueva-conv-txt').value.trim().toLowerCase(), r = $('#nueva-conv-res'); r.innerHTML = '';
+  if (typeof error === 'string' && error) r.insertAdjacentHTML('beforeend', `<p class="muted chico" style="margin:0 0 8px">${error}</p>`);
+  if (buscandoGente) return r.insertAdjacentHTML('beforeend', '<p class="muted chico" style="margin:0">buscando usuarios…</p>');
+  const gente = miembros().filter(x => x.id !== yo.id && (!q || x.apodo.toLowerCase().includes(q))).sort((a,b) => a.apodo.localeCompare(b.apodo)).slice(0,30);
+  if (!gente.length){ r.innerHTML = `<p class="muted chico" style="margin:0">${q ? `no encontré a nadie con «${esc(q)}».` : 'todavía no hay otros usuarios registrados.'}</p>`; return; }
+  gente.forEach(x => r.appendChild(persona(x, `<a class="btn lleno" href="#chat/${x.id}" style="display:inline-flex;align-items:center;text-decoration:none" data-cerrar-nueva>escribir</a>`, sonAmigos(yo, x) ? '✓ amigos' : 'usuario registrado'))); }
+$('#nueva-conv-txt').addEventListener('input', () => pintarNuevaConv());
+$('#nueva-conv-res').addEventListener('click', e => { if (e.target.closest('[data-cerrar-nueva]')) cerrarNuevaConv(); });
+$('#nueva-conv-cerrar').onclick = cerrarNuevaConv;
+$('#modal-nueva-conv').addEventListener('click', e => { if (e.target.id === 'modal-nueva-conv') cerrarNuevaConv(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal-nueva-conv').hidden) cerrarNuevaConv(); });
+
+// Grupos (sin cambios: siguen funcionando como antes, guardados en este navegador)
+function pintarGrupo(yo){
+  const conv = $('#chat-conv'); conv.dataset.conv = '';
+  const c = chatCon, g = c.g, k = clave(yo, c), msgs = chats[k] || [];
+  const nombre = g.nombre;
   conv.innerHTML = `<div class="conv-cab"><a href="#chat" class="chico volver" style="min-height:44px;display:inline-flex;align-items:center">‹ chats</a><span class="avatar"></span>
-      <div style="flex:1;min-width:0">${g ? `<b>${esc(g.nombre)}</b><br><span class="muted chico">${g.miembros.length} integrantes</span>` : `<a href="${linkPerfil(c.p)}"><b>${esc(nombre)}</b></a>`}</div>
-      ${g ? `<button class="btn" type="button" id="info-btn" aria-expanded="${infoAbierta}">info del grupo</button>` : ''}</div>
-    ${g ? '<div class="info-grupo" id="info-grupo" hidden></div>' : ''}
+      <div style="flex:1;min-width:0"><b>${esc(g.nombre)}</b><br><span class="muted chico">${g.miembros.length} integrantes</span></div>
+      <button class="btn" type="button" id="info-btn" aria-expanded="${infoAbierta}">info del grupo</button></div>
+    <div class="info-grupo" id="info-grupo" hidden></div>
     <div class="lineas" id="lineas"></div>
     <form class="composer" id="chat-form"><label class="sr" for="chat-txt">Mensaje para ${esc(nombre)}</label>
-      <input class="field" id="chat-txt" placeholder="${g ? 'escribile al grupo…' : 'escribile a ' + esc(nombre) + '…'}" autocomplete="off" maxlength="500" style="flex:1;min-width:0">
+      <input class="field" id="chat-txt" placeholder="escribile al grupo…" autocomplete="off" maxlength="500" style="flex:1;min-width:0">
       <label class="btn file-btn" style="display:inline-flex;align-items:center" title="mandar foto o video">+ foto/video<input type="file" accept="image/*,video/*" id="chat-adj" aria-label="Mandar foto o video"></label>
       <button class="btn" type="button" id="zumbido">zumbido</button><button class="btn lleno" type="submit">enviar</button></form>
     <p class="subiendo" id="chat-estado" role="status"></p>`;
-  const avc = conv.querySelector('.conv-cab .avatar'); g ? avatarGrupo(avc, g) : ponerAvatar(avc, c.p);
-  if (g){ $('#info-btn').onclick = () => { infoAbierta = !infoAbierta; pintarChat(); }; if (infoAbierta) pintarInfoGrupo(g, yo); }
+  avatarGrupo(conv.querySelector('.conv-cab .avatar'), g);
+  $('#info-btn').onclick = () => { infoAbierta = !infoAbierta; pintarChat(); }; if (infoAbierta) pintarInfoGrupo(g, yo);
   const ln = $('#lineas');
-  if (!msgs.length) ln.innerHTML = `<p class="sistema">este es el comienzo de ${g ? 'el grupo ' + esc(g.nombre) : 'tu chat con ' + esc(nombre)}.</p>`;
+  if (!msgs.length) ln.innerHTML = `<p class="sistema">este es el comienzo de el grupo ${esc(g.nombre)}.</p>`;
   msgs.forEach(m => { const d = document.createElement('div'); const autor = m.de === yo.id ? yo : porId(m.de);
     if (m.tipo === 'sistema'){ d.className = 'sistema'; d.textContent = m.texto; }
     else if (m.tipo === 'zumbido'){ d.className = 'sistema'; d.textContent = `${autor?.apodo || 'alguien'} mandó un zumbido · ${hora(m.cuando)}`; }
     else { d.className = 'linea' + (m.de === yo.id ? ' yo' : ''); const h = document.createElement('span'); h.className = 'hora'; h.textContent = `${fecha(m.cuando)} ${hora(m.cuando)}`;
       const adj = (m.tipo === 'imagen' || m.tipo === 'video') ? Object.assign(document.createElement('span'), {className:'cargando-media', textContent: m.tipo === 'video' ? 'cargando video…' : 'cargando foto…'}) : null;
       if (adj){ adj.dataset.media = m.media; adj.dataset.tipo = m.tipo; adj.dataset.alt = `${m.tipo === 'video' ? 'video' : 'foto'} de ${autor?.apodo || 'alguien'}`; }
-      let q; if (g && autor && m.de !== yo.id){ q = document.createElement('a'); q.className = 'quien-g'; q.href = linkPerfil(autor); q.textContent = autor.apodo + ':'; }
+      let q; if (autor && m.de !== yo.id){ q = document.createElement('a'); q.className = 'quien-g'; q.href = linkPerfil(autor); q.textContent = autor.apodo + ':'; }
       else { q = document.createElement('b'); q.textContent = (autor?.apodo || 'alguien') + ':'; }
       d.append(h, q); if (adj){ d.appendChild(adj); if (m.texto) d.appendChild(document.createTextNode(m.texto)); } else d.appendChild(document.createTextNode(' ' + m.texto)); }
     ln.appendChild(d); });
@@ -1052,8 +1258,7 @@ function pintarChat(){
       const texto = $('#chat-txt').value.trim(); $('#chat-txt').value = '';
       mandar({tipo: esVideo ? 'video' : 'imagen', media:key, peso:blob.size, texto});
     } catch { est.textContent = 'no se pudo mandar el archivo (puede que el navegador no tenga más lugar).'; } };
-  $('#zumbido').onclick = () => { mandar({tipo:'zumbido'}); if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
-    $('#chat-grid').animate([{transform:'translateX(0)'},{transform:'translateX(-8px)'},{transform:'translateX(8px)'},{transform:'translateX(0)'}], {duration:280, iterations:2}); };
+  $('#zumbido').onclick = () => { mandar({tipo:'zumbido'}); sacudir(); };
 }
 
 /* Info del grupo: el admin cambia nombre y foto, suma amigos suyos y saca gente; todos pueden salir */
@@ -1375,9 +1580,10 @@ async function entrar(session){
   entrando = false;
   if (!perfil()){ sesion = null; return msg('#e-msg','Tu cuenta no tiene perfil. ¿Corriste el schema.sql en Supabase?'); }
   viendo = null; verFoto = null; aplicar(perfil());
+  conectarRealtime(); cargarPrivadas();
   if (perfil().nuevo) setTimeout(() => { if (esMio()) abrirEd(); }, 300);   // la primera vez se abre el editor
   if (location.hash === '#perfil') mostrar(); else location.hash = '#perfil'; }
-async function salir(){ await guardarYa(); if (sb) await sb.auth.signOut(); sesion = null; viendo = null; usuarios = {}; feed = []; document.documentElement.removeAttribute('style'); document.body.className = ''; document.body.dataset.cajas = 'simple';
+async function salir(){ await guardarYa(); cerrarChat(); if (sb) await sb.auth.signOut(); sesion = null; viendo = null; usuarios = {}; feed = []; document.documentElement.removeAttribute('style'); document.body.className = ''; document.body.dataset.cajas = 'simple';
   cerrarEd(); tab('entrar'); $$('#entrada input').forEach(i => { if (i.type === 'checkbox') i.checked = false; else i.value = ''; }); $$('#entrada .msg').forEach(m => m.className = 'msg'); location.hash = '#entrada'; }
 
 /* ---------- Barra del sitio y navegación ---------- */
@@ -1395,8 +1601,13 @@ function mostrar(){ const [h, arg] = location.hash.slice(1).split('/'); let id =
     if (id === 'top') pintarTop();
     if (id === 'buscar'){ pintarBuscar(); setTimeout(() => $('#buscar-txt').focus(), 50); }
     if (id === 'rincon') pintarRincon();
-    if (id === 'chat'){ const nuevo = !arg ? null : arg[0] === 'g' ? ((g => g && {g})(grupos.find(q => q.id === +arg.slice(1)))) : ((x => x && {p:x})(porId(+arg)));
-      if (llaveLeido(nuevo || {p:{id:-1}}) !== llaveLeido(chatCon || {p:{id:-2}})) infoAbierta = false; chatCon = nuevo || null; pintarChat(); }
+    if (id === 'chat'){
+      if (!arg) chatCon = null;
+      else if (arg[0] === 'g'){ const g = grupos.find(q => q.id === +arg.slice(1)); if (!chatCon?.g || chatCon.g !== g) infoAbierta = false; chatCon = g ? {g} : null; }
+      else { const x = porId(+arg); infoAbierta = false;
+        if (!x || x.id === perfil().id) chatCon = null;
+        else if (!(chatCon?.p === x && chatCon.conv)){ const c = privadas.find(q => q.otro.id === x.id); chatCon = c ? {conv:c, p:x} : {p:x}; if (c) cargarMensajes(c); else abrirPrivado(x); } }
+      pintarChat(); }
     if (id === 'solicitudes') pintarSolicitudes();
     if (id === 'notificaciones') pintarNotis(); }
   actualizarMenu();
