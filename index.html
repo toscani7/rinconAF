@@ -1,0 +1,1425 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex, nofollow">
+<title>rinconAF</title>
+<link rel="icon" href="data:image/png;base64,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">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Comic+Neue:wght@400;700&family=Pacifico&family=Silkscreen&family=UnifrakturMaguntia&family=VT323&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<style>
+/* ===== Variables de color (las cambia cada uno desde "editar mi perfil") ===== */
+:root{
+  --bg:#000000; --bg2:#1A1A1A; --ink:#CCCCCC; --link:#FF9900; --title:#FFFFFF; --line:#333333; --box:#0D0D0D;
+  --muted:color-mix(in srgb, var(--ink) 65%, var(--bg));
+  --ft:Verdana, Tahoma, sans-serif; --fb:Verdana, Tahoma, sans-serif; --fs:14px;
+  --patimg:none; --patsize:auto; --patpos:0 0; --patrep:repeat;
+  --logofilt:invert(1);
+  --logo:url("data:image/png;base64,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");
+}
+html{background:var(--bg)}
+body{margin:0;min-height:100dvh;font-family:var(--fb);font-size:var(--fs);line-height:1.5;color:var(--ink);
+  background-color:var(--bg);background-image:var(--patimg);background-size:var(--patsize);background-position:var(--patpos);background-repeat:var(--patrep);background-attachment:fixed;-webkit-text-size-adjust:100%}
+*{box-sizing:border-box}
+a{color:var(--link)}
+a:hover{text-decoration:none}
+button,input,select,textarea{font:inherit}
+:focus-visible{outline:2px dotted var(--link);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.muted{color:var(--muted)}
+.chico{font-size:.86em}
+h1,h2,h3{font-family:var(--ft);color:var(--title);margin:0;line-height:1.25}
+.screen{display:none}
+.screen.activa{display:block}
+
+/* ===== Barra del sitio (como la de arriba de fotolog) ===== */
+.sitio{background:var(--box);border-bottom:1px solid var(--line)}
+.sitio-in{max-width:1000px;margin:0 auto;padding:6px 12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.marca{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--title);min-height:44px}
+.marca i{width:34px;height:34px;background:var(--logo) center/contain no-repeat;filter:var(--logofilt)}
+.marca b{font-family:var(--ft);font-size:18px;letter-spacing:.5px}
+.menu{display:flex;gap:2px;flex-wrap:wrap;margin-left:auto;font-size:13px}
+.menu a,.menu button{display:inline-flex;align-items:center;min-height:44px;padding:0 8px;color:var(--link);text-decoration:none;background:none;border:0;cursor:pointer}
+.menu a:hover,.menu button:hover{text-decoration:underline}
+.menu a[aria-current="page"]{color:var(--title);font-weight:bold}
+.menu .sep{color:var(--line);align-self:center}
+
+/* ===== Página del perfil: 3 columnas como el original ===== */
+.pagina{max-width:1000px;margin:0 auto;padding:16px 12px 40px}
+.cabeza{display:flex;align-items:center;gap:12px;padding-bottom:12px;margin-bottom:16px;border-bottom:1px solid var(--line)}
+.cabeza .avatar{width:56px;height:56px}
+.cabeza{flex-wrap:wrap}
+.cabeza > div:first-of-type{flex:1 1 200px !important}
+.nick{font-size:26px;word-break:break-word}
+.cols{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;grid-template-areas:"centro" "der" "izq"}
+.col-izq{grid-area:izq}.col-centro{grid-area:centro}.col-der{grid-area:der}
+@media (min-width:900px){
+  .cols{grid-template-columns:150px minmax(0,1fr) 190px;grid-template-areas:"izq centro der"}
+}
+.titulo-col{font-family:var(--ft);font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;color:var(--title);border-bottom:1px solid var(--line);padding-bottom:4px;margin:0 0 10px}
+.bloque{margin-bottom:22px}
+.caja{background:var(--box);border:1px solid var(--line);padding:12px}
+[data-cajas="sin"] .caja{background:none;border-color:transparent;padding:12px 0}
+[data-cajas="win98"] .caja{background:#C0C0C0;color:#000;border:2px solid;border-color:#FFF #404040 #404040 #FFF}
+[data-cajas="punteada"] .caja{border-style:dashed}
+
+/* Foto del día */
+.foto-wrap{position:relative;max-width:520px;margin:0 auto}
+.foto{display:block;width:100%;height:auto;border:var(--marco, 1px) solid var(--line)}
+.foto-vacia{aspect-ratio:4/3;border:1px dashed var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted);text-align:center;padding:16px}
+.foto-vacia i{width:90px;height:90px;background:var(--logo) center/contain no-repeat;filter:var(--logofilt);opacity:.4}
+.sticker{position:absolute;color:#FFF;text-shadow:1px 1px 0 #000, 0 0 4px #000;pointer-events:none;line-height:1}
+.pie{max-width:520px;margin:10px auto 0}
+.pie h2{font-size:17px}
+.pie .texto{margin:6px 0;white-space:pre-line;word-break:break-word}
+.subida{font-size:12px;color:var(--muted)}
+
+/* Libro de visitas */
+.libro{max-width:520px;margin:22px auto 0}
+.libro h3{font-size:14px;margin-bottom:8px}
+.firma{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.firma .avatar{width:40px;height:40px}
+.firma .quien{font-weight:bold}
+.firma .cuando{font-size:12px;color:var(--muted)}
+.firma p{margin:2px 0 0;word-break:break-word}
+.firmar{display:flex;flex-direction:column;gap:8px;margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+
+/* Columnas laterales */
+.thumbs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+@media (min-width:900px){.thumbs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.thumb{display:block;aspect-ratio:1;border:1px solid var(--line);background:var(--box) center/cover no-repeat;padding:0;cursor:pointer}
+.thumb[aria-current="true"]{outline:2px solid var(--link);outline-offset:1px}
+.ff{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (min-width:900px){.ff{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ff a{display:flex;flex-direction:column;gap:3px;text-decoration:none;font-size:12px;text-align:center;word-break:break-word}
+.ff .avatar{width:100%;height:auto;aspect-ratio:1}
+.favs{list-style:none;margin:0;padding:0;font-size:13px}
+.favs li{padding:4px 0;border-bottom:1px dotted var(--line)}
+.favs a{display:inline-block;min-height:28px}
+.datos{font-size:13px}
+.datos p{margin:0 0 6px;word-break:break-word}
+
+.avatar{flex:none;display:flex;align-items:center;justify-content:center;background:#555 center/cover no-repeat;color:#FFF;font-family:Verdana, sans-serif;font-size:12px;border:1px solid var(--line);text-transform:lowercase;overflow:hidden}
+.avatar.redondo{border-radius:50%}
+
+/* Formularios y botones al estilo 2005 */
+.field{width:100%;min-height:44px;border:1px solid var(--line);background:color-mix(in srgb, var(--bg) 70%, var(--ink) 8%);color:var(--ink);padding:0 10px;font-size:16px;border-radius:0}
+textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
+.lbl{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.btn{min-height:44px;padding:0 16px;border:1px solid var(--line);background:var(--box);color:var(--link);font-weight:bold;cursor:pointer;border-radius:0}
+.btn:hover{background:var(--link);color:var(--bg)}
+.btn.lleno{background:var(--link);color:var(--bg);border-color:var(--link)}
+.aviso{font-size:13px;border:1px solid var(--line);padding:8px 10px;margin:0;color:var(--muted)}
+.msg{font-size:13px;padding:8px 10px;display:none;border:1px solid}
+.msg.err{display:block;color:#FF8080;border-color:#FF8080}
+.msg.ok{display:block;color:#8FE08F;border-color:#8FE08F}
+
+/* ===== Entrada ===== */
+.entrada{max-width:380px;margin:0 auto;padding:40px 16px;display:flex;flex-direction:column;gap:18px}
+.entrada .logo-grande{width:130px;height:130px;margin:0 auto;background:var(--logo) center/contain no-repeat;filter:var(--logofilt)}
+.tabs{display:flex;border-bottom:1px solid var(--line)}
+.tabs[hidden]{display:none}
+.tabs button{flex:1;min-height:44px;background:none;border:0;color:var(--muted);cursor:pointer;font-weight:bold}
+.tabs button[aria-selected="true"]{color:var(--title);box-shadow:inset 0 -2px 0 var(--link)}
+.form{display:flex;flex-direction:column;gap:12px;padding-top:14px}
+.form[hidden]{display:none}
+
+/* ===== Inicio, chat, rincón ===== */
+.grilla2{display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
+@media (min-width:900px){.grilla2{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}}
+.actualizados{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (min-width:600px){.actualizados{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.actualizados a{text-decoration:none;font-size:12px;display:flex;flex-direction:column;gap:3px}
+.actualizados .avatar{width:100%;height:auto;aspect-ratio:1;font-size:14px}
+.chat{max-width:760px;margin:0 auto;display:flex;flex-direction:column;min-height:calc(100dvh - 58px)}
+.lineas{flex:1;padding:14px 12px;display:flex;flex-direction:column;justify-content:flex-end;gap:6px}
+.linea{word-break:break-word}
+.linea .hora{color:var(--muted);font-size:12px;margin-right:6px}
+.linea b{color:var(--title)}
+.linea.yo b{color:var(--link)}
+.sistema{color:var(--muted);font-style:italic;font-size:13px}
+.composer{position:sticky;bottom:0;display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:var(--box);border-top:1px solid var(--line)}
+
+/* Chat privado */
+.chat-grid{display:grid;grid-template-columns:minmax(0,1fr);border:1px solid var(--line);background:var(--box);min-height:65dvh}
+@media (min-width:760px){.chat-grid{grid-template-columns:250px minmax(0,1fr)}.chat-lista{border-right:1px solid var(--line)}}
+@media (max-width:759px){.chat-grid[data-modo="lista"] .chat-conv{display:none}.chat-grid[data-modo="conv"] .chat-lista{display:none}}
+.conv-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink);min-height:60px}
+.conv-item .avatar{width:40px;height:40px}
+.conv-item[aria-current="page"]{background:color-mix(in srgb, var(--link) 16%, var(--box))}
+.conv-item b{color:var(--title)}
+.conv-item .prev{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cuenta{display:inline-block;min-width:20px;padding:0 6px;background:var(--link);color:var(--bg);font-size:11px;font-weight:bold;text-align:center;border-radius:10px;margin-left:auto}
+.chat-conv{display:flex;flex-direction:column;min-width:0}
+.conv-cab{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line)}
+.conv-cab .avatar{width:36px;height:36px}
+.chat-conv .lineas{flex:1;max-height:58dvh;overflow-y:auto;justify-content:flex-start}
+.chat-conv .composer{position:static}
+@media (max-width:600px){.chat-conv .composer{flex-wrap:wrap}.chat-conv .composer .field{flex:1 1 100% !important}.chat-conv .composer .btn{flex:1}}
+@media (min-width:760px){.conv-cab .volver{display:none}}
+.persona{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.persona .avatar{width:44px;height:44px}
+.persona .acciones{display:flex;gap:8px;margin-left:auto}
+.noti{padding:10px 0;border-top:1px solid var(--line)}
+.noti.nueva{font-weight:bold}
+.noti.nueva::before{content:"● ";color:var(--link)}
+
+/* Rincón: lo que comparten tus amigos */
+.r-tipos{display:flex;gap:6px;flex-wrap:wrap}
+.r-tipos button,.r-filtros button{min-height:44px;padding:0 14px;border:1px solid var(--line);background:var(--box);color:var(--link);cursor:pointer}
+.r-tipos button[aria-pressed="true"],.r-filtros button[aria-pressed="true"]{background:var(--link);color:var(--bg);border-color:var(--link);font-weight:bold}
+.r-filtros{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 6px}
+.post{display:flex;gap:10px;padding:14px 0;border-top:1px solid var(--line)}
+.post .avatar{width:44px;height:44px}
+.post-cuerpo{min-width:0;flex:1}
+.post img.compartida{display:block;max-width:100%;max-height:520px;margin-top:8px;border:1px solid var(--line)}
+.media-link{display:flex;align-items:center;gap:12px;margin-top:8px;padding:10px 12px;border:1px solid var(--line);background:var(--box);text-decoration:none;max-width:460px}
+.media-link .play{width:44px;height:44px;flex:none;border-radius:50%;background:var(--link);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:16px}
+.media-link .sitio{display:block;font-size:12px;color:var(--muted);word-break:break-all}
+.pin-embed{display:block;width:100%;max-width:345px;height:520px;margin-top:8px;border:1px solid var(--line);background:#fff}
+.borrar{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:12px;min-height:32px;padding:0}
+
+/* Inicio: posteos de amigos */
+.feed-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.feed{max-width:620px;margin:0 auto}
+.posteo{border:1px solid var(--line);background:var(--box);padding:12px;margin-top:14px}
+.posteo.resaltado{outline:2px solid var(--link);outline-offset:2px}
+.posteo-cab{display:flex;align-items:center;gap:10px}
+.posteo-cab .avatar{width:42px;height:42px}
+.posteo-texto{margin:10px 0 0;white-space:pre-line;word-break:break-word}
+.posteo img.compartida{display:block;max-width:100%;max-height:560px;margin-top:10px;border:1px solid var(--line)}
+.acciones-post{display:flex;gap:6px;margin-top:10px;border-top:1px solid var(--line);padding-top:6px}
+.acciones-post button{min-height:44px;padding:0 12px;background:none;border:0;color:var(--link);cursor:pointer;font-weight:bold}
+.acciones-post button[aria-pressed="true"]{color:#FF4D6D}
+.comentarios{margin-top:6px}
+.comentario{display:flex;gap:8px;padding:6px 0;font-size:.93em}
+.comentario .avatar{width:28px;height:28px;font-size:10px}
+.comentario p{margin:0;word-break:break-word}
+.form-com{display:flex;gap:8px;margin-top:8px}
+.nuevos{display:block;width:100%;margin-top:12px}
+.nuevos[hidden]{display:none}
+/* Botón flotante para postear */
+.fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:40;width:64px;height:64px;border-radius:50%;border:2px solid var(--title);
+  background:var(--link);color:var(--bg);font-size:30px;font-weight:bold;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center}
+.fab[hidden]{display:none}
+.modal-fondo{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center}
+.modal-fondo[hidden]{display:none}
+.modal{width:100%;max-width:520px;max-height:90dvh;overflow-y:auto;background:var(--box);color:var(--ink);border:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:12px}
+@media (min-width:600px){.modal-fondo{align-items:center}}
+/* Buscar gente */
+.lupa{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--link)}
+.lupa[aria-current="page"]{color:var(--title)}
+
+/* ♥ a los perfiles y ranking */
+.likes-perfil{display:flex;align-items:center;gap:2px}
+.like-perfil{width:44px;height:44px;padding:0;background:none;border:0;color:#FF4D6D;font-size:24px;line-height:1;cursor:pointer}
+.like-perfil[hidden]{display:none}
+.like-perfil:hover{transform:scale(1.15)}
+#like-cuenta{color:var(--muted)}
+.top-fila{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);text-decoration:none;color:var(--ink)}
+.top-fila .pos{width:36px;flex:none;text-align:center;font-family:var(--ft);font-size:20px;font-weight:bold;color:var(--muted)}
+.top-fila.podio .pos{color:var(--link)}
+.top-fila .avatar{width:56px;height:56px}
+.top-fila .cuantos{margin-left:auto;font-weight:bold;color:#FF4D6D;white-space:nowrap}
+
+/* Grupos de chat */
+.crear-grupo{display:block;width:100%;min-height:48px;border:0;border-bottom:1px solid var(--line);background:none;color:var(--link);font-weight:bold;cursor:pointer;text-align:left;padding:0 14px}
+.avatar.grupo{border-radius:50%}
+.info-grupo{border-bottom:1px solid var(--line);padding:12px;display:flex;flex-direction:column;gap:12px;background:color-mix(in srgb, var(--box) 85%, var(--ink) 5%)}
+.info-grupo[hidden]{display:none}
+.miembro{display:flex;align-items:center;gap:8px;min-height:44px}
+.miembro .avatar{width:32px;height:32px;font-size:10px}
+.miembro .borrar{margin-left:auto}
+.checks{display:flex;flex-direction:column;gap:2px;max-height:220px;overflow-y:auto;border:1px solid var(--line);padding:6px 10px}
+.checks label{display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer}
+.checks input{width:20px;height:20px;accent-color:var(--link)}
+.linea .quien-g{font-weight:bold;color:var(--title);text-decoration:none}
+
+/* Fotos y videos en el chat */
+.adjunto{display:block;max-width:min(280px,100%);max-height:320px;margin:6px 0 2px;border:1px solid var(--line);background:#000}
+.cargando-media{display:inline-block;width:200px;height:120px;margin:6px 0 2px;border:1px dashed var(--line);color:var(--muted);font-size:12px;line-height:120px;text-align:center}
+.subiendo{font-size:12px;color:var(--muted);padding:0 12px}
+
+.aviso-flot{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;z-index:80;max-width:90vw;background:#300;color:#FFD0D0;border:1px solid #F66;padding:10px 14px;font-size:13px}
+.aviso-flot[hidden]{display:none}
+
+/* Efectos del nick */
+.ef-sombra .nick{text-shadow:2px 2px 0 var(--link)}
+.ef-glitch .nick{text-shadow:2px 0 #FF003C, -2px 0 #00E5FF}
+.ef-brillo .nick{background:linear-gradient(100deg, var(--title) 20%, #FFF 40%, var(--link) 50%, var(--title) 70%);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:brillo 3s linear infinite}
+@keyframes brillo{to{background-position:-300% 0}}
+.ef-arcoiris .nick{background:linear-gradient(90deg,#FF4FD8,#FFB84D,#B6FF3B,#3DE0FF,#8C7BFF);-webkit-background-clip:text;background-clip:text;color:transparent}
+.frase-marq{overflow:hidden;white-space:nowrap}
+.frase-marq span{display:inline-block;padding-left:100%;animation:marq 14s linear infinite}
+@keyframes marq{to{transform:translateX(-100%)}}
+.estela{position:fixed;pointer-events:none;z-index:99;color:var(--link);font-size:14px;animation:caer .8s ease-out forwards}
+@keyframes caer{to{transform:translateY(18px);opacity:0}}
+
+/* ===== Editor ("editar mi perfil") — colores fijos para que siempre se lea ===== */
+.editor{position:fixed;z-index:50;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:430px;height:86dvh;background:#F2F2F2;color:#222;
+  border:1px solid #888;display:flex;flex-direction:column;font-family:Verdana, Tahoma, sans-serif;font-size:14px;box-shadow:0 -6px 24px rgba(0,0,0,.5)}
+.editor[hidden]{display:none}
+.ed-top{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 6px 14px;background:#333;color:#FFF}
+.ed-top h2{color:#FFF;font-family:Verdana, sans-serif;font-size:14px}
+.ed-cerrar{width:44px;height:44px;background:none;border:0;color:#FFF;font-size:22px;cursor:pointer}
+.ed-tabs{display:flex;gap:4px;padding:8px;overflow-x:auto;border-bottom:1px solid #CCC;flex:none;background:#E4E4E4}
+.ed-tabs button{flex:none;min-height:40px;padding:0 12px;border:1px solid #AAA;background:#FFF;color:#222;cursor:pointer;font-size:13px}
+.ed-tabs button[aria-selected="true"]{background:#333;color:#FFF;border-color:#333}
+.ed-cuerpo{flex:1;overflow-y:auto;padding:14px 16px 24px;display:flex;flex-direction:column;gap:16px}
+.ed-pie{display:flex;gap:8px;padding:10px 12px calc(12px + env(safe-area-inset-bottom));border-top:1px solid #CCC;background:#E4E4E4}
+.ed-pie button{flex:1}
+.ed-btn{min-height:44px;border:1px solid #888;background:#FFF;color:#222;cursor:pointer;padding:0 14px}
+.ed-btn.fuerte{background:#333;color:#FFF;border-color:#333}
+.ed-grupo h3{font-family:Verdana, sans-serif;color:#555;font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px}
+.editor .field{background:#FFF;color:#222;border-color:#999}
+.editor .lbl{color:#555}
+.ops{display:flex;flex-wrap:wrap;gap:6px}
+.op{min-height:44px;min-width:44px;padding:0 12px;border:1px solid #999;background:#FFF;color:#222;cursor:pointer;font-size:13px}
+.op[aria-pressed="true"]{background:#333;color:#FFF;border-color:#333}
+.op.grande{font-size:20px}
+.colores{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.color{display:flex;align-items:center;gap:8px;font-size:13px;border:1px solid #CCC;background:#FFF;padding:6px 8px;min-height:50px}
+.color input{width:44px;height:34px;border:1px solid #888;padding:0;background:none;cursor:pointer;flex:none}
+.temas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.tema-btn{display:flex;align-items:center;gap:8px;min-height:50px;padding:6px 8px;border:1px solid #999;background:#FFF;color:#222;cursor:pointer;font-size:13px;text-align:left}
+.tema-btn[aria-pressed="true"]{border:2px solid #333}
+.muestras{display:flex;flex:none}
+.muestras i{width:11px;height:24px;display:block;border:1px solid #888}
+.img-ed{display:flex;gap:10px;align-items:center}
+.img-prev{width:64px;height:64px;flex:none;border:1px solid #999;background:#DDD center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:11px;color:#666;text-align:center}
+.file-btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center}
+.file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:46px;border-bottom:1px solid #DDD;cursor:pointer}
+.switch input{width:22px;height:22px;flex:none;accent-color:#333}
+.ed-aviso{font-size:13px;color:#8A4B00;background:#FFF4DC;border:1px solid #D9A441;padding:8px 10px;margin:0}
+.rango{width:100%;height:32px;accent-color:#333}
+.contador{font-size:11px;color:#666;text-align:right;margin-top:3px}
+@media (min-width:900px){
+  .editor{left:auto;right:0;transform:none;top:0;height:100dvh;max-width:380px;border-width:0 0 0 1px}
+  body.editando{padding-right:380px}
+}
+@media (prefers-reduced-motion: reduce){ *{animation:none !important} .frase-marq span{padding-left:0} }
+</style>
+</head>
+<body data-cajas="simple">
+
+<!-- ================= ENTRADA ================= -->
+<section id="entrada" class="screen">
+  <div class="entrada">
+    <div style="text-align:center">
+      <div class="logo-grande" role="img" aria-label="Logo de rinconAF: una cara con aureola"></div>
+      <h1 style="font-size:26px;margin-top:8px">rinconAF</h1>
+      <p class="muted chico" style="margin:4px 0 0">perfiles para la banda · una foto por día</p>
+    </div>
+    <div class="caja">
+      <div class="tabs" role="tablist" aria-label="Entrar o registrarse">
+        <button type="button" role="tab" id="tab-entrar" aria-selected="true" aria-controls="form-entrar">entrar</button>
+        <button type="button" role="tab" id="tab-crear" aria-selected="false" aria-controls="form-crear">registrarme</button>
+      </div>
+      <form id="form-entrar" class="form" role="tabpanel" aria-labelledby="tab-entrar" novalidate>
+        <div><label class="lbl" for="e-mail">correo</label><input class="field" id="e-mail" type="email" autocomplete="email" required></div>
+        <div><label class="lbl" for="e-pass">contraseña</label><input class="field" id="e-pass" type="password" autocomplete="current-password" required></div>
+        <label class="chico" style="display:flex;gap:8px;align-items:center;min-height:32px"><input type="checkbox" data-ver="e-pass"> mostrar contraseña</label>
+        <p id="e-msg" class="msg" role="alert"></p>
+        <button class="btn lleno" type="submit">entrar</button>
+        <button type="button" id="olvide" class="chico" style="background:none;border:0;color:var(--link);text-decoration:underline;cursor:pointer;min-height:44px">¿te olvidaste la contraseña?</button>
+      </form>
+      <form id="form-nueva" class="form" hidden novalidate>
+        <p style="margin:0;font-weight:bold;color:var(--title)">elegí tu contraseña nueva</p>
+        <div><label class="lbl" for="n-pass">contraseña nueva (mínimo 8)</label><input class="field" id="n-pass" type="password" autocomplete="new-password" minlength="8"></div>
+        <div><label class="lbl" for="n-pass2">repetila</label><input class="field" id="n-pass2" type="password" autocomplete="new-password"></div>
+        <p id="n-msg" class="msg" role="alert"></p>
+        <button class="btn lleno" type="submit">guardar contraseña</button>
+      </form>
+      <form id="form-crear" class="form" role="tabpanel" aria-labelledby="tab-crear" hidden novalidate>
+        <div><label class="lbl" for="c-mail">correo</label><input class="field" id="c-mail" type="email" autocomplete="email" required></div>
+        <div><label class="lbl" for="c-pass">contraseña (mínimo 8)</label><input class="field" id="c-pass" type="password" autocomplete="new-password" minlength="8" required></div>
+        <div><label class="lbl" for="c-pass2">repetí la contraseña</label><input class="field" id="c-pass2" type="password" autocomplete="new-password" required></div>
+        <label class="chico" style="display:flex;gap:8px;align-items:center;min-height:32px"><input type="checkbox" data-ver="c-pass,c-pass2"> mostrar contraseñas</label>
+        <p id="c-msg" class="msg" role="alert"></p>
+        <button class="btn lleno" type="submit">crear mi perfil</button>
+      </form>
+    </div>
+    <p class="muted chico" style="text-align:center;margin:0">© rinconAF · hecho a mano para los amigos</p>
+  </div>
+</section>
+
+<!-- Barra del sitio (se repite en cada pantalla interna) -->
+<template id="tpl-sitio">
+  <header class="sitio"><div class="sitio-in">
+    <a class="marca" href="#inicio"><i aria-hidden="true"></i><b>rinconAF</b></a>
+    <nav class="menu" aria-label="Secciones">
+      <a href="#buscar" data-sec="buscar" class="lupa" aria-label="Buscar gente"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg></a>
+      <a href="#inicio" data-sec="inicio">inicio</a><span class="sep" aria-hidden="true">|</span>
+      <a href="#perfil" data-sec="perfil">mi perfil</a><span class="sep" aria-hidden="true">|</span>
+      <a href="#chat" data-sec="chat">chat</a><span class="sep" aria-hidden="true">|</span>
+      <a href="#rincon" data-sec="rincon">rincón</a><span class="sep" aria-hidden="true">|</span>
+      <a href="#top" data-sec="top">top</a><span class="sep" aria-hidden="true">|</span>
+      <a href="#solicitudes" data-sec="solicitudes">solicitudes</a><span class="sep" aria-hidden="true">|</span>
+      <a href="#notificaciones" data-sec="notificaciones">notificaciones</a><span class="sep" aria-hidden="true">|</span>
+      <button type="button" data-salir>salir</button>
+    </nav>
+  </div></header>
+</template>
+
+<!-- ================= INICIO: posteos tuyos y de tus amigos ================= -->
+<section id="inicio" class="screen">
+  <div data-sitio="inicio"></div>
+  <main class="pagina">
+    <div class="feed">
+      <div class="feed-top">
+        <h1 style="font-size:22px">inicio</h1>
+        <button class="btn" type="button" id="recargar">↻ recargar</button>
+      </div>
+      <p class="muted chico" style="margin:0">lo que postean vos y tus amigos. lo nuevo aparece arriba.</p>
+      <button class="btn lleno nuevos" type="button" id="hay-nuevos" hidden></button>
+      <div id="feed"></div>
+    </div>
+  </main>
+  <button class="fab" type="button" id="fab" aria-label="Postear algo" title="postear">+</button>
+</section>
+
+<!-- Ventana para postear -->
+<div class="modal-fondo" id="modal-post" hidden>
+  <form class="modal" id="post-form" role="dialog" aria-labelledby="post-t" aria-modal="true">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h2 id="post-t" style="font-size:17px">postear</h2>
+      <button type="button" class="btn" id="post-cerrar" aria-label="Cerrar">×</button></div>
+    <div class="r-tipos" role="group" aria-label="Qué querés postear">
+      <button type="button" data-ptipo="texto" aria-pressed="true">escribir</button>
+      <button type="button" data-ptipo="imagen" aria-pressed="false">imagen</button>
+      <button type="button" data-ptipo="video" aria-pressed="false">video</button>
+    </div>
+    <div><label class="lbl" for="post-texto" id="post-texto-lbl">¿qué estás pensando?</label><textarea class="field" id="post-texto" maxlength="1000"></textarea></div>
+    <div id="post-img-b" hidden><label class="btn file-btn" style="display:flex;justify-content:center">elegir imagen<input type="file" accept="image/*" id="post-img" aria-label="Elegir imagen"></label>
+      <span class="chico muted" id="post-img-nombre">ninguna imagen elegida</span></div>
+    <div id="post-url-b" hidden><label class="btn file-btn" style="display:flex;justify-content:center">subir video (hasta 25 MB)<input type="file" accept="video/*" id="post-vid" aria-label="Elegir video"></label>
+      <span class="chico muted" id="post-vid-nombre">ningún video elegido</span>
+      <p class="muted chico" style="margin:10px 0 6px;text-align:center">— o —</p>
+      <label class="lbl" for="post-url">pegá el link (youtube, tiktok, instagram…)</label><input class="field" id="post-url" type="url" placeholder="https://…"></div>
+    <p class="msg" id="post-msg" role="alert"></p>
+    <button class="btn lleno" type="submit">publicar</button>
+  </form>
+</div>
+
+<!-- ================= MI PERFIL ================= -->
+<section id="perfil" class="screen">
+  <div data-sitio="perfil"></div>
+  <main class="pagina" id="flog">
+    <div class="cabeza">
+      <span class="avatar" id="p-avatar"></span>
+      <div style="min-width:0;flex:1">
+        <h1 class="nick" id="p-nick"></h1>
+        <div class="muted chico" id="p-meta"></div>
+      </div>
+      <button class="btn" type="button" id="abrir-editor">editar mi perfil</button>
+      <div id="p-amistad" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"></div>
+      <div class="likes-perfil"><button class="like-perfil" type="button" id="like-perfil" aria-pressed="false"></button><span id="like-cuenta" class="chico"></span></div>
+    </div>
+    <p class="chico frase-marq" id="p-frase" style="margin:-6px 0 16px"><span></span></p>
+
+    <div class="cols">
+      <!-- Izquierda: fotos anteriores + sobre mí -->
+      <aside class="col-izq">
+        <div class="bloque" id="p-anteriores-b">
+          <p class="titulo-col">fotos anteriores</p>
+          <div class="thumbs" id="p-anteriores"></div>
+        </div>
+        <div class="bloque" id="p-sobre-b">
+          <p class="titulo-col">sobre mí</p>
+          <div class="datos" id="p-datos"></div>
+        </div>
+      </aside>
+
+      <!-- Centro: foto del día + libro de visitas -->
+      <div class="col-centro">
+        <div class="caja bloque" id="p-subir" hidden>
+          <form id="subir-form" style="display:flex;flex-direction:column;gap:10px">
+            <p style="margin:0;font-weight:bold;color:var(--title)">subí tu foto de hoy</p>
+            <label class="btn file-btn" style="justify-content:center">elegir foto<input type="file" accept="image/*" id="subir-img" aria-label="Elegir foto de hoy"></label>
+            <span class="chico muted" id="subir-nombre">ninguna foto elegida</span>
+            <div><label class="lbl" for="subir-titulo">título</label><input class="field" id="subir-titulo" maxlength="60"></div>
+            <div><label class="lbl" for="subir-texto">texto (opcional)</label><textarea class="field" id="subir-texto" maxlength="500"></textarea></div>
+            <p class="msg" id="subir-msg" role="alert"></p>
+            <button class="btn lleno" type="submit">publicar</button>
+          </form>
+        </div>
+        <p class="aviso bloque" id="p-yasubiste" hidden>ya subiste tu foto de hoy. la próxima, mañana.</p>
+
+        <div class="foto-wrap" id="p-foto"></div>
+        <div class="pie" id="p-pie"></div>
+
+        <section class="libro" id="p-libro" aria-labelledby="p-libro-t">
+          <h3 id="p-libro-t"></h3>
+          <div id="p-firmas"></div>
+          <form class="firmar" id="firmar-form">
+            <label class="lbl" for="firmar-txt" id="firmar-lbl">firmá el libro</label>
+            <textarea class="field" id="firmar-txt" maxlength="300"></textarea>
+            <button class="btn" type="submit">firmar</button>
+          </form>
+          <p class="aviso" id="p-lleno" hidden>el libro de esta foto está lleno (20 firmas).</p>
+        </section>
+      </div>
+
+      <!-- Derecha: F/F + favoritos -->
+      <aside class="col-der">
+        <div class="bloque" id="p-ff-b">
+          <p class="titulo-col">f/f (amigos)</p>
+          <div class="ff" id="p-ff"></div>
+        </div>
+        <div class="bloque" id="p-favs-b">
+          <p class="titulo-col">favoritos</p>
+          <ul class="favs" id="p-favs"></ul>
+        </div>
+      </aside>
+    </div>
+  </main>
+</section>
+
+<!-- ================= CHAT (privado, solo amigos) ================= -->
+<section id="chat" class="screen">
+  <div data-sitio="chat"></div>
+  <main class="pagina">
+    <h1 style="font-size:22px;margin-bottom:14px">chat</h1>
+    <div class="chat-grid" id="chat-grid" data-modo="lista">
+      <nav class="chat-lista" id="chat-lista" aria-label="Tus chats"></nav>
+      <section class="chat-conv" id="chat-conv" aria-live="polite"></section>
+    </div>
+  </main>
+</section>
+
+<!-- ================= TOP PERFILES ================= -->
+<section id="top" class="screen">
+  <div data-sitio="top"></div>
+  <main class="pagina" style="max-width:640px">
+    <h1 style="font-size:22px;margin-bottom:4px">top perfiles</h1>
+    <p class="muted chico" style="margin:0 0 10px">los perfiles con más ♥. entrá a uno que te guste y dale ♥.</p>
+    <div class="r-filtros" role="group" aria-label="Ranking de">
+      <button type="button" data-tfiltro="todos" aria-pressed="true">todos</button>
+      <button type="button" data-tfiltro="amigos" aria-pressed="false">mis amigos</button>
+    </div>
+    <div id="t-lista" style="margin-top:12px"></div>
+  </main>
+</section>
+
+<!-- Ventana para crear un grupo -->
+<div class="modal-fondo" id="modal-grupo" hidden>
+  <form class="modal" id="grupo-form" role="dialog" aria-labelledby="grupo-t" aria-modal="true">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h2 id="grupo-t" style="font-size:17px">crear grupo</h2>
+      <button type="button" class="btn" id="grupo-cerrar" aria-label="Cerrar">×</button></div>
+    <div><label class="lbl" for="grupo-nombre">nombre del grupo</label><input class="field" id="grupo-nombre" maxlength="40" required></div>
+    <div style="display:flex;align-items:center;gap:12px"><span class="avatar grupo" id="grupo-prev" style="width:56px;height:56px"></span>
+      <label class="btn file-btn" style="display:inline-flex;align-items:center">foto del grupo<input type="file" accept="image/*" id="grupo-foto" aria-label="Elegir foto del grupo"></label></div>
+    <fieldset style="border:0;padding:0;margin:0"><legend class="lbl">¿a quién sumás? (de tus amigos)</legend><div class="checks" id="grupo-amigos"></div></fieldset>
+    <p class="msg" id="grupo-msg" role="alert"></p>
+    <button class="btn lleno" type="submit">crear grupo</button>
+  </form>
+</div>
+
+<!-- ================= BUSCAR GENTE ================= -->
+<section id="buscar" class="screen">
+  <div data-sitio="buscar"></div>
+  <main class="pagina" style="max-width:640px">
+    <h1 style="font-size:22px;margin-bottom:14px">buscar gente</h1>
+    <label class="lbl" for="buscar-txt">escribí un nick</label>
+    <input class="field" id="buscar-txt" type="search" autocomplete="off" placeholder="ej: npc3, flor…">
+    <div id="buscar-res" style="margin-top:12px"></div>
+  </main>
+</section>
+
+<!-- ================= SOLICITUDES ================= -->
+<section id="solicitudes" class="screen">
+  <div data-sitio="solicitudes"></div>
+  <main class="pagina" style="max-width:640px">
+    <h1 style="font-size:22px;margin-bottom:14px">solicitudes de amistad</h1>
+    <p class="titulo-col">recibidas</p>
+    <div id="s-recibidas" class="bloque"></div>
+    <p class="titulo-col">enviadas</p>
+    <div id="s-enviadas" class="bloque"></div>
+  </main>
+</section>
+
+<!-- ================= NOTIFICACIONES (se amplía más adelante) ================= -->
+<section id="notificaciones" class="screen">
+  <div data-sitio="notificaciones"></div>
+  <main class="pagina" style="max-width:640px">
+    <h1 style="font-size:22px;margin-bottom:14px">notificaciones</h1>
+    <div id="n-lista"></div>
+  </main>
+</section>
+
+<!-- ================= RINCÓN: canciones, imágenes y videos de tus amigos ================= -->
+<section id="rincon" class="screen">
+  <div data-sitio="rincon"></div>
+  <main class="pagina" style="max-width:680px">
+    <h1 style="font-size:22px;margin-bottom:4px">rincón</h1>
+    <p class="muted chico" style="margin:0 0 14px">lo que comparten vos y tus amigos. cada uno ve lo de sus propios amigos.</p>
+    <form class="caja" id="r-form" style="display:flex;flex-direction:column;gap:10px">
+      <div class="r-tipos" role="group" aria-label="Qué querés compartir">
+        <button type="button" data-rtipo="musica" aria-pressed="true">canción</button>
+        <button type="button" data-rtipo="imagen" aria-pressed="false">imagen</button>
+        <button type="button" data-rtipo="video" aria-pressed="false">video</button>
+      </div>
+      <div id="r-url-b"><label class="lbl" for="r-url" id="r-url-lbl">link de la canción (youtube, spotify, soundcloud…)</label><input class="field" id="r-url" type="url" placeholder="https://…"></div>
+      <div id="r-img-b" hidden><label class="btn file-btn" style="justify-content:center;display:flex">elegir imagen<input type="file" accept="image/*" id="r-img" aria-label="Elegir imagen para compartir"></label>
+        <span class="chico muted" id="r-img-nombre">ninguna imagen elegida</span>
+        <p class="muted chico" style="margin:10px 0 6px;text-align:center">— o —</p>
+        <label class="lbl" for="r-pin">pegá un link de pinterest</label>
+        <input class="field" id="r-pin" type="url" placeholder="https://pinterest.com/pin/… o https://pin.it/…"></div>
+      <div><label class="lbl" for="r-texto">comentario (opcional)</label><input class="field" id="r-texto" maxlength="200"></div>
+      <p class="msg" id="r-msg" role="alert"></p>
+      <button class="btn lleno" type="submit">compartir</button>
+    </form>
+    <div class="r-filtros" role="group" aria-label="Filtrar">
+      <button type="button" data-rfiltro="todo" aria-pressed="true">todo</button>
+      <button type="button" data-rfiltro="musica" aria-pressed="false">canciones</button>
+      <button type="button" data-rfiltro="imagen" aria-pressed="false">imágenes</button>
+      <button type="button" data-rfiltro="video" aria-pressed="false">videos</button>
+    </div>
+    <div id="r-lista"></div>
+  </main>
+</section>
+
+<p class="aviso-flot" id="aviso-flot" role="alert" hidden></p>
+
+<!-- ================= EDITOR ================= -->
+<aside id="editor" class="editor" hidden role="dialog" aria-labelledby="ed-titulo">
+  <div class="ed-top"><h2 id="ed-titulo">editar mi perfil</h2><button class="ed-cerrar" type="button" id="cerrar-editor" aria-label="Cerrar">×</button></div>
+  <div class="ed-tabs" role="tablist" aria-label="Partes" id="ed-tabs"></div>
+  <div class="ed-cuerpo" id="ed-cuerpo"></div>
+  <div class="ed-pie"><button class="ed-btn" type="button" id="ed-reset">restablecer</button><button class="ed-btn fuerte" type="button" id="ed-listo">listo</button></div>
+</aside>
+
+<script>
+/* =========================================================
+   rinconAF — red social estilo Fotolog (una sola página, sin build).
+   Se publica en Vercel; datos, cuentas y archivos en Supabase (ver config.js y supabase/schema.sql).
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const K = {chats:'r2k3_chats', rincon:'r2k3_rincon', feed:'r2k3_feed', grupos:'r2k3_grupos'};
+const MAX_FIRMAS = 20;
+
+/* ---------- Temas (los colores típicos de los flogs) ---------- */
+const COLS = ['bg','bg2','ink','link','title','line','box'];
+const TEMAS = {
+  clasico: {nombre:'Perfil negro', bg:'#000000', bg2:'#1A1A1A', ink:'#CCCCCC', link:'#FF9900', title:'#FFFFFF', line:'#333333', box:'#0D0D0D', patron:'liso', fuenteTitulo:'verdana', fuenteTexto:'verdana'},
+  gris:    {nombre:'Perfil gris', bg:'#3A3A3A', bg2:'#444444', ink:'#E0E0E0', link:'#99CCFF', title:'#FFFFFF', line:'#5A5A5A', box:'#333333', patron:'liso', fuenteTitulo:'trebuchet', fuenteTexto:'verdana'},
+  blanco:  {nombre:'Blanco', bg:'#FFFFFF', bg2:'#EEEEEE', ink:'#333333', link:'#0066CC', title:'#000000', line:'#CCCCCC', box:'#F5F5F5', patron:'liso', fuenteTitulo:'georgia', fuenteTexto:'verdana'},
+  emo:     {nombre:'Emo rosa', bg:'#000000', bg2:'#1F0012', ink:'#FFD6EB', link:'#FF3399', title:'#FF66B3', line:'#661A40', box:'#0A0006', patron:'cuadrille', fuenteTitulo:'gotica', fuenteTexto:'tahoma'},
+  floresta:{nombre:'Celeste', bg:'#D9F2FF', bg2:'#C2E8FF', ink:'#1F3A4D', link:'#D6336C', title:'#0B4F7A', line:'#9CCFEA', box:'#FFFFFF', patron:'puntos', fuenteTitulo:'comic', fuenteTexto:'trebuchet'},
+  yabujin: {nombre:'天国 (oscuro)', bg:'#000000', bg2:'#262626', ink:'#E6E6E6', link:'#E0001B', title:'#FFFFFF', line:'#3A3A3A', box:'#0B0B0B', patron:'estatica', fuenteTitulo:'dotgothic', fuenteTexto:'tahoma'}
+};
+const NOMBRE_COL = {bg:'Fondo', bg2:'Color del patrón', ink:'Texto', link:'Links', title:'Títulos y nick', line:'Bordes', box:'Cajas'};
+const FUENTES_T = {verdana:['Verdana, Tahoma, sans-serif','Verdana'], trebuchet:["'Trebuchet MS', sans-serif",'Trebuchet'], georgia:['Georgia, serif','Georgia'], gotica:["'UnifrakturMaguntia', serif",'Gótica'], dotgothic:["'DotGothic16', monospace",'Pixel jp'], silk:["'Silkscreen', monospace",'Pixel'], vt:["'VT323', monospace",'Terminal'], comic:["'Comic Neue', 'Comic Sans MS', cursive",'Comic'], pacifico:["'Pacifico', cursive",'Cursiva']};
+const FUENTES_B = {verdana:['Verdana, Tahoma, sans-serif','Verdana'], tahoma:['Tahoma, Verdana, sans-serif','Tahoma'], trebuchet:["'Trebuchet MS', sans-serif",'Trebuchet'], arial:['Arial, Helvetica, sans-serif','Arial'], georgia:['Georgia, serif','Georgia'], courier:["'Courier New', monospace",'Courier'], comic:["'Comic Neue', 'Comic Sans MS', cursive",'Comic']};
+const STICKERS = ['✝','☆','★','✦','♥','☾','✿','♪','∞','天','愛','夢','☠','⚡'];
+
+function base(){ return {
+  apodo:'', frase:'', bio:'', ciudad:'', cumple:'', escuchando:'', musica:'', favoritos:'flor\ntomi\ncaro',
+  avatar:'', avatarForma:'cuadrado', fondoImg:'', fondoModo:'mosaico',
+  tema:'clasico', ...pick(TEMAS.clasico, [...COLS,'patron','fuenteTitulo','fuenteTexto']),
+  tamano:14, efectoTitulo:'ninguno', cajas:'simple', marco:1, stickers:[],
+  marquesina:false, estela:false, anteriores:true, sobre:true, ff_ver:true, favs:true, contador:true,
+  visitas:0, creado:Date.now(), nuevo:true, fotos:[], ff:[], id:0, recibidas:[], notis:[], leidos:{}, fans:[]
+}; }
+function pick(o, ks){ const r = {}; ks.forEach(k => r[k] = o[k]); return r; }
+
+/* ---------- Supabase ----------
+   Cuentas, perfiles, amistades, posteos, likes, comentarios, firmas, notificaciones y archivos
+   viven en Supabase. Credenciales en config.js; tablas y seguridad en supabase/schema.sql.
+   Chat, grupos y rincón todavía se guardan solo en este navegador (próximo paso). */
+const CFG = window.RINCON_CONFIG || {};
+const configurado = !!(window.supabase && CFG.supabaseUrl && CFG.supabaseAnonKey && !/TU-PROYECTO|TU_ANON_KEY/.test(CFG.supabaseUrl + CFG.supabaseAnonKey));
+const sb = configurado ? window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey) : null;
+const BUCKET = 'media';
+const cargar = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };   // solo para lo que sigue siendo local
+let usuarios = {}, sesion = null, verFoto = null;        // usuarios = {uid: {perfil}}, armado con lo que llega de Supabase
+const perfil = () => sesion && usuarios[sesion] ? usuarios[sesion].perfil : null;
+let tAviso;
+function avisar(t){ const a = $('#aviso-flot'); a.textContent = t; a.hidden = false; clearTimeout(tAviso); tAviso = setTimeout(() => a.hidden = true, 6000); }
+const falla = (que, error) => { if (error){ console.error(que, error); avisar(`No se pudo ${que}. Revisá tu conexión y probá de nuevo.`); return true; } return false; };
+
+// Mi perfil se guarda con un pequeño retraso, para no mandar un pedido por cada letra que escribís
+const DERIVADOS = ['id','uid','apodo','visitas','creado','ff','recibidas','notis','fans'];
+let tGuardar = null;
+function guardar(){ clearTimeout(tGuardar); tGuardar = setTimeout(guardarYa, 700); return true; }
+async function guardarYa(){ clearTimeout(tGuardar); const p = perfil(); if (!p) return;
+  const datos = {}; Object.keys(p).forEach(k => { if (!DERIVADOS.includes(k)) datos[k] = p[k]; });
+  datos.fotos = p.fotos.map(({firmas, ...f}) => f);
+  const {error} = await sb.from('profiles').update({apodo: p.apodo, datos}).eq('id', p.uid);
+  falla('guardar tu perfil', error); }
+
+const urlPublica = path => sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+async function subirArchivo(blob, ext){
+  const path = `${sesion}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+  const {error} = await sb.storage.from(BUCKET).upload(path, blob, {contentType: blob.type || undefined, upsert:false});
+  if (error) throw error; return path; }
+// Fotos: se achican en el celu antes de subir (JPEG, lado máximo según el uso)
+async function subirImagen(file, max){ const blob = await achicarBlob(file, max, .82); return urlPublica(await subirArchivo(blob, 'jpg')); }
+
+// Trae todo lo que el usuario puede ver (la seguridad del servidor ya filtra lo ajeno)
+async function cargarTodo(){
+  const t = n => sb.from(n).select('*');
+  const r = await Promise.all([t('profiles'), t('amistades'), t('solicitudes'), sb.from('notificaciones').select('*').eq('para', sesion),
+    t('likes_perfil'), t('firmas'), t('posteos'), t('likes'), t('comentarios')]);
+  const err = r.find(x => x.error); if (err) throw err.error;
+  const [pr, am, so, no, lp, fi, po, lk, co] = r.map(x => x.data || []);
+  const nuevo = {};
+  pr.forEach(x => { const d = x.datos || {};
+    nuevo[x.id] = {perfil: {...base(), ...d, uid:x.id, id:x.numero, apodo:x.apodo, visitas:x.visitas, creado:Date.parse(x.creado),
+      fotos:(d.fotos || []).map(f => ({...f, firmas:[]})), ff:[], recibidas:[], notis:[], fans:[], leidos:d.leidos || {}}}; });
+  usuarios = nuevo;
+  const P = uid => usuarios[uid]?.perfil;
+  am.forEach(x => { const a = P(x.a), b = P(x.b); if (a && b){ a.ff.push(b.id); b.ff.push(a.id); } });
+  so.forEach(x => { const para = P(x.para), de = P(x.de); if (para && de) para.recibidas.push({de:de.id, cuando:Date.parse(x.creado)}); });
+  lp.forEach(x => { const p = P(x.perfil), u = P(x.usuario); if (p && u) p.fans.push(u.id); });
+  fi.forEach(x => { const p = P(x.perfil), a = P(x.autor), f = p && p.fotos.find(q => q.cuando === Number(x.foto));
+    if (f && a) f.firmas.push({deId:a.id, de:a.apodo, texto:x.texto, cuando:Date.parse(x.creado)}); });
+  usuarios && Object.values(usuarios).forEach(u => u.perfil.fotos.forEach(f => f.firmas.sort((a,b) => a.cuando - b.cuando)));
+  const yo = perfil();
+  if (yo) yo.notis = no.map(x => ({...(x.datos || {}), nid:x.id, tipo:x.tipo, de:P(x.de)?.id, cuando:Date.parse(x.creado), leida:x.leida}))
+    .filter(n => n.de).sort((a,b) => a.cuando - b.cuando);
+  feed = po.map(x => ({id:x.id, de:P(x.autor)?.id, tipo:x.tipo, texto:x.texto || '', media_path:x.media_path || '',
+      img: x.tipo === 'imagen' && x.media_path ? urlPublica(x.media_path) : '', video: x.tipo === 'video' && x.media_path ? urlPublica(x.media_path) : '',
+      url: x.video_url || '', cuando:Date.parse(x.creado), likes:[], comentarios:[]})).filter(x => x.de);
+  lk.forEach(x => { const q = feed.find(f => f.id === x.posteo), u = P(x.usuario); if (q && u) q.likes.push(u.id); });
+  co.forEach(x => { const q = feed.find(f => f.id === x.posteo), u = P(x.autor); if (q && u) q.comentarios.push({id:x.id, de:u.id, texto:x.texto, cuando:Date.parse(x.creado)}); });
+  feed.forEach(q => q.comentarios.sort((a,b) => a.cuando - b.cuando));
+}
+
+/* ---------- Perfiles de todos ---------- */
+let chats = cargar(K.chats, {});
+const claveChat = (a,b) => [a,b].sort((x,y) => x - y).join('-');
+const guardarChats = () => { try { localStorage.setItem(K.chats, JSON.stringify(chats)); } catch {} };
+
+let viendo = null;                                   // el perfil que se está mostrando (el mío o el de un amigo)
+const miembros = () => Object.values(usuarios).map(u => u.perfil);
+const porId = id => miembros().find(x => x.id === id);
+const esMio = () => !!(viendo && perfil() && viendo.id === perfil().id);
+const linkPerfil = x => '#perfil/' + x.id;
+const miniatura = x => { const f = x.fotos[x.fotos.length - 1]; return f ? f.img : x.avatar; };
+const sonAmigos = (a,b) => a.ff.includes(b.id) && b.ff.includes(a.id);
+const amigosDe = x => x.ff.map(porId).filter(a => a && a.ff.includes(x.id));
+function estadoAmistad(yo, p){ if (sonAmigos(yo,p)) return 'amigos'; if (p.recibidas.some(r => r.de === yo.id)) return 'enviada';
+  if (yo.recibidas.some(r => r.de === p.id)) return 'recibida'; return 'nada'; }
+function enviarSolicitud(p){ const yo = perfil(); if (estadoAmistad(yo,p) !== 'nada') return; p.recibidas.push({de:yo.id, cuando:Date.now()});
+  sb.from('solicitudes').insert({de:yo.uid, para:p.uid}).then(({error}) => falla('mandar la solicitud', error)); }
+function cancelarSolicitud(p){ const yo = perfil(); p.recibidas = p.recibidas.filter(r => r.de !== yo.id);
+  sb.from('solicitudes').delete().match({de:yo.uid, para:p.uid}).then(({error}) => falla('cancelar la solicitud', error)); }
+function aceptar(id){ const yo = perfil(), p = porId(id); if (!p) return; yo.recibidas = yo.recibidas.filter(r => r.de !== id);
+  if (!yo.ff.includes(id)) yo.ff.push(id); if (!p.ff.includes(yo.id)) p.ff.push(yo.id);
+  sb.rpc('aceptar_solicitud', {de_id:p.uid}).then(({error}) => falla('aceptar la solicitud', error)); }   // también le avisa al otro
+function rechazar(id){ const yo = perfil(), p = porId(id); yo.recibidas = yo.recibidas.filter(r => r.de !== id);
+  if (p) sb.from('solicitudes').delete().match({de:p.uid, para:yo.uid}).then(({error}) => falla('rechazar la solicitud', error)); }
+function eliminarAmigo(p){ const yo = perfil(); yo.ff = yo.ff.filter(x => x !== p.id); p.ff = p.ff.filter(x => x !== yo.id);
+  const [a, b] = [yo.uid, p.uid].sort(); sb.from('amistades').delete().match({a, b}).then(({error}) => falla('eliminar la amistad', error)); }
+function noLeidos(yo, a){ const t = yo.leidos[a.id] || 0; return (chats[claveChat(yo.id, a.id)] || []).filter(m => m.de !== yo.id && m.cuando > t).length; }
+
+
+function tile(x, extra){ const a = document.createElement('a'); a.href = linkPerfil(x);
+  const s = document.createElement('span'); s.className = 'avatar'; s.setAttribute('aria-hidden','true');
+  const m = miniatura(x); if (m) s.style.backgroundImage = `url("${m}")`; else s.textContent = ini(x.apodo);
+  a.append(s, document.createTextNode(x.apodo + (extra || ''))); return a; }
+
+/* ---------- Colores ---------- */
+function lum(hex){ const n = hex.replace('#',''); return [0,2,4].map(i => parseInt(n.substr(i,2),16)/255)
+  .map(c => c <= .03928 ? c/12.92 : Math.pow((c+.055)/1.055, 2.4)).reduce((a,c,i) => a + c*[.2126,.7152,.0722][i], 0); }
+const contraste = (a,b) => { const [x,y] = [lum(a),lum(b)].sort((p,q) => q-p); return (x+.05)/(y+.05); };
+const svg = s => `url("data:image/svg+xml,${encodeURIComponent(s)}")`;
+const rgb = h => [0,2,4].map(i => (parseInt(h.replace('#','').substr(i,2),16)/255).toFixed(3));
+const ESTRELLA = 'M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 16.9 5.9 20.4l1.5-6.8L2.2 9l6.9-.7z', CORAZON = 'M12 21s-7-4.5-9.5-9A5 5 0 0112 6a5 5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z';
+const figura = (d, c) => svg(`<svg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 48 48'><g fill='${c}'><path transform='translate(4 4) scale(.7)' d='${d}'/><path transform='translate(28 28) scale(.5)' d='${d}'/></g></svg>`);
+function patron(t, c){ switch(t){
+  case 'puntos': return [`radial-gradient(${c} 1.5px, transparent 2px), radial-gradient(${c} 1.5px, transparent 2px)`,'28px 28px','0 0, 14px 14px'];
+  case 'cuadrille': return [`linear-gradient(45deg, ${c} 25%, transparent 25%, transparent 75%, ${c} 75%), linear-gradient(45deg, ${c} 25%, transparent 25%, transparent 75%, ${c} 75%)`,'24px 24px','0 0, 12px 12px'];
+  case 'rayas': return [`repeating-linear-gradient(90deg, ${c} 0 12px, transparent 12px 24px)`,'auto','0 0'];
+  case 'grilla': return [`linear-gradient(${c} 1px, transparent 1px), linear-gradient(90deg, ${c} 1px, transparent 1px)`,'24px 24px','0 0'];
+  case 'estrellas': return [figura(ESTRELLA, c),'56px 56px','0 0'];
+  case 'corazones': return [figura(CORAZON, c),'56px 56px','0 0'];
+  case 'estatica': { const [r,g,b] = rgb(c); return [svg(`<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 ${r} 0 0 0 0 ${g} 0 0 0 0 ${b} 1.6 0 0 0 -.55'/></filter><rect width='100%' height='100%' filter='url(#n)'/></svg>`),'180px 180px','0 0']; }
+  default: return ['none','auto','0 0']; } }
+
+function aplicar(p){
+  const r = document.documentElement.style;
+  COLS.forEach(k => r.setProperty('--' + k, p[k]));
+  r.setProperty('--logofilt', lum(p.box) < .3 ? 'invert(1)' : 'none');
+  if (p.fondoImg){ r.setProperty('--patimg', `url("${p.fondoImg}")`); r.setProperty('--patsize', p.fondoModo === 'cubrir' ? 'cover' : 'auto');
+    r.setProperty('--patrep', p.fondoModo === 'cubrir' ? 'no-repeat' : 'repeat'); r.setProperty('--patpos','center'); }
+  else { const [i,s,po] = patron(p.patron, p.bg2); r.setProperty('--patimg', i); r.setProperty('--patsize', s); r.setProperty('--patpos', po); r.setProperty('--patrep','repeat'); }
+  r.setProperty('--ft', FUENTES_T[p.fuenteTitulo][0]); r.setProperty('--fb', FUENTES_B[p.fuenteTexto][0]);
+  r.setProperty('--fs', p.tamano + 'px'); r.setProperty('--marco', p.marco + 'px');
+  document.body.dataset.cajas = p.cajas;
+  document.body.classList.remove('ef-sombra','ef-glitch','ef-brillo','ef-arcoiris');
+  if (p.efectoTitulo !== 'ninguno') document.body.classList.add('ef-' + p.efectoTitulo);
+  $('meta[name=theme-color]').content = p.box;
+}
+
+/* ---------- Utilidades ---------- */
+const dos = n => String(n).padStart(2,'0');
+const fecha = t => { const d = new Date(t); return `${dos(d.getDate())}/${dos(d.getMonth()+1)}/${String(d.getFullYear()).slice(2)}`; };
+const fechaLarga = t => { const d = new Date(t); return `${dos(d.getDate())}/${dos(d.getMonth()+1)}/${d.getFullYear()}`; };
+const hora = t => { const d = new Date(t); return `${dos(d.getHours())}:${dos(d.getMinutes())}`; };
+const mismoDia = (a,b) => new Date(a).toDateString() === new Date(b).toDateString();
+const ini = t => (t || '?').replace(/[^\p{L}\p{N}]/gu,'').slice(0,2).toLowerCase() || '?';
+const esc = t => String(t ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function ponerAvatar(el, p){ el.textContent = ''; el.style.backgroundImage = p.avatar ? `url("${p.avatar}")` : 'none';
+  if (!p.avatar){ el.textContent = ini(p.apodo); el.style.backgroundColor = '#555'; }
+  el.classList.toggle('redondo', p.avatarForma === 'circulo'); el.setAttribute('role','img'); el.setAttribute('aria-label','avatar de ' + p.apodo); }
+const POS = [[4,4,28],[86,6,22],[8,80,20],[82,76,30],[46,4,18],[90,42,20],[28,44,16],[64,30,14]];
+
+/* ---------- Pintar un perfil (con el estilo de su dueño) ---------- */
+function pintar(){
+  const yo = perfil(), p = viendo; if (!yo || !p) return; const mio = esMio();
+  $$('[data-apodo]').forEach(e => e.textContent = yo.apodo);
+  $$('#perfil [data-sec="perfil"]').forEach(x => mio ? x.setAttribute('aria-current','page') : x.removeAttribute('aria-current'));
+  ponerAvatar($('#p-avatar'), p);
+  $('#p-nick').textContent = p.apodo;
+  const lb = $('#like-perfil'), dio = p.fans.includes(yo.id);
+  const nl = p.fans.length; $('#like-cuenta').textContent = `${nl} ${nl === 1 ? 'like' : 'likes'} este perfil`;
+  lb.hidden = mio;   // en tu propio perfil solo se ve la cantidad
+  if (!mio){ lb.setAttribute('aria-pressed', dio); lb.textContent = dio ? '♥' : '♡'; lb.setAttribute('aria-label', dio ? 'Sacar like a este perfil' : 'Dar like a este perfil'); }
+  $('#p-meta').textContent = [`perfil de ${p.apodo}`, `desde ${fechaLarga(p.creado)}`, (p.fotos.length === 1 ? '1 foto' : `${p.fotos.length} fotos`), p.contador && `${p.visitas} visitas`].filter(Boolean).join(' · ');
+  $('#abrir-editor').hidden = !mio;
+  const am = $('#p-amistad'); am.hidden = mio; am.innerHTML = '';
+  if (!mio){ const st = estadoAmistad(yo, p);
+    am.innerHTML = st === 'nada' ? '<button class="btn lleno" type="button" data-amistad="enviar">enviar solicitud</button>'
+      : st === 'enviada' ? '<span class="muted chico" style="align-self:center">solicitud enviada</span><button class="btn" type="button" data-amistad="cancelar">cancelar</button>'
+      : st === 'recibida' ? `<span class="muted chico" style="align-self:center">${esc(p.apodo)} te mandó una solicitud</span><button class="btn lleno" type="button" data-amistad="aceptar">aceptar</button><button class="btn" type="button" data-amistad="rechazar">rechazar</button>`
+      : `<a class="btn lleno" href="#chat/${p.id}" style="display:inline-flex;align-items:center;text-decoration:none">mandar mensaje</a><button class="btn" type="button" data-amistad="eliminar">✓ amigos · eliminar</button>`; }
+  const fr = $('#p-frase'); fr.hidden = !p.frase; fr.querySelector('span').textContent = p.frase; fr.classList.toggle('frase-marq', !!p.marquesina);
+  // Subir foto: solo en mi perfil, una por día
+  const ultima = p.fotos[p.fotos.length - 1], subioHoy = ultima && mismoDia(ultima.cuando, Date.now());
+  $('#p-subir').hidden = !mio || subioHoy; $('#p-yasubiste').hidden = !mio || !subioHoy;
+  // Foto que se está viendo
+  const idx = verFoto ?? p.fotos.length - 1, f = p.fotos[idx];
+  const caja = $('#p-foto'); caja.innerHTML = '';
+  if (f){ const im = new Image(); im.className = 'foto'; im.src = f.img; im.alt = f.titulo || 'foto del ' + fechaLarga(f.cuando); caja.appendChild(im); }
+  else caja.innerHTML = `<div class="foto-vacia"><i aria-hidden="true"></i><span>${mio ? 'todavía no subiste ninguna foto.<br>la primera va arriba ↑' : esc(p.apodo) + ' todavía no subió ninguna foto.'}</span></div>`;
+  p.stickers.forEach((st,i) => { const [x,y,t] = POS[i % POS.length]; const e = document.createElement('span'); e.className = 'sticker'; e.textContent = st; e.setAttribute('aria-hidden','true');
+    e.style.left = x + '%'; e.style.top = y + '%'; e.style.fontSize = t + 'px'; caja.appendChild(e); });
+  $('#p-pie').innerHTML = f ? `<h2>${esc(f.titulo || 'sin título')}</h2>${f.texto ? `<p class="texto">${esc(f.texto)}</p>` : ''}<p class="subida">foto subida el ${fechaLarga(f.cuando)} a las ${hora(f.cuando)}</p>` : '';
+  // Libro de visitas de esa foto (firman todos, también en perfiles ajenos)
+  $('#p-libro').hidden = !f;
+  if (f){ $('#p-libro-t').textContent = `libro de visitas (${f.firmas.length}/${MAX_FIRMAS})`;
+    $('#firmar-lbl').textContent = mio ? 'firmá tu libro' : `firmale el libro a ${p.apodo}`;
+    const l = $('#p-firmas'); l.innerHTML = '';
+    if (!f.firmas.length) l.innerHTML = '<p class="muted chico" style="margin:0">nadie firmó todavía. ¡estrenalo!</p>';
+    f.firmas.forEach(x => { const autor = (x.deId && porId(x.deId)) || {apodo:x.de, avatar:x.avatar || '', avatarForma:x.forma || 'cuadrado'};
+      const d = document.createElement('div'); d.className = 'firma';
+      const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, autor);
+      const c = document.createElement('div');
+      c.innerHTML = `<a class="quien" href="${autor.id ? linkPerfil(autor) : '#perfil'}">${esc(autor.apodo)}</a> <span class="cuando">dijo el ${fecha(x.cuando)} a las ${hora(x.cuando)}:</span><p>${esc(x.texto)}</p>`;
+      d.append(av, c); l.appendChild(d); });
+    const lleno = f.firmas.length >= MAX_FIRMAS; $('#firmar-form').hidden = lleno; $('#p-lleno').hidden = !lleno; }
+  // Fotos anteriores
+  $('#p-anteriores-b').hidden = !p.anteriores;
+  const th = $('#p-anteriores'); th.innerHTML = '';
+  if (!p.fotos.length) th.innerHTML = '<p class="muted chico" style="margin:0;grid-column:1/-1">todavía no hay fotos.</p>';
+  p.fotos.map((x,i) => [x,i]).reverse().slice(0,10).forEach(([x,i]) => { const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'thumb';
+    bt.style.backgroundImage = `url("${x.img}")`; bt.setAttribute('aria-label', `ver foto del ${fechaLarga(x.cuando)}`); bt.setAttribute('aria-current', i === idx);
+    bt.onclick = () => { verFoto = i; pintar(); $('#p-foto').scrollIntoView({behavior:'smooth', block:'start'}); }; th.appendChild(bt); });
+  // Sobre mí
+  $('#p-sobre-b').hidden = !p.sobre;
+  const datos = [p.bio && `<p style="white-space:pre-line">${esc(p.bio)}</p>`, p.ciudad && `<p>de ${esc(p.ciudad)}</p>`,
+    p.cumple && `<p>cumple el ${p.cumple.slice(8,10)}/${p.cumple.slice(5,7)}</p>`, p.escuchando && `<p>♪ escuchando: ${esc(p.escuchando)}</p>`,
+    p.musica && `<p><a href="${esc(/^https?:\/\//.test(p.musica) ? p.musica : 'https://' + p.musica)}" target="_blank" rel="noopener">► el tema de ${mio ? 'mi' : 'su'} perfil</a></p>`].filter(Boolean).join('');
+  $('#p-datos').innerHTML = datos || `<p class="muted">${mio ? 'todavía no escribiste nada. tocá «editar mi perfil».' : 'todavía no escribió nada.'}</p>`;
+  // F/F del dueño del perfil (miniatura = su última foto) y favoritos
+  $('#p-ff-b').hidden = !p.ff_ver; const ffb = $('#p-ff'); ffb.innerHTML = '';
+  const amigos = amigosDe(p);
+  if (!amigos.length) ffb.innerHTML = `<p class="muted chico" style="margin:0;grid-column:1/-1">${mio ? 'todavía no tenés amigos. entrá al perfil de alguien y mandale una solicitud.' : esc(p.apodo) + ' todavía no tiene f/f.'}</p>`;
+  amigos.forEach(x => ffb.appendChild(tile(x)));
+  $('#p-favs-b').hidden = !p.favs;
+  $('#p-favs').innerHTML = p.favoritos.split('\n').map(t => t.trim()).filter(Boolean).slice(0,15).map(t => { const m = miembros().find(x => x.apodo.toLowerCase() === t.toLowerCase());
+    return `<li><a href="${m ? linkPerfil(m) : (/^https?:\/\//.test(t) ? esc(t) : '#perfil')}"${!m && /^https?:\/\//.test(t) ? ' target="_blank" rel="noopener"' : ''}>${esc(t)}</a></li>`; }).join('') || '<li class="muted">sin favoritos</li>';
+}
+
+/* ---------- Inicio: todos los perfiles de la banda ---------- */
+function pintarInicio(){
+  const yo = perfil(); if (!yo) return; $$('[data-apodo]').forEach(e => e.textContent = yo.apodo);
+  const cont = $('#i-perfiles'); cont.innerHTML = '';
+  const otros = miembros().filter(x => x.id !== yo.id).sort((a,b) => (b.fotos.at(-1)?.cuando || b.creado) - (a.fotos.at(-1)?.cuando || a.creado));
+  if (!otros.length){ cont.innerHTML = '<p class="muted chico" style="margin:0;grid-column:1/-1">todavía no se registró nadie más. pasale el link a la banda.<br>para probar: salí, creá otra cuenta y volvé a entrar con la tuya.</p>'; return; }
+  otros.forEach(x => { const u = x.fotos.at(-1); cont.appendChild(tile(x, u && mismoDia(u.cuando, Date.now()) ? ' · hoy' : '')); });
+}
+
+/* ---------- Subir la foto del día ---------- */
+let fotoNueva = null;
+$('#subir-img').onchange = e => { const f = e.target.files[0]; if (!f) return; fotoNueva = f; $('#subir-nombre').textContent = 'lista: ' + f.name; };
+$('#subir-form').onsubmit = async e => { e.preventDefault(); const p = perfil();
+  if (!fotoNueva) return msg('#subir-msg', 'Elegí una foto primero.');
+  const btn = e.target.querySelector('[type=submit]'); btn.disabled = true; msg('#subir-msg', 'subiendo la foto…', 'ok');
+  let img; try { img = await subirImagen(fotoNueva, 1000); } catch (er){ btn.disabled = false; console.error(er); return msg('#subir-msg', 'No se pudo subir la foto. Probá de nuevo.'); }
+  btn.disabled = false;
+  p.fotos.push({img, titulo:$('#subir-titulo').value.trim(), texto:$('#subir-texto').value.trim(), cuando:Date.now(), firmas:[]}); p.nuevo = false;
+  await guardarYa();
+  fotoNueva = null; verFoto = null; e.target.reset(); $('#subir-nombre').textContent = 'ninguna foto elegida'; $('#subir-msg').className = 'msg'; pintar(); };
+
+/* ---------- Firmar ---------- */
+$('#firmar-form').onsubmit = e => { e.preventDefault(); const yo = perfil(), p = viendo, t = $('#firmar-txt').value.trim(); if (!t || !p) return;
+  const f = p.fotos[verFoto ?? p.fotos.length - 1]; if (!f || f.firmas.length >= MAX_FIRMAS) return;
+  f.firmas.push({deId:yo.id, de:yo.apodo, texto:t, cuando:Date.now()}); $('#firmar-txt').value = ''; pintar();
+  sb.from('firmas').insert({perfil:p.uid, foto:f.cuando, texto:t}).then(({error}) => falla('firmar', error)); };
+$('#like-perfil').onclick = () => { const yo = perfil(), p = viendo; if (!p || esMio()) return;
+  if (p.fans.includes(yo.id)){ p.fans = p.fans.filter(i => i !== yo.id); sb.from('likes_perfil').delete().match({perfil:p.uid, usuario:yo.uid}).then(({error}) => falla('sacar el like', error)); }
+  else { p.fans.push(yo.id); sb.from('likes_perfil').insert({perfil:p.uid}).then(({error}) => falla('dar like', error)); notificar(p.id, {tipo:'like-perfil'}); }
+  pintar(); };
+$('#p-amistad').onclick = e => { const b = e.target.closest('[data-amistad]'); const p = viendo; if (!b || !p || esMio()) return;
+  const a = b.dataset.amistad;
+  if (a === 'enviar') enviarSolicitud(p); if (a === 'cancelar') cancelarSolicitud(p);
+  if (a === 'aceptar') aceptar(p.id); if (a === 'rechazar') rechazar(p.id);
+  if (a === 'eliminar' && confirm(`¿Eliminar a ${p.apodo} de tus amigos? Ya no van a poder chatear.`)) eliminarAmigo(p);
+  pintar(); actualizarMenu(); };
+
+/* ---------- Editor ---------- */
+const PEST = [['info','datos'],['colores','colores'],['fondo','fondo e imágenes'],['letras','letras'],['partes','partes y efectos']];
+let pest = 'info';
+const campo = (k, l, o = {}) => { const p = perfil(), tag = o.area ? 'textarea' : 'input';
+  return `<div class="ed-grupo"><label class="lbl" for="ed-${k}">${l}</label><${tag} class="field" id="ed-${k}" data-key="${k}" ${o.tipo ? `type="${o.tipo}"` : ''} maxlength="${o.max || 80}" placeholder="${o.ph || ''}" ${o.area ? '' : `value="${esc(p[k])}"`}>${o.area ? esc(p[k]) : ''}</${tag}>${o.area ? `<div class="contador" id="cont-${k}">${p[k].length}/${o.max}</div>` : ''}</div>`; };
+const ops = (k, t, lista, grande) => `<div class="ed-grupo"><h3 id="h-${k}">${t}</h3><div class="ops" role="group" aria-labelledby="h-${k}">${lista.map(([v,n,st]) =>
+  `<button type="button" class="op${grande ? ' grande' : ''}" data-op="${k}" data-val="${v}" aria-pressed="${String(perfil()[k]) === String(v)}" ${st ? `style="${st}"` : ''}>${n}</button>`).join('')}</div></div>`;
+const img = (k, t, max) => { const p = perfil(); return `<div class="ed-grupo"><h3>${t}</h3><div class="img-ed"><div class="img-prev" style="${p[k] ? `background-image:url('${p[k]}')` : ''}">${p[k] ? '' : 'nada'}</div>
+  <div style="display:flex;flex-direction:column;gap:6px"><label class="ed-btn file-btn">subir<input type="file" accept="image/*" data-img="${k}" data-max="${max}" aria-label="Subir ${t}"></label>${p[k] ? `<button type="button" class="ed-btn" data-quitar="${k}">quitar</button>` : ''}</div></div></div>`; };
+const sw = (k, l) => `<label class="switch"><span>${l}</span><input type="checkbox" data-bool="${k}" ${perfil()[k] ? 'checked' : ''}></label>`;
+
+function pintarEd(){
+  const p = perfil(); if (!p) return;
+  $('#ed-tabs').innerHTML = PEST.map(([k,t]) => `<button type="button" role="tab" aria-selected="${k === pest}" data-tab="${k}">${t}</button>`).join('');
+  let h = '';
+  if (pest === 'info'){
+    h += campo('apodo','nick',{max:24}) + campo('frase','frase debajo de tu nick',{max:90});
+    h += campo('bio','sobre mí',{area:true, max:400}) + campo('ciudad','de dónde sos',{max:40}) + campo('cumple','cumpleaños',{tipo:'date'});
+    h += campo('escuchando','escuchando ahora',{max:60, ph:'artista – tema'}) + campo('musica','tema de tu perfil (link)',{tipo:'url', max:300, ph:'https://…'});
+    h += campo('favoritos','favoritos (un nick o link por renglón)',{area:true, max:400});
+  }
+  if (pest === 'colores'){
+    h += `<div class="ed-grupo"><h3>colores listos</h3><div class="temas">${Object.entries(TEMAS).map(([k,t]) =>
+      `<button type="button" class="tema-btn" data-tema="${k}" aria-pressed="${p.tema === k}"><span class="muestras">${['bg','box','ink','link','title'].map(c => `<i style="background:${t[c]}"></i>`).join('')}</span>${t.nombre}</button>`).join('')}</div></div>`;
+    h += `<div class="ed-grupo"><h3>tus colores${p.tema === 'propio' ? ' (propios)' : ''}</h3><div class="colores">${COLS.map(k =>
+      `<label class="color"><input type="color" data-color="${k}" value="${p[k]}">${NOMBRE_COL[k]}</label>`).join('')}</div></div>`;
+    if (contraste(p.ink, p.bg) < 4.5) h += '<p class="ed-aviso">ojo: el texto se lee poco sobre el fondo.</p>';
+    if (contraste(p.link, p.bg) < 3) h += '<p class="ed-aviso">ojo: los links se leen poco sobre el fondo.</p>';
+  }
+  if (pest === 'fondo'){
+    h += img('avatar','avatar (la miniatura que sale cuando firmás)', 200);
+    h += ops('avatarForma','forma del avatar',[['cuadrado','cuadrado'],['circulo','redondo']]);
+    h += img('fondoImg','imagen de fondo', 1400);
+    if (p.fondoImg) h += ops('fondoModo','cómo se ve',[['mosaico','mosaico'],['cubrir','pantalla completa']]);
+    h += ops('patron','patrón de fondo (si no hay imagen)',[['liso','liso'],['puntos','puntos'],['cuadrille','cuadrillé'],['rayas','rayas'],['grilla','grilla'],['estrellas','estrellas'],['corazones','corazones'],['estatica','estática']]);
+    h += ops('marco','borde de la foto',[[0,'sin borde'],[1,'fino'],[4,'grueso'],[10,'muy grueso']]);
+    h += `<div class="ed-grupo"><h3 id="h-stk">stickers sobre tu foto (hasta 8)</h3><div class="ops" role="group" aria-labelledby="h-stk">${STICKERS.map(s =>
+      `<button type="button" class="op grande" data-stk="${s}" aria-pressed="${p.stickers.includes(s)}">${s}</button>`).join('')}</div></div>`;
+  }
+  if (pest === 'letras'){
+    h += ops('fuenteTitulo','letra del nick y títulos', Object.entries(FUENTES_T).map(([k,[f,n]]) => [k,n,`font-family:${f.replace(/"/g,"'")}`]));
+    h += ops('fuenteTexto','letra del texto', Object.entries(FUENTES_B).map(([k,[f,n]]) => [k,n,`font-family:${f.replace(/"/g,"'")}`]));
+    h += `<div class="ed-grupo"><label class="lbl" for="ed-tam">tamaño del texto: <span id="tam-v">${p.tamano}</span> px</label><input class="rango" id="ed-tam" type="range" min="12" max="19" value="${p.tamano}" data-num="tamano"></div>`;
+    h += ops('efectoTitulo','efecto en el nick',[['ninguno','ninguno'],['sombra','sombra'],['glitch','glitch'],['brillo','brillo'],['arcoiris','arcoíris']]);
+  }
+  if (pest === 'partes'){
+    h += ops('cajas','estilo de las cajas',[['simple','simple'],['punteada','punteada'],['sin','sin cajas'],['win98','windows 98']]);
+    h += `<div class="ed-grupo"><h3>qué se muestra</h3>${sw('anteriores','fotos anteriores')}${sw('sobre','sobre mí')}${sw('ff_ver','f/f (amigos)')}${sw('favs','favoritos')}${sw('contador','contador de visitas')}</div>`;
+    h += `<div class="ed-grupo"><h3>efectos</h3>${sw('marquesina','frase en marquesina')}${sw('estela','estela de estrellitas con el mouse')}</div>`;
+  }
+  h += '<p class="ed-aviso" id="ed-aviso" hidden></p>';
+  $('#ed-cuerpo').innerHTML = h;
+}
+function alertaEd(t){ const a = $('#ed-aviso'); if (a){ a.textContent = t; a.hidden = false; } }
+function cambiar(k, v, re){ const p = perfil(); p[k] = v; p.nuevo = false; if (!guardar()) return; viendo = p; aplicar(p); pintar(); if (re) pintarEd(); }
+function achicar(file, max, q = .82){ return new Promise((ok, mal) => { const fr = new FileReader();
+  fr.onload = () => { const im = new Image(); im.onload = () => { const k = Math.min(1, max / Math.max(im.width, im.height)), c = document.createElement('canvas');
+    c.width = Math.round(im.width*k); c.height = Math.round(im.height*k); c.getContext('2d').drawImage(im,0,0,c.width,c.height); ok(c.toDataURL('image/jpeg', q)); };
+    im.onerror = mal; im.src = fr.result; }; fr.onerror = mal; fr.readAsDataURL(file); }); }
+const ed = $('#editor');
+ed.addEventListener('click', e => { const t = e.target.closest('button'); if (!t) return; const p = perfil();
+  if (t.dataset.tab){ pest = t.dataset.tab; pintarEd(); $(`[data-tab="${pest}"]`).focus(); return; }
+  if (t.dataset.op){ const v = t.dataset.op === 'marco' ? +t.dataset.val : t.dataset.val; return cambiar(t.dataset.op, v, true); }
+  if (t.dataset.tema){ Object.assign(p, pick(TEMAS[t.dataset.tema], [...COLS,'patron','fuenteTitulo','fuenteTexto'])); return cambiar('tema', t.dataset.tema, true); }
+  if (t.dataset.stk){ const s = t.dataset.stk; return cambiar('stickers', p.stickers.includes(s) ? p.stickers.filter(x => x !== s) : [...p.stickers, s].slice(-8), true); }
+  if (t.dataset.quitar) return cambiar(t.dataset.quitar, '', true); });
+ed.addEventListener('input', e => { const t = e.target;
+  if (t.dataset.key){ cambiar(t.dataset.key, t.value); const c = $('#cont-' + t.dataset.key); if (c) c.textContent = t.value.length + '/' + t.maxLength; }
+  if (t.dataset.color){ perfil().tema = 'propio'; cambiar(t.dataset.color, t.value); }
+  if (t.dataset.num){ cambiar(t.dataset.num, +t.value); $('#tam-v').textContent = t.value; } });
+ed.addEventListener('change', e => { const t = e.target;
+  if (t.dataset.color) pintarEd();
+  if (t.dataset.bool) cambiar(t.dataset.bool, t.checked);
+  if (t.dataset.img && t.files[0]){ alertaEd('subiendo imagen…'); subirImagen(t.files[0], +t.dataset.max).then(u => cambiar(t.dataset.img, u, true)).catch(er => { console.error(er); alertaEd('No se pudo subir la imagen.'); }); } });
+function abrirEd(){ if (!esMio()) return; pintarEd(); ed.hidden = false; document.body.classList.add('editando'); $('#ed-tabs [aria-selected="true"]').focus(); }
+function cerrarEd(){ ed.hidden = true; document.body.classList.remove('editando'); }
+$('#abrir-editor').onclick = abrirEd; $('#cerrar-editor').onclick = cerrarEd; $('#ed-listo').onclick = cerrarEd;
+$('#ed-reset').onclick = () => { if (!confirm('¿Volver los colores, letras y fondo a como estaban al principio? Tus fotos y firmas no se tocan.')) return;
+  const p = perfil(); const keep = pick(p, ['apodo','frase','bio','ciudad','cumple','escuchando','musica','favoritos','avatar','visitas','creado','fotos']);
+  usuarios[sesion].perfil = {...base(), ...keep, ...pick(p, ['uid','id','ff','recibidas','notis','fans','leidos']), nuevo:false}; guardar(); viendo = perfil(); aplicar(viendo); pintar(); pintarEd(); };
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !ed.hidden) cerrarEd(); });
+
+/* ---------- Archivos del chat ----------
+   DEMO: las fotos y videos del chat se guardan en IndexedDB (lugar del navegador para archivos grandes),
+   no en localStorage. En la versión real van a Supabase Storage (o Cloudflare R2) y el mensaje guarda el link. */
+const MAX_VIDEO_MB = 25, MAX_FOTO_LADO = 1280;
+const media = (() => { let db; const abrir = () => db ? Promise.resolve(db) : new Promise((ok, mal) => {
+    const r = indexedDB.open('r2k3_media', 1); r.onupgradeneeded = () => r.result.createObjectStore('m'); r.onsuccess = () => ok(db = r.result); r.onerror = () => mal(r.error); });
+  const tx = (modo, fn) => abrir().then(d => new Promise((ok, mal) => { const t = d.transaction('m', modo), q = fn(t.objectStore('m')); t.oncomplete = () => ok(q && q.result); t.onerror = () => mal(t.error); }));
+  return { poner:(k,v) => tx('readwrite', st => st.put(v,k)), traer:k => tx('readonly', st => st.get(k)), borrar:k => tx('readwrite', st => st.delete(k)) }; })();
+const urlsMedia = new Map();
+function cargarMedia(el){ const k = el.dataset.media; const usar = u => { const tipo = el.dataset.tipo;
+    const m = document.createElement(tipo === 'video' ? 'video' : 'img'); m.className = 'adjunto'; m.src = u;
+    if (tipo === 'video'){ m.controls = true; m.playsInline = true; m.preload = 'metadata'; m.setAttribute('aria-label', el.dataset.alt); } else m.alt = el.dataset.alt;
+    el.replaceWith(m); };
+  if (urlsMedia.has(k)) return usar(urlsMedia.get(k));
+  media.traer(k).then(b => { if (!b){ el.textContent = 'archivo no disponible'; return; } const u = URL.createObjectURL(b); urlsMedia.set(k, u); usar(u); }).catch(() => el.textContent = 'no se pudo cargar'); }
+function achicarBlob(file, max, q = .8){ return new Promise((ok, mal) => { const u = URL.createObjectURL(file), im = new Image();
+  im.onload = () => { const k = Math.min(1, max / Math.max(im.width, im.height)), c = document.createElement('canvas');
+    c.width = Math.round(im.width * k); c.height = Math.round(im.height * k); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+    URL.revokeObjectURL(u); c.toBlob(b => b ? ok(b) : mal(), 'image/jpeg', q); };
+  im.onerror = () => { URL.revokeObjectURL(u); mal(); }; im.src = u; }); }
+const mb = n => (n / 1048576).toFixed(n < 10485760 ? 1 : 0) + ' MB';
+
+/* ---------- Chat: privados con amigos + grupos ---------- */
+let grupos = cargar(K.grupos, []), chatCon = null, infoAbierta = false, grupoFoto = '';
+const guardarGrupos = () => { try { localStorage.setItem(K.grupos, JSON.stringify(grupos)); return true; } catch { return false; } };
+const gruposDe = yo => grupos.filter(g => g.miembros.includes(yo.id));
+const clave = (yo, c) => c.g ? 'g' + c.g.id : claveChat(yo.id, c.p.id);
+const llaveLeido = c => c.g ? 'g' + c.g.id : c.p.id;
+const convsDe = yo => [...amigosDe(yo).map(p => ({p})), ...gruposDe(yo).map(g => ({g}))];
+const noLeidosC = (yo, c) => { const t = yo.leidos[llaveLeido(c)] || 0; return (chats[clave(yo, c)] || []).filter(m => m.de !== yo.id && m.tipo !== 'sistema' && m.cuando > t).length; };
+const avatarGrupo = (el, g) => { ponerAvatar(el, {apodo:g.nombre, avatar:g.foto, avatarForma:'circulo'}); el.classList.add('grupo'); el.setAttribute('aria-label', 'foto del grupo ' + g.nombre); };
+function msgSistema(g, texto){ const k = 'g' + g.id; (chats[k] = chats[k] || []).push({de:0, tipo:'sistema', texto, cuando:Date.now()}); guardarChats(); }
+
+function pintarChat(){
+  const yo = perfil(); if (!yo) return;
+  if (chatCon?.p && !sonAmigos(yo, chatCon.p)) chatCon = null;
+  if (chatCon?.g && !chatCon.g.miembros.includes(yo.id)) chatCon = null;
+  if (chatCon){ yo.leidos[llaveLeido(chatCon)] = Date.now(); guardar(); }
+  const ult = c => (chats[clave(yo, c)] || []).at(-1);
+  const convs = convsDe(yo).sort((a,b) => (ult(b)?.cuando || b.g?.creado || 0) - (ult(a)?.cuando || a.g?.creado || 0));
+  const lista = $('#chat-lista'); lista.innerHTML = '';
+  if (amigosDe(yo).length) lista.insertAdjacentHTML('beforeend', '<button type="button" class="crear-grupo" id="abrir-grupo">+ crear grupo</button>');
+  if (!convs.length) lista.insertAdjacentHTML('beforeend', '<p class="muted chico" style="padding:12px;margin:0">el chat es solo con tus amigos. entrá al perfil de alguien y mandale una solicitud.</p>');
+  convs.forEach(c => { const m = ult(c), n = noLeidosC(yo, c), el = document.createElement('a'); el.className = 'conv-item';
+    el.href = '#chat/' + (c.g ? 'g' + c.g.id : c.p.id);
+    if (chatCon && llaveLeido(chatCon) === llaveLeido(c)) el.setAttribute('aria-current','page');
+    const av = document.createElement('span'); av.className = 'avatar'; c.g ? avatarGrupo(av, c.g) : ponerAvatar(av, c.p);
+    const quien = m && (m.de === yo.id ? 'vos: ' : c.g && m.de ? (porId(m.de)?.apodo || '') + ': ' : '');
+    const prev = !m ? (c.g ? `grupo · ${c.g.miembros.length} integrantes` : 'todavía no hablaron') : m.tipo === 'zumbido' ? '* zumbido *' : m.tipo === 'sistema' ? m.texto : m.tipo === 'imagen' ? quien + '[foto]' : m.tipo === 'video' ? quien + '[video]' : quien + m.texto;
+    const t = document.createElement('span'); t.style.minWidth = '0'; t.style.flex = '1';
+    t.innerHTML = `<b>${esc(c.g ? c.g.nombre : c.p.apodo)}</b><span class="prev">${esc(prev)}</span>`;
+    el.append(av, t); if (n){ const k = document.createElement('span'); k.className = 'cuenta'; k.textContent = n; k.setAttribute('aria-label', n + ' sin leer'); el.appendChild(k); }
+    lista.appendChild(el); });
+  const btnG = $('#abrir-grupo'); if (btnG) btnG.onclick = abrirCrearGrupo;
+  const grid = $('#chat-grid'), conv = $('#chat-conv');
+  if (!chatCon){ grid.dataset.modo = 'lista'; conv.innerHTML = `<p class="muted" style="padding:16px;margin:auto">${convs.length ? 'elegí un chat.' : ''}</p>`; return; }
+  grid.dataset.modo = 'conv'; const c = chatCon, g = c.g, k = clave(yo, c), msgs = chats[k] || [];
+  const nombre = g ? g.nombre : c.p.apodo;
+  conv.innerHTML = `<div class="conv-cab"><a href="#chat" class="chico volver" style="min-height:44px;display:inline-flex;align-items:center">‹ chats</a><span class="avatar"></span>
+      <div style="flex:1;min-width:0">${g ? `<b>${esc(g.nombre)}</b><br><span class="muted chico">${g.miembros.length} integrantes</span>` : `<a href="${linkPerfil(c.p)}"><b>${esc(nombre)}</b></a>`}</div>
+      ${g ? `<button class="btn" type="button" id="info-btn" aria-expanded="${infoAbierta}">info del grupo</button>` : ''}</div>
+    ${g ? '<div class="info-grupo" id="info-grupo" hidden></div>' : ''}
+    <div class="lineas" id="lineas"></div>
+    <form class="composer" id="chat-form"><label class="sr" for="chat-txt">Mensaje para ${esc(nombre)}</label>
+      <input class="field" id="chat-txt" placeholder="${g ? 'escribile al grupo…' : 'escribile a ' + esc(nombre) + '…'}" autocomplete="off" maxlength="500" style="flex:1;min-width:0">
+      <label class="btn file-btn" style="display:inline-flex;align-items:center" title="mandar foto o video">+ foto/video<input type="file" accept="image/*,video/*" id="chat-adj" aria-label="Mandar foto o video"></label>
+      <button class="btn" type="button" id="zumbido">zumbido</button><button class="btn lleno" type="submit">enviar</button></form>
+    <p class="subiendo" id="chat-estado" role="status"></p>`;
+  const avc = conv.querySelector('.conv-cab .avatar'); g ? avatarGrupo(avc, g) : ponerAvatar(avc, c.p);
+  if (g){ $('#info-btn').onclick = () => { infoAbierta = !infoAbierta; pintarChat(); }; if (infoAbierta) pintarInfoGrupo(g, yo); }
+  const ln = $('#lineas');
+  if (!msgs.length) ln.innerHTML = `<p class="sistema">este es el comienzo de ${g ? 'el grupo ' + esc(g.nombre) : 'tu chat con ' + esc(nombre)}.</p>`;
+  msgs.forEach(m => { const d = document.createElement('div'); const autor = m.de === yo.id ? yo : porId(m.de);
+    if (m.tipo === 'sistema'){ d.className = 'sistema'; d.textContent = m.texto; }
+    else if (m.tipo === 'zumbido'){ d.className = 'sistema'; d.textContent = `${autor?.apodo || 'alguien'} mandó un zumbido · ${hora(m.cuando)}`; }
+    else { d.className = 'linea' + (m.de === yo.id ? ' yo' : ''); const h = document.createElement('span'); h.className = 'hora'; h.textContent = `${fecha(m.cuando)} ${hora(m.cuando)}`;
+      const adj = (m.tipo === 'imagen' || m.tipo === 'video') ? Object.assign(document.createElement('span'), {className:'cargando-media', textContent: m.tipo === 'video' ? 'cargando video…' : 'cargando foto…'}) : null;
+      if (adj){ adj.dataset.media = m.media; adj.dataset.tipo = m.tipo; adj.dataset.alt = `${m.tipo === 'video' ? 'video' : 'foto'} de ${autor?.apodo || 'alguien'}`; }
+      let q; if (g && autor && m.de !== yo.id){ q = document.createElement('a'); q.className = 'quien-g'; q.href = linkPerfil(autor); q.textContent = autor.apodo + ':'; }
+      else { q = document.createElement('b'); q.textContent = (autor?.apodo || 'alguien') + ':'; }
+      d.append(h, q); if (adj){ d.appendChild(adj); if (m.texto) d.appendChild(document.createTextNode(m.texto)); } else d.appendChild(document.createTextNode(' ' + m.texto)); }
+    ln.appendChild(d); });
+  $$('#lineas [data-media]').forEach(cargarMedia);
+  ln.scrollTop = ln.scrollHeight; actualizarMenu();
+  const mandar = m => { (chats[k] = chats[k] || []).push({de:yo.id, cuando:Date.now(), ...m}); guardarChats(); pintarChat(); $('#chat-txt').focus(); };
+  $('#chat-form').onsubmit = e => { e.preventDefault(); const t = $('#chat-txt').value.trim(); if (t) mandar({texto:t}); };
+  $('#chat-adj').onchange = async e => { const f = e.target.files[0]; if (!f) return; const est = $('#chat-estado'); const esVideo = f.type.startsWith('video/');
+    try {
+      if (esVideo && f.size > MAX_VIDEO_MB * 1048576){ est.textContent = `ese video pesa ${mb(f.size)}. el máximo es ${MAX_VIDEO_MB} MB: probá con uno más corto.`; e.target.value = ''; return; }
+      est.textContent = esVideo ? `subiendo video (${mb(f.size)})…` : 'achicando y subiendo la foto…';
+      const blob = esVideo ? f : await achicarBlob(f, MAX_FOTO_LADO, .8), key = 'm' + Date.now() + Math.random().toString(36).slice(2,6);
+      await media.poner(key, blob);
+      const texto = $('#chat-txt').value.trim(); $('#chat-txt').value = '';
+      mandar({tipo: esVideo ? 'video' : 'imagen', media:key, peso:blob.size, texto});
+    } catch { est.textContent = 'no se pudo mandar el archivo (puede que el navegador no tenga más lugar).'; } };
+  $('#zumbido').onclick = () => { mandar({tipo:'zumbido'}); if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
+    $('#chat-grid').animate([{transform:'translateX(0)'},{transform:'translateX(-8px)'},{transform:'translateX(8px)'},{transform:'translateX(0)'}], {duration:280, iterations:2}); };
+}
+
+/* Info del grupo: el admin cambia nombre y foto, suma amigos suyos y saca gente; todos pueden salir */
+function pintarInfoGrupo(g, yo){
+  const box = $('#info-grupo'); box.hidden = false; const admin = g.admin === yo.id;
+  const candidatos = amigosDe(yo).filter(a => !g.miembros.includes(a.id));
+  box.innerHTML = `${admin ? `<div><label class="lbl" for="g-nombre">nombre del grupo</label><div style="display:flex;gap:8px"><input class="field" id="g-nombre" maxlength="40" value="${esc(g.nombre)}" style="flex:1;min-width:0"><button class="btn" type="button" data-g="nombre">guardar</button></div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><label class="btn file-btn" style="display:inline-flex;align-items:center">cambiar foto<input type="file" accept="image/*" id="g-foto" aria-label="Cambiar foto del grupo"></label>${g.foto ? '<button class="btn" type="button" data-g="sin-foto">quitar foto</button>' : ''}</div>` : ''}
+    <div><p class="titulo-col" style="margin-bottom:4px">integrantes (${g.miembros.length})</p><div id="g-miembros"></div></div>
+    ${admin ? (candidatos.length ? `<fieldset style="border:0;padding:0;margin:0"><legend class="lbl">sumar amigos tuyos</legend><div class="checks">${candidatos.map(a => `<label><input type="checkbox" value="${a.id}"> ${esc(a.apodo)}</label>`).join('')}</div>
+      <button class="btn" type="button" data-g="sumar" style="margin-top:8px">sumar al grupo</button></fieldset>` : '<p class="muted chico" style="margin:0">todos tus amigos ya están en el grupo.</p>') : '<p class="muted chico" style="margin:0">solo quien creó el grupo puede cambiar el nombre, la foto y los integrantes.</p>'}
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="button" data-g="salir">salir del grupo</button>${admin ? '<button class="btn" type="button" data-g="eliminar">eliminar grupo</button>' : ''}</div>`;
+  const lm = $('#g-miembros');
+  g.miembros.map(porId).filter(Boolean).forEach(x => { const d = document.createElement('div'); d.className = 'miembro';
+    const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, x);
+    const a = document.createElement('a'); a.href = linkPerfil(x); a.textContent = x.apodo + (x.id === yo.id ? ' (vos)' : '');
+    d.append(av, a); if (x.id === g.admin) d.insertAdjacentHTML('beforeend', '<span class="muted chico">· admin</span>');
+    if (admin && x.id !== yo.id) d.insertAdjacentHTML('beforeend', `<button class="borrar" type="button" data-g="quitar" data-id="${x.id}">quitar</button>`);
+    lm.appendChild(d); });
+  box.onclick = e => { const b = e.target.closest('[data-g]'); if (!b) return; const accion = b.dataset.g;
+    if (accion === 'nombre'){ const n = $('#g-nombre').value.trim(); if (n && n !== g.nombre){ g.nombre = n; guardarGrupos(); msgSistema(g, `${yo.apodo} le cambió el nombre al grupo: «${n}»`); } }
+    if (accion === 'sin-foto'){ g.foto = ''; guardarGrupos(); }
+    if (accion === 'sumar'){ const ids = [...box.querySelectorAll('.checks input:checked')].map(i => +i.value); if (!ids.length) return;
+      ids.forEach(id => { g.miembros.push(id); notificar(id, {tipo:'grupo', grupo:g.id, nombre:g.nombre}); });
+      guardarGrupos(); msgSistema(g, `${yo.apodo} sumó a ${ids.map(i => porId(i).apodo).join(', ')}`); }
+    if (accion === 'quitar'){ const x = porId(+b.dataset.id); if (!confirm(`¿Sacar a ${x.apodo} del grupo?`)) return;
+      g.miembros = g.miembros.filter(i => i !== x.id); guardarGrupos(); msgSistema(g, `${yo.apodo} sacó a ${x.apodo}`); }
+    if (accion === 'salir'){ if (!confirm(`¿Salir de «${g.nombre}»?`)) return; g.miembros = g.miembros.filter(i => i !== yo.id);
+      if (!g.miembros.length) grupos = grupos.filter(q => q.id !== g.id);          // se fueron todos: el grupo desaparece
+      else { msgSistema(g, `${yo.apodo} salió del grupo`);
+        if (g.admin === yo.id){ g.admin = g.miembros[0];                          // pasa al integrante más antiguo que queda
+          const nuevo = porId(g.admin); msgSistema(g, `ahora ${nuevo.apodo} es admin del grupo`); notificar(nuevo.id, {tipo:'admin', grupo:g.id, nombre:g.nombre}); } }
+      guardarGrupos(); chatCon = null; infoAbierta = false; location.hash = '#chat'; pintarChat(); return; }
+    if (accion === 'eliminar'){ if (!confirm(`¿Eliminar «${g.nombre}» para todos? Se borran los mensajes.`)) return;
+      grupos = grupos.filter(q => q.id !== g.id); (chats['g' + g.id] || []).forEach(m => m.media && media.borrar(m.media)); delete chats['g' + g.id]; guardarGrupos(); guardarChats(); chatCon = null; infoAbierta = false; location.hash = '#chat'; pintarChat(); return; }
+    pintarChat(); };
+  const gf = $('#g-foto'); if (gf) gf.onchange = e => { const f = e.target.files[0]; if (!f) return;
+    achicar(f, 300, .85).then(u => { g.foto = u; guardarGrupos(); msgSistema(g, `${yo.apodo} cambió la foto del grupo`); pintarChat(); }); };
+}
+
+/* Crear grupo */
+function abrirCrearGrupo(){ const yo = perfil(); grupoFoto = '';
+  $('#grupo-amigos').innerHTML = amigosDe(yo).map(a => `<label><input type="checkbox" value="${a.id}"> ${esc(a.apodo)}</label>`).join('');
+  avatarGrupo($('#grupo-prev'), {nombre:'?', foto:''}); $('#modal-grupo').hidden = false; $('#grupo-nombre').focus(); }
+const cerrarGrupo = () => { $('#modal-grupo').hidden = true; $('#grupo-form').reset(); $('#grupo-msg').className = 'msg'; };
+$('#grupo-cerrar').onclick = cerrarGrupo;
+$('#modal-grupo').addEventListener('click', e => { if (e.target.id === 'modal-grupo') cerrarGrupo(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal-grupo').hidden) cerrarGrupo(); });
+$('#grupo-nombre').addEventListener('input', e => { if (!grupoFoto) avatarGrupo($('#grupo-prev'), {nombre:e.target.value || '?', foto:''}); });
+$('#grupo-foto').onchange = e => { const f = e.target.files[0]; if (!f) return; achicar(f, 300, .85).then(u => { grupoFoto = u; avatarGrupo($('#grupo-prev'), {nombre:'', foto:u}); }); };
+$('#grupo-form').onsubmit = e => { e.preventDefault(); const yo = perfil(), nombre = $('#grupo-nombre').value.trim();
+  const ids = [...$$('#grupo-amigos input:checked')].map(i => +i.value);
+  if (!nombre) return msg('#grupo-msg', 'Ponele un nombre al grupo.'); if (!ids.length) return msg('#grupo-msg', 'Elegí al menos un amigo.');
+  const g = {id:Date.now(), nombre, foto:grupoFoto, admin:yo.id, miembros:[yo.id, ...ids], creado:Date.now()};
+  grupos.push(g); if (!guardarGrupos()) return msg('#grupo-msg', 'No entró: el navegador se quedó sin lugar en esta demo.');
+  msgSistema(g, `${yo.apodo} creó el grupo «${nombre}»`); ids.forEach(id => notificar(id, {tipo:'grupo', grupo:g.id, nombre}));
+  cerrarGrupo(); location.hash = '#chat/g' + g.id; };
+
+/* ---------- Solicitudes ---------- */
+function persona(x, acciones, detalle){ const d = document.createElement('div'); d.className = 'persona';
+  const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, x);
+  const t = document.createElement('div'); t.innerHTML = `<a href="${linkPerfil(x)}"><b>${esc(x.apodo)}</b></a><br><span class="muted chico">${detalle}</span>`;
+  const ac = document.createElement('div'); ac.className = 'acciones'; ac.innerHTML = acciones; d.append(av, t, ac); return d; }
+function pintarSolicitudes(){
+  const yo = perfil(); if (!yo) return;
+  const rec = $('#s-recibidas'), env = $('#s-enviadas'); rec.innerHTML = ''; env.innerHTML = '';
+  const r = yo.recibidas.map(x => [porId(x.de), x]).filter(([x]) => x);
+  if (!r.length) rec.innerHTML = '<p class="muted chico" style="margin:0">no tenés solicitudes nuevas.</p>';
+  r.forEach(([x, s]) => rec.appendChild(persona(x, `<button class="btn lleno" type="button" data-sol="aceptar" data-id="${x.id}">aceptar</button><button class="btn" type="button" data-sol="rechazar" data-id="${x.id}">rechazar</button>`, `te la mandó el ${fecha(s.cuando)}`)));
+  const e = miembros().filter(x => x.recibidas.some(q => q.de === yo.id));
+  if (!e.length) env.innerHTML = '<p class="muted chico" style="margin:0">no tenés solicitudes esperando respuesta.</p>';
+  e.forEach(x => env.appendChild(persona(x, `<button class="btn" type="button" data-sol="cancelar" data-id="${x.id}">cancelar</button>`, 'esperando que acepte')));
+}
+$('#solicitudes').addEventListener('click', e => { const b = e.target.closest('[data-sol]'); if (!b) return; const id = +b.dataset.id, x = porId(id);
+  if (b.dataset.sol === 'aceptar') aceptar(id); if (b.dataset.sol === 'rechazar') rechazar(id); if (b.dataset.sol === 'cancelar' && x) cancelarSolicitud(x);
+  pintarSolicitudes(); actualizarMenu(); });
+
+/* ---------- Notificaciones (por ahora: solicitudes aceptadas) ---------- */
+function pintarNotis(){
+  const yo = perfil(); if (!yo) return; const l = $('#n-lista'); l.innerHTML = '';
+  if (!yo.notis.length) l.innerHTML = '<p class="muted chico" style="margin:0">no tenés notificaciones.</p>';
+  yo.notis.slice().reverse().forEach(n => { const x = porId(n.de); if (!x) return; const d = document.createElement('div'); d.className = 'noti' + (n.leida ? '' : ' nueva');
+    const cuando = `<span class="muted chico">· ${fecha(n.cuando)} ${hora(n.cuando)}</span>`, quien = `<a href="${linkPerfil(x)}">${esc(x.apodo)}</a>`;
+    if (n.tipo === 'aceptada') d.innerHTML = `${quien} aceptó tu solicitud de amistad. ya pueden <a href="#chat/${x.id}">chatear</a>. ${cuando}`;
+    if (n.tipo === 'like-perfil') d.innerHTML = `${quien} le dio ♥ a <a href="#perfil">tu perfil</a>. ${cuando}`;
+    if (n.tipo === 'admin') d.innerHTML = `${quien} salió de <a href="#chat/g${n.grupo}">«${esc(n.nombre)}»</a> y ahora sos admin del grupo. ${cuando}`;
+    if (n.tipo === 'grupo') d.innerHTML = `${quien} te sumó al grupo <a href="#chat/g${n.grupo}">«${esc(n.nombre)}»</a>. ${cuando}`;
+    if (n.tipo === 'like') d.innerHTML = `${quien} le dio ♥ a tu <a href="#inicio/${n.post}">posteo</a> ${esc(n.resumen || '')} ${cuando}`;
+    if (n.tipo === 'comentario') d.innerHTML = `${quien} comentó tu <a href="#inicio/${n.post}">posteo</a>: «${esc(n.texto)}» ${cuando}`;
+    l.appendChild(d); });
+  if (yo.notis.some(n => !n.leida)) sb.from('notificaciones').update({leida:true}).eq('para', yo.uid).eq('leida', false).then(({error}) => falla('marcar las notificaciones', error));
+  yo.notis.forEach(n => n.leida = true); actualizarMenu();
+}
+
+/* ---------- Contadores del menú ---------- */
+function actualizarMenu(){
+  const yo = perfil(); if (!yo) return;
+  const nChat = convsDe(yo).reduce((t,c) => t + noLeidosC(yo,c), 0), nSol = yo.recibidas.length, nNot = yo.notis.filter(n => !n.leida).length;
+  const poner = (sec, base, n) => $$(`.menu [data-sec="${sec}"]`).forEach(a => { a.textContent = n ? `${base} (${n})` : base; });
+  poner('chat','chat',nChat); poner('solicitudes','solicitudes',nSol); poner('notificaciones','notificaciones',nNot);
+}
+
+/* ---------- Inicio: solicitudes y últimos mensajes ---------- */
+function pintarInicioExtra(){
+  const yo = perfil(); if (!yo) return; const n = yo.recibidas.length, s = $('#i-sol'); s.hidden = !n;
+  if (n) s.innerHTML = `<p class="titulo-col">solicitudes</p><p class="chico" style="margin:0">tenés ${n === 1 ? 'una solicitud' : n + ' solicitudes'} de amistad. <a href="#solicitudes">verlas »</a></p>`;
+  const ultimos = amigosDe(yo).map(a => [a, (chats[claveChat(yo.id,a.id)] || []).filter(m => m.de === a.id && m.tipo !== 'zumbido').at(-1)]).filter(([,m]) => m).sort((x,y) => y[1].cuando - x[1].cuando).slice(0,3);
+  $('#i-chat').innerHTML = ultimos.length ? ultimos.map(([a,m]) => `<p style="margin:0 0 4px"><b>${esc(a.apodo)}:</b> ${esc(m.texto)}</p>`).join('') + '<p style="margin:6px 0 0"><a href="#chat">ir al chat »</a></p>'
+    : `<p class="muted" style="margin:0">${amigosDe(yo).length ? 'todavía no te escribió nadie.' : 'cuando tengas amigos, sus mensajes aparecen acá.'}</p>`;
+}
+
+/* ---------- Rincón: canciones, imágenes y videos (solo tuyos y de tus amigos) ---------- */
+let posts = cargar(K.rincon, []), rTipo = 'musica', rFiltro = 'todo', rImg = null;
+const guardarPosts = () => { try { localStorage.setItem(K.rincon, JSON.stringify(posts)); return true; } catch { return false; } };
+const RTXT = {musica:['link de la canción (youtube, spotify, soundcloud…)','compartió una canción'], imagen:['','compartió una imagen'], video:['link del video (youtube, tiktok, instagram…)','compartió un video']};
+const visiblesPara = yo => posts.filter(x => { const a = porId(x.de); return a && (a.id === yo.id || sonAmigos(yo, a)); });
+const esPinterest = u => /(^|\/\/|\.)(pinterest\.[a-z.]+|pin\.it|pinimg\.com)(\/|$)/i.test(u);
+const pinId = u => { const m = /pinterest\.[a-z.]+\/pin\/(?:[^\/]*--)?(\d+)/i.exec(u); return m ? m[1] : null; };
+const esImagenDirecta = u => /pinimg\.com\//i.test(u) || /\.(jpe?g|png|gif|webp)(\?|$)/i.test(u);
+const sitioDe = u => { try { return new URL(u).hostname.replace(/^www\.|^m\./,''); } catch { return u; } };
+function pintarRincon(){
+  const yo = perfil(); if (!yo) return;
+  $$('[data-rtipo]').forEach(b => b.setAttribute('aria-pressed', b.dataset.rtipo === rTipo));
+  $$('[data-rfiltro]').forEach(b => b.setAttribute('aria-pressed', b.dataset.rfiltro === rFiltro));
+  $('#r-url-b').hidden = rTipo === 'imagen'; $('#r-img-b').hidden = rTipo !== 'imagen'; $('#r-url-lbl').textContent = RTXT[rTipo][0];
+  const l = $('#r-lista'); l.innerHTML = '';
+  const lista = visiblesPara(yo).filter(x => rFiltro === 'todo' || x.tipo === rFiltro).sort((a,b) => b.cuando - a.cuando);
+  if (!lista.length){ l.innerHTML = `<p class="muted chico">${amigosDe(yo).length ? 'todavía no hay nada acá. ¡compartí lo primero!' : 'cuando tengas amigos, acá vas a ver lo que comparten. por ahora solo ves lo tuyo.'}</p>`; return; }
+  lista.forEach(x => { const a = porId(x.de), d = document.createElement('article'); d.className = 'post';
+    const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, a);
+    const c = document.createElement('div'); c.className = 'post-cuerpo';
+    let media = '';
+    if (x.tipo === 'imagen' && x.img) media = `<img class="compartida" src="${x.img}" alt="${esc(x.texto || 'imagen que compartió ' + a.apodo)}">`;
+    else if (x.tipo === 'imagen' && x.pin){ const u = /^https?:\/\//.test(x.pin) ? x.pin : 'https://' + x.pin, id = pinId(u);
+      media = esImagenDirecta(u) ? `<img class="compartida" src="${esc(u)}" alt="${esc(x.texto || 'imagen de pinterest que compartió ' + a.apodo)}" referrerpolicy="no-referrer">`
+        : id ? `<iframe class="pin-embed" src="https://assets.pinterest.com/ext/embed.html?id=${id}" title="Pin de Pinterest que compartió ${esc(a.apodo)}" loading="lazy" scrolling="no"></iframe><a class="chico" href="${esc(u)}" target="_blank" rel="noopener">ver en pinterest</a>`
+        : `<a class="media-link" href="${esc(u)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true">P</span><span><b>ver imagen en pinterest</b><span class="sitio">${esc(sitioDe(u))}</span></span></a>`; }
+    else { const u = /^https?:\/\//.test(x.url) ? x.url : 'https://' + x.url;
+      media = `<a class="media-link" href="${esc(u)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true">${x.tipo === 'musica' ? '♪' : '►'}</span><span><b>${x.tipo === 'musica' ? 'escuchar' : 'ver video'}</b><span class="sitio">${esc(sitioDe(u))}</span></span></a>`; }
+    c.innerHTML = `<a href="${linkPerfil(a)}"><b>${esc(a.apodo)}</b></a> <span class="muted chico">${RTXT[x.tipo][1]} · ${fecha(x.cuando)} ${hora(x.cuando)}</span>
+      ${x.texto ? `<p style="margin:4px 0 0;word-break:break-word">${esc(x.texto)}</p>` : ''}${media}
+      ${a.id === yo.id ? `<div><button class="borrar" type="button" data-borrar="${x.id}">borrar</button></div>` : ''}`;
+    d.append(av, c); l.appendChild(d); });
+}
+$('#rincon').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.rtipo){ rTipo = b.dataset.rtipo; $('#r-msg').className = 'msg'; pintarRincon(); }
+  if (b.dataset.rfiltro){ rFiltro = b.dataset.rfiltro; pintarRincon(); }
+  if (b.dataset.borrar && confirm('¿Borrar esto de tu rincón?')){ posts = posts.filter(x => x.id !== +b.dataset.borrar); guardarPosts(); pintarRincon(); } });
+$('#r-img').onchange = e => { const f = e.target.files[0]; if (!f) return;
+  achicar(f, 1000, .8).then(u => { rImg = u; $('#r-img-nombre').textContent = 'lista: ' + f.name; }).catch(() => msg('#r-msg','No pude leer esa imagen.')); };
+$('#r-form').onsubmit = e => { e.preventDefault(); const yo = perfil(), texto = $('#r-texto').value.trim();
+  const post = {id:Date.now(), de:yo.id, tipo:rTipo, texto, cuando:Date.now()};
+  if (rTipo === 'imagen'){ const pin = $('#r-pin').value.trim();
+    if (pin){ if (!esPinterest(pin)) return msg('#r-msg','Ese link no es de Pinterest.'); post.pin = pin; }
+    else if (rImg) post.img = rImg; else return msg('#r-msg','Elegí una imagen o pegá un link de Pinterest.'); }
+  else { const u = $('#r-url').value.trim(); if (!/^(https?:\/\/)?[^\s.]+\.[^\s]+$/.test(u)) return msg('#r-msg','Pegá un link válido.'); post.url = u; }
+  posts.push(post); if (!guardarPosts()){ posts.pop(); return msg('#r-msg','No entró: el navegador se quedó sin lugar en esta demo.'); }
+  rImg = null; e.target.reset(); $('#r-img-nombre').textContent = 'ninguna imagen elegida'; $('#r-msg').className = 'msg'; rFiltro = 'todo'; pintarRincon(); };
+function pintarInicioRincon(){ const yo = perfil(); if (!yo) return;
+  const ult = visiblesPara(yo).filter(x => x.de !== yo.id).sort((a,b) => b.cuando - a.cuando).slice(0,3);
+  $('#i-rincon').innerHTML = ult.length ? ult.map(x => `<p style="margin:0 0 4px"><b>${esc(porId(x.de).apodo)}</b> ${RTXT[x.tipo][1]}${x.texto ? ': ' + esc(x.texto) : ''}</p>`).join('') + '<p style="margin:6px 0 0"><a href="#rincon">ir al rincón »</a></p>'
+    : '<p class="muted" style="margin:0">tus amigos todavía no compartieron nada. <a href="#rincon">ir al rincón »</a></p>'; }
+
+/* ---------- Inicio: posteos tuyos y de tus amigos ---------- */
+let feed = [], pTipo = 'texto', pImg = null, pVid = null, vistos = 0, resaltar = null;
+const hace = t => { const m = Math.floor((Date.now() - t) / 60000); if (m < 1) return 'recién'; if (m < 60) return `hace ${m} min`; const h = Math.floor(m / 60);
+  if (h < 24) return `hace ${h} h`; return `el ${fecha(t)} a las ${hora(t)}`; };
+const visiblesFeed = yo => feed.filter(x => { const a = porId(x.de); return a && (a.id === yo.id || sonAmigos(yo, a)); }).sort((a,b) => b.cuando - a.cuando);
+const resumen = t => t ? '«' + (t.length > 40 ? t.slice(0,40) + '…' : t) + '»' : '';
+function notificar(paraId, n){ const para = porId(paraId), yo = perfil(); if (!para || para.id === yo.id) return; const {tipo, ...datos} = n;
+  sb.from('notificaciones').insert({para:para.uid, tipo, datos}).then(({error}) => { if (error) console.error('notificar', error); }); }
+function pintarFeed(){
+  const yo = perfil(); if (!yo) return; const lista = visiblesFeed(yo), cont = $('#feed'); cont.innerHTML = '';
+  vistos = lista.length ? lista[0].cuando : 0; $('#hay-nuevos').hidden = true;
+  if (!lista.length){ cont.innerHTML = `<p class="muted" style="margin-top:20px">${amigosDe(yo).length ? 'todavía nadie posteó nada. tocá el + para ser el primero.' : 'acá vas a ver lo que postean tus amigos. buscá gente con la lupa de arriba y mandales solicitud. mientras tanto, podés postear con el +.'}</p>`; return; }
+  lista.forEach(x => cont.appendChild(posteoEl(x, yo)));
+  if (resaltar){ const el = $(`#post-${resaltar}`); if (el){ el.classList.add('resaltado'); el.scrollIntoView({block:'center'}); } resaltar = null; }
+}
+function posteoEl(x, yo){
+  const a = porId(x.de), d = document.createElement('article'); d.className = 'posteo'; d.id = 'post-' + x.id;
+  const yaLike = x.likes.includes(yo.id), u = x.url && (/^https?:\/\//.test(x.url) ? x.url : 'https://' + x.url);
+  d.innerHTML = `<div class="posteo-cab"><span class="avatar"></span><div style="flex:1;min-width:0"><a href="${linkPerfil(a)}"><b>${esc(a.apodo)}</b></a><br><span class="muted chico">${hace(x.cuando)}</span></div>
+      ${a.id === yo.id ? `<button class="borrar" type="button" data-pacc="borrar">borrar</button>` : ''}</div>
+    ${x.texto ? `<p class="posteo-texto">${esc(x.texto)}</p>` : ''}
+    ${x.img ? `<img class="compartida" src="${esc(x.img)}" alt="${esc(x.texto || 'imagen de ' + a.apodo)}" loading="lazy">` : ''}
+    ${x.video ? `<video class="compartida" src="${esc(x.video)}" controls playsinline preload="metadata" aria-label="video de ${esc(a.apodo)}" style="display:block;max-width:100%;max-height:560px;margin-top:10px;border:1px solid var(--line);background:#000"></video>` : ''}
+    ${u ? `<a class="media-link" href="${esc(u)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true">►</span><span><b>ver video</b><span class="sitio">${esc(sitioDe(u))}</span></span></a>` : ''}
+    <div class="acciones-post">
+      <button type="button" data-pacc="like" aria-pressed="${yaLike}" aria-label="${yaLike ? 'Sacar like' : 'Dar like'} (${x.likes.length})">${yaLike ? '♥' : '♡'} ${x.likes.length}</button>
+      <button type="button" data-pacc="comentar">comentar (${x.comentarios.length})</button>
+    </div>
+    <div class="comentarios"></div>
+    <form class="form-com" data-pacc="enviar-com"><label class="sr" for="com-${x.id}">Comentar el posteo de ${esc(a.apodo)}</label>
+      <input class="field" id="com-${x.id}" maxlength="300" placeholder="comentá…" style="flex:1;min-width:0"><button class="btn" type="submit">enviar</button></form>`;
+  ponerAvatar(d.querySelector('.posteo-cab .avatar'), a);
+  const cs = d.querySelector('.comentarios');
+  x.comentarios.forEach(c => { const au = porId(c.de); if (!au) return; const e = document.createElement('div'); e.className = 'comentario';
+    const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, au);
+    const t = document.createElement('div'); t.innerHTML = `<a href="${linkPerfil(au)}"><b>${esc(au.apodo)}</b></a> <span class="muted chico">${hace(c.cuando)}</span><p>${esc(c.texto)}</p>`;
+    e.append(av, t); cs.appendChild(e); });
+  return d;
+}
+$('#feed').addEventListener('click', e => { const b = e.target.closest('button[data-pacc]'); if (!b) return; const art = b.closest('.posteo'), id = +art.id.slice(5), x = feed.find(q => q.id === id), yo = perfil(); if (!x) return;
+  if (b.dataset.pacc === 'like'){
+    if (x.likes.includes(yo.id)){ x.likes = x.likes.filter(i => i !== yo.id); sb.from('likes').delete().match({posteo:x.id, usuario:yo.uid}).then(({error}) => falla('sacar el like', error)); }
+    else { x.likes.push(yo.id); sb.from('likes').insert({posteo:x.id}).then(({error}) => falla('dar like', error)); notificar(x.de, {tipo:'like', post:x.id, resumen:resumen(x.texto)}); }
+    art.replaceWith(posteoEl(x, yo)); }
+  if (b.dataset.pacc === 'comentar') art.querySelector('.form-com input').focus();
+  if (b.dataset.pacc === 'borrar' && confirm('¿Borrar este posteo?')){ feed = feed.filter(q => q.id !== id); pintarFeed();
+    sb.from('posteos').delete().eq('id', id).then(({error}) => { if (!falla('borrar el posteo', error) && x.media_path) sb.storage.from(BUCKET).remove([x.media_path]); }); } });
+$('#feed').addEventListener('submit', e => { e.preventDefault(); const f = e.target, art = f.closest('.posteo'), id = +art.id.slice(5), x = feed.find(q => q.id === id), yo = perfil();
+  const t = f.querySelector('input').value.trim(); if (!t || !x) return;
+  x.comentarios.push({id:Date.now(), de:yo.id, texto:t, cuando:Date.now()});
+  sb.from('comentarios').insert({posteo:x.id, texto:t}).then(({error}) => falla('comentar', error));
+  notificar(x.de, {tipo:'comentario', post:x.id, texto:t.slice(0,60)});
+  const nuevo = posteoEl(x, yo); art.replaceWith(nuevo); nuevo.querySelector('.form-com input').focus(); });
+// Recargar: trae lo nuevo de Supabase; lo nuevo queda arriba
+async function recargar(){ const b = $('#recargar'); b.disabled = true; b.textContent = 'recargando…';
+  try { await cargarTodo(); } catch (er){ falla('recargar', er); }
+  b.disabled = false; b.textContent = '↻ recargar'; pintarFeed(); actualizarMenu(); }
+$('#recargar').onclick = recargar; $('#hay-nuevos').onclick = recargar;
+// Botón flotante y ventana para postear
+function pTipoSet(t){ pTipo = t; $$('[data-ptipo]').forEach(b => b.setAttribute('aria-pressed', b.dataset.ptipo === t));
+  $('#post-img-b').hidden = t !== 'imagen'; $('#post-url-b').hidden = t !== 'video'; $('#post-texto-lbl').textContent = t === 'texto' ? '¿qué estás pensando?' : 'texto (opcional)'; }
+$('#fab').onclick = () => { pTipoSet('texto'); $('#modal-post').hidden = false; $('#post-texto').focus(); };
+const cerrarPost = () => { $('#modal-post').hidden = true; $('#post-form').reset(); pImg = null; pVid = null; $('#post-vid-nombre').textContent = 'ningún video elegido'; $('#post-img-nombre').textContent = 'ninguna imagen elegida'; $('#post-msg').className = 'msg'; $('#fab').focus(); };
+$('#post-cerrar').onclick = cerrarPost;
+$('#modal-post').addEventListener('click', e => { if (e.target.id === 'modal-post') cerrarPost(); const b = e.target.closest('[data-ptipo]'); if (b) pTipoSet(b.dataset.ptipo); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal-post').hidden) cerrarPost(); });
+$('#post-img').onchange = e => { const f = e.target.files[0]; if (!f) return; pImg = f; $('#post-img-nombre').textContent = 'lista: ' + f.name; };
+$('#post-vid').onchange = e => { const f = e.target.files[0]; if (!f) return;
+  if (f.size > MAX_VIDEO_MB * 1048576){ e.target.value = ''; pVid = null; return msg('#post-msg', `Ese video pesa ${mb(f.size)}. El máximo es ${MAX_VIDEO_MB} MB: probá con uno más corto.`); }
+  pVid = f; $('#post-vid-nombre').textContent = `listo: ${f.name} (${mb(f.size)})`; $('#post-msg').className = 'msg'; };
+$('#post-form').onsubmit = async e => { e.preventDefault(); const yo = perfil(), texto = $('#post-texto').value.trim();
+  const fila = {tipo:pTipo, texto: texto || null, media_path:null, video_url:null};
+  if (pTipo === 'texto' && !texto) return msg('#post-msg','Escribí algo primero.');
+  if (pTipo === 'imagen' && !pImg) return msg('#post-msg','Elegí una imagen.');
+  if (pTipo === 'video' && !pVid){ const u = $('#post-url').value.trim(); if (!/^(https?:\/\/)?[^\s.]+\.[^\s]+$/.test(u)) return msg('#post-msg','Subí un video o pegá un link válido.'); fila.video_url = u; }
+  const btn = e.target.querySelector('[type=submit]'); btn.disabled = true;
+  try {
+    if (pTipo === 'imagen'){ msg('#post-msg','subiendo la imagen…','ok'); fila.media_path = await subirArchivo(await achicarBlob(pImg, 1280, .82), 'jpg'); }
+    if (pTipo === 'video' && pVid){ msg('#post-msg',`subiendo el video (${mb(pVid.size)})…`,'ok'); fila.media_path = await subirArchivo(pVid, (pVid.name.split('.').pop() || 'mp4').toLowerCase()); }
+    const {data, error} = await sb.from('posteos').insert(fila).select(); if (error) throw error;
+    const r = data[0];
+    feed.push({id:r.id, de:yo.id, tipo:r.tipo, texto:r.texto || '', media_path:r.media_path || '', img: r.tipo === 'imagen' && r.media_path ? urlPublica(r.media_path) : '',
+      video: r.tipo === 'video' && r.media_path ? urlPublica(r.media_path) : '', url:r.video_url || '', cuando:Date.parse(r.creado) || Date.now(), likes:[], comentarios:[]});
+  } catch (er){ console.error(er); btn.disabled = false; return msg('#post-msg','No se pudo publicar. Revisá tu conexión y probá de nuevo.'); }
+  btn.disabled = false; cerrarPost(); pintarFeed(); window.scrollTo({top:0, behavior:'smooth'}); };
+
+/* ---------- Top perfiles ---------- */
+let tFiltro = 'todos';
+function pintarTop(){
+  const yo = perfil(); if (!yo) return;
+  $$('[data-tfiltro]').forEach(b => b.setAttribute('aria-pressed', b.dataset.tfiltro === tFiltro));
+  const gente = (tFiltro === 'amigos' ? [yo, ...amigosDe(yo)] : miembros()).slice().sort((a,b) => b.fans.length - a.fans.length || a.creado - b.creado);
+  const l = $('#t-lista'); l.innerHTML = '';
+  gente.forEach((x,i) => { const a = document.createElement('a'); a.className = 'top-fila' + (i < 3 && x.fans.length ? ' podio' : ''); a.href = linkPerfil(x);
+    const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, x); const m = miniatura(x); if (m){ av.style.backgroundImage = `url("${m}")`; av.textContent = ''; }
+    a.innerHTML = `<span class="pos">${i + 1}</span>`; a.appendChild(av);
+    const t = document.createElement('span'); t.innerHTML = `<b>${esc(x.apodo)}</b>${x.id === yo.id ? ' <span class="muted chico">(vos)</span>' : ''}`;
+    const c = document.createElement('span'); c.className = 'cuantos'; c.textContent = '♥ ' + x.fans.length; c.setAttribute('aria-label', x.fans.length + ' corazones');
+    a.append(t, c); l.appendChild(a); });
+  if (gente.length < 2) l.insertAdjacentHTML('beforeend', '<p class="muted chico">cuando haya más gente, el ranking se pone interesante.</p>');
+}
+$('#top').addEventListener('click', e => { const b = e.target.closest('[data-tfiltro]'); if (b){ tFiltro = b.dataset.tfiltro; pintarTop(); } });
+
+/* ---------- Buscar gente ---------- */
+function pintarBuscar(){
+  const yo = perfil(); if (!yo) return; const q = $('#buscar-txt').value.trim().toLowerCase(), r = $('#buscar-res'); r.innerHTML = '';
+  if (!q){ r.innerHTML = '<p class="muted chico" style="margin:0">escribí al menos una letra para buscar.</p>'; return; }
+  const res = miembros().filter(x => x.id !== yo.id && x.apodo.toLowerCase().includes(q)).slice(0,30);
+  if (!res.length){ r.innerHTML = `<p class="muted chico" style="margin:0">no encontré a nadie con «${esc(q)}».</p>`; return; }
+  const txt = {amigos:'✓ amigos', enviada:'solicitud enviada', recibida:'te mandó solicitud', nada:'todavía no son amigos'};
+  res.forEach(x => { const st = estadoAmistad(yo, x);
+    const acc = st === 'nada' ? `<button class="btn lleno" type="button" data-bus="enviar" data-id="${x.id}">enviar solicitud</button>`
+      : st === 'recibida' ? `<button class="btn lleno" type="button" data-bus="aceptar" data-id="${x.id}">aceptar</button>` : `<a class="btn" href="${linkPerfil(x)}" style="display:inline-flex;align-items:center;text-decoration:none">ver perfil</a>`;
+    r.appendChild(persona(x, acc, txt[st] || 'ver perfil')); });
+}
+$('#buscar-txt').addEventListener('input', pintarBuscar);
+$('#buscar-res').addEventListener('click', e => { const b = e.target.closest('[data-bus]'); if (!b) return; const x = porId(+b.dataset.id); if (!x) return;
+  if (b.dataset.bus === 'enviar') enviarSolicitud(x); if (b.dataset.bus === 'aceptar') aceptar(x.id); pintarBuscar(); actualizarMenu(); });
+
+/* ---------- Entrada ---------- */
+function tab(c){ const en = c === 'entrar'; $('#tab-entrar').setAttribute('aria-selected', en); $('#tab-crear').setAttribute('aria-selected', !en); $('#form-entrar').hidden = !en; $('#form-crear').hidden = en; }
+$('#tab-entrar').onclick = () => tab('entrar'); $('#tab-crear').onclick = () => tab('crear');
+$$('[data-ver]').forEach(c => c.onchange = () => c.dataset.ver.split(',').forEach(id => $('#' + id).type = c.checked ? 'text' : 'password'));
+const msg = (id, t, tipo = 'err') => { const m = $(id); m.textContent = t; m.className = 'msg ' + tipo; };
+const mailOk = m => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m);
+const urlVuelta = () => location.origin + location.pathname;
+$('#form-entrar').onsubmit = async e => { e.preventDefault(); const mail = $('#e-mail').value.trim().toLowerCase(), pass = $('#e-pass').value;
+  if (!mailOk(mail)) return msg('#e-msg','Revisá el correo.'); if (!pass) return msg('#e-msg','Falta la contraseña.');
+  msg('#e-msg','entrando…','ok');
+  const {data, error} = await sb.auth.signInWithPassword({email:mail, password:pass});
+  if (error) return msg('#e-msg', /confirm/i.test(error.message) ? 'Todavía no confirmaste tu correo: buscá el mail que te mandamos.' : 'Correo o contraseña incorrectos.');
+  entrar(data.session); };
+$('#olvide').onclick = async () => { const mail = $('#e-mail').value.trim().toLowerCase();
+  if (!mailOk(mail)) return msg('#e-msg','Escribí tu correo arriba y tocá de nuevo «¿te olvidaste la contraseña?».');
+  const {error} = await sb.auth.resetPasswordForEmail(mail, {redirectTo: urlVuelta()});
+  if (error) return msg('#e-msg','No se pudo mandar el mail. Probá de nuevo en un rato.');
+  msg('#e-msg','Listo: te mandamos un mail con un link para elegir una contraseña nueva.','ok'); };
+$('#form-crear').onsubmit = async e => { e.preventDefault(); const mail = $('#c-mail').value.trim().toLowerCase(), p1 = $('#c-pass').value, p2 = $('#c-pass2').value;
+  if (!mailOk(mail)) return msg('#c-msg','Revisá el correo.');
+  if (p1.length < 8) return msg('#c-msg','La contraseña tiene que tener 8 caracteres o más.'); if (p1 !== p2) return msg('#c-msg','Las contraseñas no coinciden.');
+  msg('#c-msg','creando tu cuenta…','ok');
+  // El apodo "npc" + número de registro lo pone la base de datos al crear la cuenta (ver schema.sql)
+  const {data, error} = await sb.auth.signUp({email:mail, password:p1, options:{emailRedirectTo: urlVuelta()}});
+  if (error) return msg('#c-msg', /registered|exists/i.test(error.message) ? 'Ya hay una cuenta con ese correo. Entrá desde «entrar».' : 'No se pudo crear la cuenta: ' + error.message);
+  if (!data.session) return msg('#c-msg','¡Listo! Te mandamos un mail para confirmar tu correo. Abrilo y después entrá desde «entrar».','ok');
+  entrar(data.session); };
+// Volviendo del mail de "olvidé mi contraseña"
+$('#form-nueva').onsubmit = async e => { e.preventDefault(); const p1 = $('#n-pass').value, p2 = $('#n-pass2').value;
+  if (p1.length < 8) return msg('#n-msg','La contraseña tiene que tener 8 caracteres o más.'); if (p1 !== p2) return msg('#n-msg','Las contraseñas no coinciden.');
+  const {data, error} = await sb.auth.updateUser({password:p1}); if (error) return msg('#n-msg','No se pudo cambiar la contraseña. Pedí otro mail.');
+  $('#form-nueva').hidden = true; $('.tabs').hidden = false; tab('entrar'); const {data:s} = await sb.auth.getSession(); if (s.session) entrar(s.session); };
+let entrando = false;
+async function entrar(session){
+  if (entrando || !session) return; entrando = true; sesion = session.user.id;
+  try { await cargarTodo(); } catch (er){ entrando = false; sesion = null; console.error(er); return msg('#e-msg','No se pudieron cargar los datos. Revisá la configuración de Supabase.'); }
+  entrando = false;
+  if (!perfil()){ sesion = null; return msg('#e-msg','Tu cuenta no tiene perfil. ¿Corriste el schema.sql en Supabase?'); }
+  viendo = null; verFoto = null; aplicar(perfil());
+  if (perfil().nuevo) setTimeout(() => { if (esMio()) abrirEd(); }, 300);   // la primera vez se abre el editor
+  if (location.hash === '#perfil') mostrar(); else location.hash = '#perfil'; }
+async function salir(){ await guardarYa(); if (sb) await sb.auth.signOut(); sesion = null; viendo = null; usuarios = {}; feed = []; document.documentElement.removeAttribute('style'); document.body.className = ''; document.body.dataset.cajas = 'simple';
+  cerrarEd(); tab('entrar'); $$('#entrada input').forEach(i => { if (i.type === 'checkbox') i.checked = false; else i.value = ''; }); $$('#entrada .msg').forEach(m => m.className = 'msg'); location.hash = '#entrada'; }
+
+/* ---------- Barra del sitio y navegación ---------- */
+$$('[data-sitio]').forEach(h => { h.appendChild($('#tpl-sitio').content.cloneNode(true)); const a = h.querySelector(`[data-sec="${h.dataset.sitio}"]`); if (a) a.setAttribute('aria-current','page'); });
+$$('[data-salir]').forEach(b => b.onclick = salir);
+const PANT = ['entrada','inicio','perfil','chat','rincon','solicitudes','notificaciones','buscar','top'];
+function mostrar(){ const [h, arg] = location.hash.slice(1).split('/'); let id = h;
+  if (!PANT.includes(id)) id = perfil() ? 'perfil' : 'entrada';
+  if (!perfil()) id = 'entrada'; else if (id === 'entrada') id = 'perfil';
+  if (id === 'perfil'){ const nuevo = (arg && porId(+arg)) || perfil();
+    if (viendo !== nuevo){ viendo = nuevo; verFoto = null; if (!esMio()){ viendo.visitas++; sb.rpc('sumar_visita', {p:viendo.uid}).then(({error}) => { if (error) console.error(error); }); } }
+    aplicar(viendo); pintar();                          // cada perfil se ve con el estilo de su dueño
+  } else { viendo = null; if (perfil()) aplicar(perfil());
+    if (id === 'inicio'){ resaltar = null; pintarFeed(); }
+    if (id === 'top') pintarTop();
+    if (id === 'buscar'){ pintarBuscar(); setTimeout(() => $('#buscar-txt').focus(), 50); }
+    if (id === 'rincon') pintarRincon();
+    if (id === 'chat'){ const nuevo = !arg ? null : arg[0] === 'g' ? ((g => g && {g})(grupos.find(q => q.id === +arg.slice(1)))) : ((x => x && {p:x})(porId(+arg)));
+      if (llaveLeido(nuevo || {p:{id:-1}}) !== llaveLeido(chatCon || {p:{id:-2}})) infoAbierta = false; chatCon = nuevo || null; pintarChat(); }
+    if (id === 'solicitudes') pintarSolicitudes();
+    if (id === 'notificaciones') pintarNotis(); }
+  actualizarMenu();
+  $$('.screen').forEach(s => s.classList.toggle('activa', s.id === id)); if (id !== 'perfil' && !ed.hidden) cerrarEd(); if (id === 'inicio' && arg){ resaltar = +arg; pintarFeed(); } else window.scrollTo(0,0); }
+window.addEventListener('hashchange', mostrar);
+
+/* ---------- Estela del mouse ---------- */
+let ult = 0;
+document.addEventListener('pointermove', e => { const p = perfil(); if (!p || !p.estela || e.pointerType !== 'mouse' || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const n = performance.now(); if (n - ult < 50) return; ult = n; const s = document.createElement('span'); s.className = 'estela'; s.textContent = '☆';
+  s.style.left = e.clientX + 8 + 'px'; s.style.top = e.clientY + 8 + 'px'; document.body.appendChild(s); setTimeout(() => s.remove(), 800); });
+
+/* ---------- Arranque ---------- */
+if (!configurado){
+  mostrar(); $$('#entrada form button, #entrada form input').forEach(x => x.disabled = true);
+  msg('#e-msg', 'Falta conectar Supabase: completá config.js con la URL y la anon key de tu proyecto (ver README).');
+} else {
+  sb.auth.onAuthStateChange((evento, session) => {
+    if (evento === 'PASSWORD_RECOVERY'){ location.hash = '#entrada'; sesion = null; mostrar(); $('.tabs').hidden = true; $('#form-entrar').hidden = true; $('#form-crear').hidden = true; $('#form-nueva').hidden = false; }
+  });
+  sb.auth.getSession().then(({data}) => { if (data.session && !/type=recovery/.test(location.hash)) entrar(data.session); else mostrar(); });
+}
+window.addEventListener('beforeunload', () => { if (tGuardar) guardarYa(); });
+</script>
+</body>
+</html>
