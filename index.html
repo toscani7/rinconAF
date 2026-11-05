@@ -1042,11 +1042,28 @@ const obsVideos = 'IntersectionObserver' in window ? new IntersectionObserver(es
 function cargarCuandoSeVea(v){ if (obsVideos) obsVideos.observe(v); else if (!v.getAttribute('src')){ v.preload = 'metadata'; v.src = v.dataset.src; } }
 // Si le das play a un video, los demás se pausan (también los del chat)
 document.addEventListener('play', e => { if (e.target.tagName !== 'VIDEO') return; document.querySelectorAll('video').forEach(o => { if (o !== e.target && !o.paused) o.pause(); }); }, true);
-function vigilarVideo(v){ const aviso = () => { if (v.dataset.avisado) return; v.dataset.avisado = '1';
+function vigilarVideo(v){
+  const aviso = motivo => { if (v.dataset.avisado) return; v.dataset.avisado = '1'; v.dataset.motivo = motivo || v.dataset.motivo || 'formato';
     const p = document.createElement('p'); p.className = 'muted chico aviso-video'; p.style.margin = '4px 0 0';
-    p.textContent = 'este video no se puede ver en este dispositivo (seguramente está en formato HEVC). '; const a = document.createElement('a');
-    a.href = v.currentSrc || v.src; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'probar abrirlo aparte'; p.appendChild(a); v.after(p); };
-  v._aviso = aviso; v.addEventListener('error', () => { if (v.getAttribute('src')) aviso(); }); v.addEventListener('loadedmetadata', () => { if (!v.videoWidth) aviso(); }); }
+    p.textContent = v.dataset.motivo === 'red' ? 'este video no termina de cargar (puede ser la conexión o que el archivo sea muy pesado). '
+      : 'este video no se puede ver en este dispositivo (seguramente está en formato HEVC). ';
+    const a = document.createElement('a'); a.href = v.currentSrc || v.getAttribute('src') || v.dataset.src || '#'; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'probar abrirlo aparte'; p.appendChild(a);
+    if (v.dataset.motivo === 'red'){ const b = document.createElement('button'); b.type = 'button'; b.className = 'borrar'; b.textContent = ' · reintentar'; b.style.marginLeft = '4px';
+      b.onclick = () => { p.remove(); delete v.dataset.avisado; v.dataset.intentos = '0'; reintentar(); }; p.appendChild(b); }
+    v.after(p); };
+  // Si en 15 segundos no llegó ni el principio del video, se pide un link nuevo y se reintenta (una vez); si sigue igual, se avisa
+  let reloj = null;
+  const vigilar = () => { clearTimeout(reloj); reloj = setTimeout(() => { if (v.readyState >= 1 || v.dataset.avisado) return; reintentar(); }, 15000); };
+  const reintentar = async () => { const n = +(v.dataset.intentos || 0); console.warn('video trabado', v.dataset.path || v.currentSrc, 'intento', n + 1);
+    if (n >= 1 || !v.dataset.path){ aviso('red'); return; }
+    v.dataset.intentos = String(n + 1); const u = await firmarDeNuevo(v.dataset.path); if (!u) return aviso('red');
+    v.dataset.src = u; v.src = u; v.load(); vigilar(); };
+  v._aviso = () => aviso(v.dataset.motivo); v._vigilar = vigilar;
+  v.addEventListener('loadstart', () => { if (v.getAttribute('src')) vigilar(); });
+  v.addEventListener('loadedmetadata', () => { clearTimeout(reloj); if (!v.videoWidth) aviso('formato'); });
+  v.addEventListener('error', () => { if (!v.getAttribute('src')) return; clearTimeout(reloj); const c = v.error && v.error.code;
+    console.warn('error de video', c, v.error && v.error.message);
+    if (c === 4) aviso('formato'); else reintentar(); }); }
 const urlPublica = path => sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
 /* Links temporales de "media": el bucket es privado. Lo guardado (link de perfil o ruta de posteo) solo identifica el archivo;
    para mostrarlo se pide un link temporal, si la regla del servidor deja ver ese archivo. */
@@ -1061,6 +1078,7 @@ async function firmar(lista){ const rutas = [...new Set(lista.map(rutaMedia).fil
     let data, error; try { ({data, error} = await sb.storage.from(BUCKET).createSignedUrls(rutas.slice(i, i + 100), VIGENCIA)); } catch (er){ error = er; }
     if (error){ console.error('links temporales', error); continue; }               // si falla, la página sigue andando (usa el link público)
     (data || []).forEach(d => { if (d && !d.error && d.signedUrl && d.path){ firmadas.set(d.path, d.signedUrl); venceFirma.set(d.path, Date.now() + VIGENCIA * 1000); } }); } }
+async function firmarDeNuevo(v){ const r = rutaMedia(v); if (!r) return ''; venceFirma.delete(r); await firmar([r]); return ver(r); }
 const rutasDePerfil = p => [p.avatar, p.fondoImg, ...p.fotos.map(f => f.img)];
 // Se renuevan antes de vencer (lo que ya está en pantalla sigue visible)
 setInterval(() => { if (sesion && firmadas.size) firmar([...firmadas.keys()]); }, 10 * 60 * 1000);   // renueva solo los que están por vencer
