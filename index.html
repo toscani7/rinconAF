@@ -115,6 +115,10 @@ h1,h2,h3{font-family:var(--ft);color:var(--title);margin:0;line-height:1.25}
 .p-secs button{background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;color:var(--link);font-family:var(--ft);font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;padding:8px 0;min-height:40px;cursor:pointer}
 .p-secs button[aria-current="true"]{color:var(--title);border-bottom-color:var(--title)}
 .p-secs button[hidden],#p-cols[hidden]{display:none}
+.p-secs{overflow-x:auto;scrollbar-width:none}.p-secs::-webkit-scrollbar{display:none}
+.p-secs button{white-space:nowrap;flex:none}
+@media (max-width:600px){.p-secs{gap:14px}.p-secs button{letter-spacing:.5px;font-size:11px}}
+#p-posts-sec[hidden]{display:none}
 .galeria{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px}
 @media (min-width:900px){.galeria{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}}
 .g-item{display:flex;flex-direction:column;gap:4px;background:none;border:0;padding:0;margin:0;color:var(--ink);font:inherit;text-align:left;cursor:pointer;min-width:0}
@@ -299,7 +303,7 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
 .av-grande.redondo{border-radius:50%}
 @keyframes avFondo{from{opacity:0}}
 @keyframes avIn{from{transform:scale(.85);opacity:0}}
-#p-avatar.se-agranda{cursor:zoom-in}
+#p-avatar.se-agranda,.avatar.se-agranda{cursor:zoom-in}
 .recorte{position:relative;width:min(280px, 100%);aspect-ratio:1;margin:0 auto;overflow:hidden;background:#000;touch-action:none;cursor:grab;border:1px solid var(--line)}
 .recorte.redondo{border-radius:50%}
 .recorte.agarrando{cursor:grabbing}
@@ -597,7 +601,13 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
     <nav class="p-secs" aria-label="Secciones del perfil">
       <button type="button" data-psec="perfil" aria-current="true">perfil</button>
       <button type="button" data-psec="fotos" aria-current="false" id="psec-fotos">fotos anteriores</button>
+      <button type="button" data-psec="posts" aria-current="false" id="psec-posts">publicaciones</button>
     </nav>
+
+    <!-- Publicaciones: lo que esta persona publicó en el inicio (textos, imágenes y videos; sin sus comentarios) -->
+    <section id="p-posts-sec" hidden aria-labelledby="psec-posts">
+      <div class="feed" id="p-posts"></div>
+    </section>
 
     <!-- Fotos anteriores: miniaturas; al tocarlas se abren con likes y libro de visitas -->
     <section id="p-galeria-sec" hidden aria-labelledby="psec-fotos">
@@ -1284,9 +1294,8 @@ function ponerNick(el, p){ if (['ola','olacolor','olamicolor','destellos'].inclu
     el.innerHTML = [...p.apodo].map((ch, i) => `<span class="letra" aria-hidden="true" style="--i:${i}">${esc(ch)}</span>`).join(''); }
   else { el.removeAttribute('aria-label'); el.textContent = p.apodo; } }
 // Tocar la foto de perfil: se ve más grande; tocando cualquier parte (o Escape) se cierra
-function verAvatarGrande(){ const p = viendo; if (!p || !p.avatar) return; const im = $('#av-grande');
-  im.src = ver(p.avatar); im.alt = 'foto de perfil de ' + p.apodo; im.classList.toggle('redondo', p.avatarForma === 'circulo');
-  $('#modal-avatar').hidden = false; }
+function fotoGrande(url, alt, redonda){ if (!url) return; const im = $('#av-grande'); im.src = url; im.alt = alt; im.classList.toggle('redondo', !!redonda); $('#modal-avatar').hidden = false; }
+function verAvatarGrande(){ const p = viendo; if (!p || !p.avatar) return; fotoGrande(ver(p.avatar), 'foto de perfil de ' + p.apodo, p.avatarForma === 'circulo'); }
 const cerrarAvatarGrande = () => { $('#modal-avatar').hidden = true; };
 $('#p-avatar').addEventListener('click', verAvatarGrande);
 $('#p-avatar').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); verAvatarGrande(); } });
@@ -1337,7 +1346,14 @@ function pintar(){
   const ant = anteriores(p); if (!p.anteriores) seccionPerfil = 'perfil';
   const bf = $('#psec-fotos'); bf.hidden = !p.anteriores; bf.textContent = `fotos anteriores (${ant.length})`;
   $$('.p-secs [data-psec]').forEach(b => b.setAttribute('aria-current', b.dataset.psec === seccionPerfil));
-  $('#p-cols').hidden = seccionPerfil !== 'perfil'; $('#p-galeria-sec').hidden = seccionPerfil !== 'fotos';
+  $('#p-cols').hidden = seccionPerfil !== 'perfil'; $('#p-galeria-sec').hidden = seccionPerfil !== 'fotos'; $('#p-posts-sec').hidden = seccionPerfil !== 'posts';
+  // Publicaciones (las ven vos y sus amigos, como en el inicio)
+  const verPubs = mio || sonAmigos(yo, p), pubs = verPubs ? feed.filter(x => x.de === p.id).sort((a,b) => b.cuando - a.cuando) : [];
+  $('#psec-posts').textContent = verPubs ? `publicaciones (${pubs.length})` : 'publicaciones';
+  if (seccionPerfil === 'posts'){ const c = $('#p-posts'); c.innerHTML = '';
+    if (!verPubs) c.innerHTML = `<p class="muted chico" style="margin:0">solo los amigos de ${esc(p.apodo)} ven sus publicaciones. mandale una solicitud.</p>`;
+    else if (!pubs.length) c.innerHTML = `<p class="muted chico" style="margin:0">${mio ? 'todavía no publicaste nada en el inicio. tocá el + para publicar.' : esc(p.apodo) + ' todavía no publicó nada en el inicio.'}</p>`;
+    else pubs.forEach(x => c.appendChild(posteoEl(x, yo))); }
   const g = $('#p-galeria'); g.innerHTML = '';
   if (!ant.length) g.innerHTML = `<p class="muted chico" style="margin:0;grid-column:1/-1">${mio ? 'todavía no tenés fotos anteriores. cuando subas la foto de mañana, la de hoy pasa acá.' : esc(p.apodo) + ' todavía no tiene fotos anteriores.'}</p>`;
   ant.forEach(x => { const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'g-item'; bt.dataset.foto = x.cuando;
@@ -1918,7 +1934,11 @@ function pintarGrupo(yo){
     armarComposer(g);
   }
   $('#g-cab-nombre').textContent = g.nombre; $('#g-cab-cuenta').textContent = `${g.uids.length} integrantes`; $('#g-lbl').textContent = 'Mensaje para ' + g.nombre;
-  avatarGrupo(conv.querySelector('.conv-cab .avatar'), g);
+  const avg = conv.querySelector('.conv-cab .avatar'); avatarGrupo(avg, g);
+  const urlG = fotosGrupo.get(g.foto)?.url;                                   // tocar la foto del grupo: se ve más grande
+  if (urlG){ avg.classList.add('se-agranda'); avg.setAttribute('role', 'button'); avg.tabIndex = 0; avg.setAttribute('aria-label', 'ver la foto del grupo ' + g.nombre + ' más grande');
+    const abrir = () => fotoGrande(urlG, 'foto del grupo ' + g.nombre, true);
+    avg.onclick = abrir; avg.onkeydown = e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); abrir(); } }; }
   $('#info-btn').setAttribute('aria-expanded', infoAbierta);
   const box = $('#info-grupo');                                  // el panel se rearma solo si cambió algo (así no se pierde lo que estás escribiendo)
   if (infoAbierta){ const firma = [g.nombre, g.foto, g.adminUid, g.uids.join(), amigosDe(yo).map(a => a.id).join()].join('|');
@@ -2408,19 +2428,20 @@ function posteoEl(x, yo){
     else { videosFeed.set(v.dataset.path, v); vigilarVideo(v); cargarCuandoSeVea(v); } });
   return d;
 }
-$('#feed').addEventListener('click', e => { const b = e.target.closest('button[data-pacc]'); if (!b) return; const art = b.closest('.posteo'), id = +art.id.slice(5), x = feed.find(q => q.id === id), yo = perfil(); if (!x) return;
+function accionPosteo(e){ const b = e.target.closest('button[data-pacc]'); if (!b) return; const art = b.closest('.posteo'), id = +art.id.slice(5), x = feed.find(q => q.id === id), yo = perfil(); if (!x) return;
   if (b.dataset.pacc === 'like'){
     if (x.likes.includes(yo.id)){ x.likes = x.likes.filter(i => i !== yo.id); sb.from('likes').delete().match({posteo:x.id, usuario:yo.uid}).then(({error}) => falla('sacar el like', error)); }
     else { x.likes.push(yo.id); sb.from('likes').insert({posteo:x.id}).then(({error}) => falla('dar like', error)); }   // el aviso lo crea la base de datos
     art.replaceWith(posteoEl(x, yo)); }
   if (b.dataset.pacc === 'comentar') art.querySelector('.form-com input').focus();
-  if (b.dataset.pacc === 'borrar' && confirm('¿Borrar este posteo?')){ feed = feed.filter(q => q.id !== id); pintarFeed();
-    sb.from('posteos').delete().eq('id', id).then(({error}) => { if (!falla('borrar el posteo', error) && x.media_path) sb.storage.from(BUCKET).remove([x.media_path]); }); } });
-$('#feed').addEventListener('submit', e => { e.preventDefault(); const f = e.target, art = f.closest('.posteo'), id = +art.id.slice(5), x = feed.find(q => q.id === id), yo = perfil();
+  if (b.dataset.pacc === 'borrar' && confirm('¿Borrar este posteo?')){ feed = feed.filter(q => q.id !== id); pintarFeed(); if (viendo) pintar();
+    sb.from('posteos').delete().eq('id', id).then(({error}) => { if (!falla('borrar el posteo', error) && x.media_path) sb.storage.from(BUCKET).remove([x.media_path]); }); } }
+function comentarPosteo(e){ e.preventDefault(); const f = e.target, art = f.closest('.posteo'), id = +art.id.slice(5), x = feed.find(q => q.id === id), yo = perfil();
   const t = f.querySelector('input').value.trim(); if (!t || !x) return;
   x.comentarios.push({id:Date.now(), de:yo.id, texto:t, cuando:Date.now()});
   sb.from('comentarios').insert({posteo:x.id, texto:t}).then(({error}) => falla('comentar', error));   // el aviso lo crea la base de datos
-  const nuevo = posteoEl(x, yo); art.replaceWith(nuevo); nuevo.querySelector('.form-com input').focus(); });
+  const nuevo = posteoEl(x, yo); art.replaceWith(nuevo); nuevo.querySelector('.form-com input').focus(); }
+['#feed', '#p-posts'].forEach(c => { $(c).addEventListener('click', accionPosteo); $(c).addEventListener('submit', comentarPosteo); });
 // Recargar: trae lo nuevo de Supabase; lo nuevo queda arriba
 async function recargar(){ const b = $('#recargar'); b.disabled = true; b.textContent = 'recargando…';
   try { await cargarTodo(); } catch (er){ falla('recargar', er); }
