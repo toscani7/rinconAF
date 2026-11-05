@@ -250,6 +250,7 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
 .esc-card:hover,.esc-card:focus-visible{border-color:var(--link)}
 .esc-tapa{flex:none;width:44px;height:44px;background:var(--bg2) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--link);font-size:16px}
 .esc-info{min-width:0;display:flex;flex-direction:column}
+.esc-card.artista .esc-tapa{border-radius:50%}
 .esc-info b{color:var(--title);font-size:12px;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
 .esc-info span{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .esc-info .esc-app{font-size:10px;color:var(--link)}
@@ -281,6 +282,12 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
 .check-legal input{flex:none;width:18px;height:18px;margin:2px 0 0;accent-color:var(--link)}
 #modal-legal{z-index:70}
 #modal-recorte{z-index:80}
+#modal-avatar{z-index:85;align-items:center;background:rgba(0,0,0,.72);cursor:zoom-out;animation:avFondo .15s ease-out}
+.av-grande{display:block;width:min(78vw, 340px);height:min(78vw, 340px);object-fit:cover;background:#222;border:2px solid #FFF;box-shadow:0 12px 40px rgba(0,0,0,.6);animation:avIn .15s ease-out}
+.av-grande.redondo{border-radius:50%}
+@keyframes avFondo{from{opacity:0}}
+@keyframes avIn{from{transform:scale(.85);opacity:0}}
+#p-avatar.se-agranda{cursor:zoom-in}
 .recorte{position:relative;width:min(280px, 100%);aspect-ratio:1;margin:0 auto;overflow:hidden;background:#000;touch-action:none;cursor:grab;border:1px solid var(--line)}
 .recorte.redondo{border-radius:50%}
 .recorte.agarrando{cursor:grabbing}
@@ -343,6 +350,24 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
 .ef-brillo .nick{background:linear-gradient(100deg, var(--title) 20%, #FFF 40%, var(--link) 50%, var(--title) 70%);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:brillo 3s linear infinite}
 @keyframes brillo{to{background-position:-300% 0}}
 .ef-arcoiris .nick{background:linear-gradient(90deg,#FF4FD8,#FFB84D,#B6FF3B,#3DE0FF,#8C7BFF);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* Efectos con movimiento */
+.nick .letra{display:inline-block;white-space:pre}
+.ef-ola .nick .letra{animation:ola 1.4s ease-in-out infinite;animation-delay:calc(var(--i) * .08s)}
+@keyframes ola{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-.28em)}}
+.ef-olacolor .nick .letra{animation:olacolor 2.4s linear infinite;animation-delay:calc(var(--i) * -.14s)}
+@keyframes olacolor{0%,100%{color:#FF4FD8}20%{color:#FFB84D}40%{color:#B6FF3B}60%{color:#3DE0FF}80%{color:#8C7BFF}}
+.ef-arcoirismov .nick{background:linear-gradient(90deg,#FF4FD8,#FFB84D,#B6FF3B,#3DE0FF,#8C7BFF,#FF4FD8);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:arcoirismov 3s linear infinite}
+@keyframes arcoirismov{to{background-position:-200% 0}}
+.ef-neon .nick{color:#FFF;text-shadow:0 0 4px #FFF, 0 0 10px var(--link), 0 0 20px var(--link), 0 0 34px var(--link);animation:neon 3.2s infinite}
+@keyframes neon{0%,17%,21%,24%,52%,56%,100%{opacity:1}19%,23%,54%{opacity:.45}}
+.ef-latido .nick{display:inline-block;transform-origin:left center;animation:latido 1.3s ease-in-out infinite}
+@keyframes latido{0%,45%,100%{transform:scale(1)}15%{transform:scale(1.09)}30%{transform:scale(1.03)}}
+.ef-flotar .nick{display:inline-block;animation:flotar 3s ease-in-out infinite}
+@keyframes flotar{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.ef-temblor .nick{display:inline-block;animation:temblor .3s steps(2) infinite}
+@keyframes temblor{0%{transform:translate(0,0)}25%{transform:translate(1px,-1px)}50%{transform:translate(-1px,1px)}75%{transform:translate(1px,1px)}100%{transform:translate(-1px,-1px)}}
+.ef-interferencia .nick{display:inline-block;animation:interf 2.6s steps(1) infinite}
+@keyframes interf{0%,86%,100%{text-shadow:2px 0 #FF003C, -2px 0 #00E5FF;transform:none}88%{text-shadow:-4px 0 #FF003C, 4px 0 #00E5FF;transform:translateX(3px) skewX(-10deg)}92%{text-shadow:3px 2px #FF003C, -3px -2px #00E5FF;transform:translateX(-3px)}96%{text-shadow:none;transform:none}}
 .frase-marq{overflow:hidden;white-space:nowrap}
 .frase-marq span{display:inline-block;padding-left:100%;animation:marq 14s linear infinite}
 @keyframes marq{to{transform:translateX(-100%)}}
@@ -480,7 +505,7 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
       <ul class="esc-lista" id="esc-lista"></ul>
       <form id="esc-form" class="esc-form">
         <label class="lbl" for="esc-txt" id="esc-lbl">¿qué estás escuchando?</label>
-        <span class="muted" style="font-size:11px;margin-top:-4px">link de Spotify, YouTube Music o SoundCloud</span>
+        <span class="muted" style="font-size:11px;margin-top:-4px">link de una canción o de un artista/banda de Spotify, YouTube Music o SoundCloud</span>
         <input class="field" id="esc-txt" maxlength="300" autocomplete="off" placeholder="pegá un link o escribí el tema">
         <div style="display:flex;gap:6px"><button class="btn" type="submit" style="flex:1;padding:0 10px">agregar canción</button><button class="btn" type="button" id="esc-sacar" hidden>sacar</button></div>
         <p class="msg" id="esc-msg" role="alert"></p>
@@ -677,6 +702,11 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
   </div>
 </div>
 
+<!-- Foto de perfil más grande (se cierra tocando cualquier parte) -->
+<div class="modal-fondo" id="modal-avatar" hidden role="dialog" aria-modal="true" aria-label="foto de perfil">
+  <img class="av-grande" id="av-grande" alt="">
+</div>
+
 <!-- Acomodar la foto de perfil (avatar) antes de subirla -->
 <div class="modal-fondo" id="modal-recorte" hidden>
   <div class="modal" role="dialog" aria-labelledby="rec-t" aria-modal="true">
@@ -827,7 +857,7 @@ function pick(o, ks){ const r = {}; ks.forEach(k => r[k] = o[k]); return r; }
    solo se aceptan claves conocidas con valores válidos; lo demás vuelve al valor por defecto. */
 const OPC = {tema:[...Object.keys(TEMAS),'propio'], patron:['liso','puntos','cuadrille','rayas','grilla','estrellas','corazones','estatica'],
   fuenteTitulo:Object.keys(FUENTES_T), fuenteTexto:Object.keys(FUENTES_B),
-  efectoTitulo:['ninguno','sombra','glitch','brillo','arcoiris'], cajas:['simple','punteada','sin','win98'], avatarForma:['cuadrado','circulo'], fondoModo:['mosaico','cubrir']};
+  efectoTitulo:['ninguno','sombra','glitch','brillo','arcoiris','ola','olacolor','arcoirismov','neon','latido','flotar','temblor','interferencia'], cajas:['simple','punteada','sin','win98'], avatarForma:['cuadrado','circulo'], fondoModo:['mosaico','cubrir']};
 const LARGOS = {frase:90, bio:400, ciudad:40, escuchando:100, musica:300, favoritos:400};
 const BOOLS = ['anteriores','sobre','ff_ver','favs','contador','marquesina','estela','nuevo'];
 const esColor = v => typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v);
@@ -845,6 +875,7 @@ function sanearPerfil(d, uid){ const b = base(), r = {}; d = d && typeof d === '
   r.escuchandoUrl = typeof d.escuchandoUrl === 'string' && d.escuchandoUrl.length <= 300 && /^https?:\/\/\S+$/i.test(d.escuchandoUrl) ? d.escuchandoUrl : '';
   r.escuchandoCuando = Number.isFinite(d.escuchandoCuando) && d.escuchandoCuando > 0 ? d.escuchandoCuando : 0;
   r.escuchandoArtista = typeof d.escuchandoArtista === 'string' ? d.escuchandoArtista.slice(0, 80) : '';
+  r.escuchandoTipo = ['tema','artista','álbum','playlist','podcast'].includes(d.escuchandoTipo) ? d.escuchandoTipo : 'tema';
   r.escuchandoImg = typeof d.escuchandoImg === 'string' && TAPA_OK.test(d.escuchandoImg) ? d.escuchandoImg : '';   // portada: solo de Spotify, YouTube o SoundCloud
   r.cumple = typeof d.cumple === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d.cumple) ? d.cumple : '';
   r.tamano = Number.isInteger(d.tamano) && d.tamano >= 12 && d.tamano <= 19 ? d.tamano : b.tamano;
@@ -927,6 +958,63 @@ async function limpiarUbicacion(file){
       i += tam; }
     return n ? new File([buf], file.name || 'video', {type: file.type}) : file;
   } catch (er){ console.error('limpiar ubicación', er); return file; } }
+/* ---------- Videos en HEVC (H.265) ----------
+   Muchos celulares graban en HEVC para ocupar menos. No todos los navegadores lo pueden mostrar (se ve negro o solo se escucha).
+   Al subir: si el video es HEVC y este navegador lo puede reproducir, se convierte a H.264 (lo ven todos) re-grabándolo en el momento.
+   Si no se puede convertir acá, se explica cómo cambiar la cámara a un formato compatible. */
+function codecDeVideo(buf){ const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength); let i = 0;
+  while (i + 8 <= buf.length){ let tam = dv.getUint32(i), cab = 8; const t = String.fromCharCode(buf[i+4], buf[i+5], buf[i+6], buf[i+7]);
+    if (tam === 1){ if (i + 16 > buf.length) break; tam = Number(dv.getBigUint64(i + 8)); cab = 16; } else if (tam === 0) tam = buf.length - i;
+    if (tam < cab) break;
+    if (t === 'moov'){ const fin = Math.min(i + tam, buf.length);                         // solo en los metadatos, nunca en la imagen
+      for (let k = i + cab; k < fin - 4; k++){ const c = String.fromCharCode(buf[k], buf[k+1], buf[k+2], buf[k+3]); if (['hvc1','hev1','avc1','avc3','vp09','av01'].includes(c)) return c; }
+      return ''; }
+    i += tam; }
+  return ''; }
+const esHEVC = c => c === 'hvc1' || c === 'hev1';
+const TIPOS_REC = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4;codecs=avc1.4D401E,mp4a.40.2', 'video/mp4;codecs=avc1,mp4a.40.2', 'video/mp4;codecs=avc1', 'video/mp4'];
+const tipoGrabacion = () => { try { return (window.MediaRecorder && TIPOS_REC.find(t => MediaRecorder.isTypeSupported(t))) || ''; } catch { return ''; } };
+// ¿Este navegador puede mostrar la imagen del video? (si solo tiene audio para mostrar, videoWidth queda en 0)
+function seVeEnEsteEquipo(file){ return new Promise(ok => { const v = document.createElement('video'), u = URL.createObjectURL(file); let hecho = false;
+  const fin = r => { if (hecho) return; hecho = true; clearTimeout(t); v.removeAttribute('src'); v.load(); URL.revokeObjectURL(u); ok(r); };
+  const t = setTimeout(() => fin(v.videoWidth > 0), 8000);
+  v.muted = true; v.playsInline = true; v.preload = 'auto';
+  v.onloadedmetadata = () => { if (v.videoWidth > 0) fin(true); }; v.onloadeddata = () => fin(v.videoWidth > 0); v.onerror = () => fin(false); v.src = u; }); }
+const AYUDA_HEVC = 'Este video está grabado en HEVC (H.265), un formato que muchos celulares no pueden mostrar, y desde este dispositivo no se puede convertir. Probá subirlo desde otro celular o compu, o cambiá la cámara a un formato compatible: en iPhone, Ajustes → Cámara → Formatos → "Más compatible"; en Android, en los ajustes de la cámara desactivá "video de alta eficiencia" o "HEVC".';
+async function revisarVideo(f){ let codec = ''; try { codec = codecDeVideo(new Uint8Array(await f.arrayBuffer())); } catch {}
+  if (!esHEVC(codec)) return {convertir:false};
+  if (tipoGrabacion() && await seVeEnEsteEquipo(f)) return {convertir:true};
+  return {bloquear:true}; }
+// Audio para la conversión: se prepara apenas tocás el botón (los navegadores lo piden así)
+const nuevoAudio = () => { try { const C = window.AudioContext || window.webkitAudioContext; const a = new C(); a.resume().catch(() => {}); return a; } catch { return null; } };
+async function convertirVideo(file, ac, progreso){ const tipo = tipoGrabacion(); if (!tipo) throw new Error('este navegador no puede convertir videos');
+  const u = URL.createObjectURL(file), v = document.createElement('video'); v.muted = true; v.playsInline = true; v.preload = 'auto'; v.src = u;
+  try {
+    await new Promise((ok, mal) => { v.onloadeddata = ok; v.onerror = () => mal(new Error('no se pudo leer el video')); });
+    const k = Math.min(1, 720 / Math.max(v.videoWidth, v.videoHeight)), c = document.createElement('canvas');
+    c.width = Math.max(2, Math.round(v.videoWidth * k / 2) * 2); c.height = Math.max(2, Math.round(v.videoHeight * k / 2) * 2);
+    const g = c.getContext('2d'); g.drawImage(v, 0, 0, c.width, c.height);
+    const stream = c.captureStream(30); let fuente = null;
+    if (ac) try { const audio = await ac.decodeAudioData(await file.arrayBuffer()); const dest = ac.createMediaStreamDestination();
+      fuente = ac.createBufferSource(); fuente.buffer = audio; fuente.connect(dest); dest.stream.getAudioTracks().forEach(t => stream.addTrack(t)); } catch {}   // sin audio: queda mudo
+    const rec = new MediaRecorder(stream, {mimeType:tipo, videoBitsPerSecond:2500000, audioBitsPerSecond:128000}), partes = [];
+    rec.ondataavailable = e => { if (e.data && e.data.size) partes.push(e.data); };
+    const parado = new Promise(ok => { rec.onstop = ok; });
+    let vivo = true; const dibujar = () => { if (!vivo) return; g.drawImage(v, 0, 0, c.width, c.height);
+      if (v.duration) progreso(Math.min(99, Math.round(v.currentTime / v.duration * 100)));
+      if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(dibujar); else requestAnimationFrame(dibujar); };
+    rec.start(1000); await v.play(); if (fuente) fuente.start(0, v.currentTime); dibujar();
+    await new Promise(ok => { v.onended = ok; });
+    vivo = false; rec.stop(); if (fuente) try { fuente.stop(); } catch {} await parado;
+    const blob = new Blob(partes, {type:'video/mp4'}); if (!blob.size) throw new Error('la conversión salió vacía');
+    return new File([blob], 'video.mp4', {type:'video/mp4'}); }
+  finally { URL.revokeObjectURL(u); v.removeAttribute('src'); } }
+// Al mirar: si el video no se puede ver en este dispositivo, se avisa (en vez de quedar negro o solo con sonido)
+function vigilarVideo(v){ const aviso = () => { if (v.dataset.avisado) return; v.dataset.avisado = '1';
+    const p = document.createElement('p'); p.className = 'muted chico aviso-video'; p.style.margin = '4px 0 0';
+    p.textContent = 'este video no se puede ver en este dispositivo (seguramente está en formato HEVC). '; const a = document.createElement('a');
+    a.href = v.currentSrc || v.src; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'probar abrirlo aparte'; p.appendChild(a); v.after(p); };
+  v.addEventListener('error', aviso); v.addEventListener('loadedmetadata', () => { if (!v.videoWidth) aviso(); }); }
 const urlPublica = path => sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
 /* Links temporales de "media": el bucket es privado. Lo guardado (link de perfil o ruta de posteo) solo identifica el archivo;
    para mostrarlo se pide un link temporal, si la regla del servidor deja ver ese archivo. */
@@ -1044,7 +1132,7 @@ function aplicar(p){
   r.setProperty('--ft', FUENTES_T[p.fuenteTitulo][0]); r.setProperty('--fb', FUENTES_B[p.fuenteTexto][0]);
   r.setProperty('--fs', p.tamano + 'px'); r.setProperty('--marco', p.marco + 'px');
   document.body.dataset.cajas = p.cajas;
-  document.body.classList.remove('ef-sombra','ef-glitch','ef-brillo','ef-arcoiris');
+  document.body.classList.remove(...[...document.body.classList].filter(c => c.startsWith('ef-')));
   if (p.efectoTitulo !== 'ninguno') document.body.classList.add('ef-' + p.efectoTitulo);
   $('meta[name=theme-color]').content = p.box;
 }
@@ -1062,13 +1150,28 @@ function ponerAvatar(el, p){ el.textContent = ''; el.style.backgroundImage = p.a
   el.classList.toggle('redondo', p.avatarForma === 'circulo'); el.setAttribute('role','img'); el.setAttribute('aria-label','avatar de ' + p.apodo); }
 const POS = [[4,4,28],[86,6,22],[8,80,20],[82,76,30],[46,4,18],[90,42,20],[28,44,16],[64,30,14]];
 
+// Nick: algunos efectos animan letra por letra (cada letra es un <span>; se lee igual con lector de pantalla)
+function ponerNick(el, p){ if (['ola','olacolor'].includes(p.efectoTitulo)){ el.setAttribute('aria-label', p.apodo);
+    el.innerHTML = [...p.apodo].map((ch, i) => `<span class="letra" aria-hidden="true" style="--i:${i}">${esc(ch)}</span>`).join(''); }
+  else { el.removeAttribute('aria-label'); el.textContent = p.apodo; } }
+// Tocar la foto de perfil: se ve más grande; tocando cualquier parte (o Escape) se cierra
+function verAvatarGrande(){ const p = viendo; if (!p || !p.avatar) return; const im = $('#av-grande');
+  im.src = ver(p.avatar); im.alt = 'foto de perfil de ' + p.apodo; im.classList.toggle('redondo', p.avatarForma === 'circulo');
+  $('#modal-avatar').hidden = false; }
+const cerrarAvatarGrande = () => { $('#modal-avatar').hidden = true; };
+$('#p-avatar').addEventListener('click', verAvatarGrande);
+$('#p-avatar').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); verAvatarGrande(); } });
+$('#modal-avatar').addEventListener('click', cerrarAvatarGrande);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal-avatar').hidden) cerrarAvatarGrande(); });
 /* ---------- Pintar un perfil (con el estilo de su dueño) ---------- */
 function pintar(){
   const yo = perfil(), p = viendo; if (!yo || !p) return; const mio = esMio();
   $$('[data-apodo]').forEach(e => e.textContent = yo.apodo);
   $$('#perfil [data-sec="perfil"]').forEach(x => mio ? x.setAttribute('aria-current','page') : x.removeAttribute('aria-current'));
   ponerAvatar($('#p-avatar'), p);
-  $('#p-nick').textContent = p.apodo;
+  const pa = $('#p-avatar'), agranda = !!p.avatar; pa.classList.toggle('se-agranda', agranda);
+  if (agranda){ pa.setAttribute('role','button'); pa.tabIndex = 0; pa.setAttribute('aria-label', 'ver la foto de perfil de ' + p.apodo + ' más grande'); } else pa.removeAttribute('tabindex');
+  ponerNick($('#p-nick'), p);
   const lb = $('#like-perfil'), dio = p.fans.includes(yo.id);
   const nl = p.fans.length; $('#like-cuenta').textContent = `${nl} ${nl === 1 ? 'like' : 'likes'} este perfil`;
   lb.hidden = mio;   // en tu propio perfil solo se ve la cantidad
@@ -1266,7 +1369,9 @@ function pintarEd(){
     h += ops('fuenteTitulo','letra del nick y títulos', Object.entries(FUENTES_T).map(([k,[f,n]]) => [k,n,`font-family:${f.replace(/"/g,"'")}`]));
     h += ops('fuenteTexto','letra del texto', Object.entries(FUENTES_B).map(([k,[f,n]]) => [k,n,`font-family:${f.replace(/"/g,"'")}`]));
     h += `<div class="ed-grupo"><label class="lbl" for="ed-tam">tamaño del texto: <span id="tam-v">${p.tamano}</span> px</label><input class="rango" id="ed-tam" type="range" min="12" max="19" value="${p.tamano}" data-num="tamano"></div>`;
-    h += ops('efectoTitulo','efecto en el nick',[['ninguno','ninguno'],['sombra','sombra'],['glitch','glitch'],['brillo','brillo'],['arcoiris','arcoíris']]);
+    h += ops('efectoTitulo','efecto en el nick',[['ninguno','ninguno'],['sombra','sombra'],['glitch','glitch'],['brillo','brillo'],['arcoiris','arcoíris'],
+      ['ola','ola ~'],['olacolor','ola de color ~'],['arcoirismov','arcoíris que corre ~'],['neon','neón ~'],['latido','latido ~'],['flotar','flotar ~'],['temblor','temblor ~'],['interferencia','interferencia ~']]);
+    h += '<p class="muted" style="font-size:11px;margin:-4px 0 0">~ = con movimiento</p>';
   }
   if (pest === 'partes'){
     h += ops('cajas','estilo de las cajas',[['simple','simple'],['punteada','punteada'],['sin','sin cajas'],['win98','windows 98']]);
@@ -1295,7 +1400,7 @@ ed.addEventListener('input', e => { const t = e.target;
     if (er){ alertaEd(er); if (a) a.dataset.nick = '1'; return; }
     if (a && a.dataset.nick){ a.hidden = true; delete a.dataset.nick; }
     if (v !== perfil().apodo) cambiar('apodo', v); return; }
-  if (t.dataset.key === 'escuchando'){ const p = perfil(); p.escuchandoUrl = ''; p.escuchandoArtista = ''; p.escuchandoImg = ''; p.escuchandoCuando = t.value.trim() ? Date.now() : 0; }   // escrito a mano: sin link
+  if (t.dataset.key === 'escuchando'){ const p = perfil(); p.escuchandoUrl = ''; p.escuchandoArtista = ''; p.escuchandoImg = ''; p.escuchandoTipo = 'tema'; p.escuchandoCuando = t.value.trim() ? Date.now() : 0; }   // escrito a mano: sin link
   if (t.dataset.key){ cambiar(t.dataset.key, t.value); const c = $('#cont-' + t.dataset.key); if (c) c.textContent = t.value.length + '/' + t.maxLength; }
   if (t.dataset.color){ perfil().tema = 'propio'; cambiar(t.dataset.color, t.value); }
   if (t.dataset.num){ cambiar(t.dataset.num, +t.value); $('#tam-v').textContent = t.value; } });
@@ -1321,14 +1426,18 @@ function recPintar(){ const L = recLado(), e = REC.esc;                         
   $('#rec-img').style.transform = `translate(${REC.x}px, ${REC.y}px) scale(${e})`; }
 function recZoom(z){ const L = recLado(), cx = (L / 2 - REC.x) / REC.esc, cy = (L / 2 - REC.y) / REC.esc;   // acerca o aleja sin mover el centro
   REC.esc = REC.base * z; REC.x = L / 2 - cx * REC.esc; REC.y = L / 2 - cy * REC.esc; recPintar(); }
-function abrirRecorte(file){ if (!file.type.startsWith('image/')) return alertaEd('Elegí una imagen.');
+// Sirve para el avatar y para la foto de los grupos: o.redondo (vista previa redonda), o.listo(blob) (qué hacer con el recorte), o.error(texto)
+function abrirRecorte(file, o = {}){ const error = o.error || alertaEd; if (!file.type.startsWith('image/')) return error('Elegí una imagen.');
+  REC.listo = o.listo || subirAvatar; REC.textoSubiendo = o.subiendo || 'subiendo tu foto…';
+  $('#rec-t').textContent = o.titulo || 'acomodá tu foto';
   if (REC.url) URL.revokeObjectURL(REC.url); REC.url = URL.createObjectURL(file);
   const im = $('#rec-img'); $('#rec-msg').className = 'msg'; $('#rec-usar').disabled = false;
-  $('#rec-area').classList.toggle('redondo', perfil()?.avatarForma === 'circulo');
+  $('#rec-area').classList.toggle('redondo', o.redondo ?? perfil()?.avatarForma === 'circulo');
   im.onload = () => { REC.w = im.naturalWidth; REC.h = im.naturalHeight; im.style.width = REC.w + 'px'; im.style.height = REC.h + 'px';
     $('#modal-recorte').hidden = false; const L = recLado(); REC.base = L / Math.min(REC.w, REC.h); REC.esc = REC.base;
     REC.x = (L - REC.w * REC.esc) / 2; REC.y = (L - REC.h * REC.esc) / 2; $('#rec-zoom').value = 1; recPintar(); $('#rec-usar').focus(); };
-  im.onerror = () => alertaEd('No se pudo abrir esa imagen.'); im.src = REC.url; }
+  im.onerror = () => error('No se pudo abrir esa imagen.'); im.src = REC.url; }
+async function subirAvatar(blob){ const path = await subirArchivo(blob, 'jpg'); await firmar([path]); cambiar('avatar', urlPublica(path), true); }
 function cerrarRecorte(){ $('#modal-recorte').hidden = true; if (REC.url){ URL.revokeObjectURL(REC.url); REC.url = ''; } $('#rec-img').removeAttribute('src'); }
 $('#rec-area').addEventListener('pointerdown', e => { e.preventDefault(); $('#rec-area').setPointerCapture(e.pointerId); $('#rec-area').classList.add('agarrando');
   REC.arrastre = {px:e.clientX, py:e.clientY, x:REC.x, y:REC.y}; });
@@ -1341,9 +1450,9 @@ $('#modal-recorte').addEventListener('click', e => { if (e.target.id === 'modal-
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal-recorte').hidden) cerrarRecorte(); });
 $('#rec-usar').onclick = async () => { const b = $('#rec-usar'), L = recLado(), lado = 400, c = document.createElement('canvas'); c.width = c.height = lado;
   c.getContext('2d').drawImage($('#rec-img'), -REC.x / REC.esc, -REC.y / REC.esc, L / REC.esc, L / REC.esc, 0, 0, lado, lado);
-  b.disabled = true; msg('#rec-msg', 'subiendo tu foto…', 'ok');
+  b.disabled = true; msg('#rec-msg', REC.textoSubiendo, 'ok');
   try { const blob = await new Promise((ok, mal) => c.toBlob(x => x ? ok(x) : mal(new Error('sin imagen')), 'image/jpeg', .85));
-    const path = await subirArchivo(blob, 'jpg'); await firmar([path]); cerrarRecorte(); cambiar('avatar', urlPublica(path), true); }
+    await REC.listo(blob); cerrarRecorte(); }
   catch (er){ console.error(er); b.disabled = false; msg('#rec-msg', 'No se pudo subir la foto. Probá de nuevo.'); } };
 
 /* ---------- Archivos del chat ----------
@@ -1357,7 +1466,7 @@ const media = (() => { let db; const abrir = () => db ? Promise.resolve(db) : ne
 const urlsMedia = new Map();
 function cargarMedia(el){ const k = el.dataset.media; const usar = u => { const tipo = el.dataset.tipo;
     const m = document.createElement(tipo === 'video' ? 'video' : 'img'); m.className = 'adjunto'; m.src = u;
-    if (tipo === 'video'){ m.controls = true; m.playsInline = true; m.preload = 'metadata'; m.setAttribute('aria-label', el.dataset.alt); } else m.alt = el.dataset.alt;
+    if (tipo === 'video'){ m.controls = true; m.playsInline = true; m.preload = 'metadata'; m.setAttribute('aria-label', el.dataset.alt); vigilarVideo(m); } else m.alt = el.dataset.alt;
     el.replaceWith(m); };
   if (urlsMedia.has(k)) return usar(urlsMedia.get(k));
   media.traer(k).then(b => { if (!b){ el.textContent = 'archivo no disponible'; return; } const u = URL.createObjectURL(b); urlsMedia.set(k, u); usar(u); }).catch(() => el.textContent = 'no se pudo cargar'); }
@@ -1508,7 +1617,7 @@ function pintarEstadoChat(){ const e = $('#chat-rt'); if (!e) return;
   e.textContent = rtEstado && rtEstado !== 'SUBSCRIBED' ? 'reconectando… los mensajes nuevos van a aparecer en cuanto vuelva la conexión.' : ''; }
 function cargarMediaPriv(el){ const path = el.dataset.adj;
   const usar = u => { const tipo = el.dataset.tipo, m = document.createElement(tipo === 'video' ? 'video' : 'img'); m.className = 'adjunto'; m.src = u;
-    if (tipo === 'video'){ m.controls = true; m.playsInline = true; m.preload = 'metadata'; m.setAttribute('aria-label', el.dataset.alt); } else m.alt = el.dataset.alt;
+    if (tipo === 'video'){ m.controls = true; m.playsInline = true; m.preload = 'metadata'; m.setAttribute('aria-label', el.dataset.alt); vigilarVideo(m); } else m.alt = el.dataset.alt;
     el.replaceWith(m); };
   const g = urlsChat.get(path); if (g && g.vence > Date.now()) return usar(g.url);
   sb.storage.from(BUCKET_CHAT).createSignedUrl(path, 3600).then(({data, error}) => {
@@ -1527,16 +1636,23 @@ function armarComposer(c){
     i.value = ''; i.focus(); enviarPrivado(c, {tipo:'texto', texto:t}); };
   $('#zumbido').onclick = () => { if (zumbidoBloqueado(c)){ ponerBotonZumbido(c); return; } enviarPrivado(c, {tipo:'zumbido'}); sacudir(); };
   $('#chat-adj').onchange = async e => { const f = e.target.files[0]; if (!f) return; const est = $('#chat-estado'), esVideo = f.type.startsWith('video/'); e.target.value = '';
+    const ac = esVideo ? nuevoAudio() : null;                                  // por si hay que convertirlo (se prepara en el toque)
     if (esVideo && f.size > MAX_VIDEO_MB * 1048576){ est.textContent = `ese video pesa ${mb(f.size)}. el máximo es ${MAX_VIDEO_MB} MB: probá con uno más corto.`; return; }
     if (!esVideo && !f.type.startsWith('image/')){ est.textContent = 'por ahora se pueden mandar fotos y videos.'; return; }
     try {
-      est.textContent = esVideo ? `subiendo video (${mb(f.size)})…` : 'achicando y subiendo la foto…';
-      const blob = esVideo ? await limpiarUbicacion(f) : await achicarBlob(f, MAX_FOTO_LADO, .8), ext = esVideo ? ((f.name.split('.').pop() || 'mp4').toLowerCase()) : 'jpg';
+      let vid = f, ext = esVideo ? ((f.name.split('.').pop() || 'mp4').toLowerCase()) : 'jpg';
+      if (esVideo){ est.textContent = 'revisando el video…'; const r = await revisarVideo(f);
+        if (r.bloquear){ est.textContent = AYUDA_HEVC; return; }
+        if (r.convertir){ est.textContent = 'el video está en HEVC: lo convierto para que se vea en todos los celus… 0% (no cierres la página)';
+          vid = await convertirVideo(f, ac, n => { est.textContent = `convirtiendo el video… ${n}% (no cierres la página)`; }); ext = 'mp4';
+          if (vid.size > MAX_VIDEO_MB * 1048576){ est.textContent = `convertido pesa ${mb(vid.size)} y el máximo es ${MAX_VIDEO_MB} MB: probá con uno más corto.`; return; } } }
+      est.textContent = esVideo ? `subiendo video (${mb(vid.size)})…` : 'achicando y subiendo la foto…';
+      const blob = esVideo ? await limpiarUbicacion(vid) : await achicarBlob(f, MAX_FOTO_LADO, .8);
       const path = `${c.id}/${sesion}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
       const {error} = await sb.storage.from(BUCKET_CHAT).upload(path, blob, {contentType: blob.type || undefined, upsert:false}); if (error) throw error;
       const texto = $('#chat-txt').value.trim(); $('#chat-txt').value = ''; est.textContent = '';
       enviarPrivado(c, {tipo: esVideo ? 'video' : 'imagen', texto: texto || null, adjunto_path:path, adjunto_mime:blob.type || null, adjunto_peso:blob.size});
-    } catch (er){ console.error(er); est.textContent = 'no se pudo subir el archivo. probá de nuevo.'; } };
+    } catch (er){ console.error(er); est.textContent = 'no se pudo subir el archivo. probá de nuevo.'; } finally { if (ac) ac.close().catch(() => {}); } };
 }
 const vistaPrevia = (c, yo) => { const m = c.ultimo;
   if (c.esGrupo){ if (!m) return `grupo · ${c.uids.length} integrantes`;
@@ -1705,9 +1821,9 @@ function pintarInfoGrupo(g, yo){
       const {error} = await sb.rpc('salir_del_grupo', {conv:g.id}); if (falla('salir del grupo', error)) return; salirDeLaVista(g); return; }
     if (accion === 'eliminar'){ if (!confirm(`¿Eliminar «${g.nombre}» para todos? Se borran los mensajes.`)) return;
       const {error} = await sb.rpc('eliminar_grupo', {conv:g.id}); if (falla('eliminar el grupo', error)) return; salirDeLaVista(g); return; } };
-  const gf = $('#g-foto'); if (gf) gf.onchange = async e => { const f = e.target.files[0]; if (!f) return;
-    try { const path = await subirFotoGrupo(g, f); await firmarFotosGrupo([path]); await rpc('editar_grupo', {conv:g.id, nuevo_nombre:null, nueva_foto:path}, 'cambiar la foto'); }
-    catch (er){ falla('subir la foto', er); } };
+  const gf = $('#g-foto'); if (gf) gf.onchange = e => { const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+    abrirRecorte(f, {redondo:true, titulo:'acomodá la foto del grupo', subiendo:'subiendo la foto del grupo…', error:avisar,
+      listo: async blob => { const path = await subirFotoGrupo(g, blob); await firmarFotosGrupo([path]); await rpc('editar_grupo', {conv:g.id, nuevo_nombre:null, nueva_foto:path}, 'cambiar la foto'); }}); };
 }
 
 /* Crear grupo */
@@ -1719,8 +1835,9 @@ $('#grupo-cerrar').onclick = cerrarGrupo;
 $('#modal-grupo').addEventListener('click', e => { if (e.target.id === 'modal-grupo') cerrarGrupo(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal-grupo').hidden) cerrarGrupo(); });
 $('#grupo-nombre').addEventListener('input', e => { if (!grupoFotoArchivo) avatarGrupo($('#grupo-prev'), {nombre:e.target.value || '?', foto:''}); });
-$('#grupo-foto').onchange = e => { const f = e.target.files[0]; if (!f) return;
-  achicar(f, 300, .85).then(u => { grupoFotoArchivo = f; avatarGrupo($('#grupo-prev'), {nombre:'', foto:'', fotoLocal:u}); }); };
+$('#grupo-foto').onchange = e => { const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  abrirRecorte(f, {redondo:true, titulo:'acomodá la foto del grupo', subiendo:'listo…', error: t => msg('#grupo-msg', t),
+    listo: async blob => { grupoFotoArchivo = blob; const u = URL.createObjectURL(blob); avatarGrupo($('#grupo-prev'), {nombre:'', foto:'', fotoLocal:u}); }}); };
 $('#grupo-form').onsubmit = async e => { e.preventDefault(); const nombre = $('#grupo-nombre').value.trim(), btn = e.target.querySelector('[type=submit]');
   const ids = [...$$('#grupo-amigos input:checked')].map(i => +i.value);
   if (!nombre) return msg('#grupo-msg', 'Ponele un nombre al grupo.'); if (!ids.length) return msg('#grupo-msg', 'Elegí al menos un amigo.');
@@ -1964,16 +2081,26 @@ async function pasarRinconViejo(){ const yo = perfil(); if (!yo || !sb) return;
 /* ---------- Inicio: "escuchando ahora" (lo pone cada uno; se ve lo tuyo y lo de tus amigos de las últimas 24 h) ---------- */
 const VIGENCIA_TEMA = 24 * 3600 * 1000;
 // Links de música que se aceptan: Spotify, YouTube Music, YouTube y SoundCloud
-const esMusica = u => { const h = sitioDe(u); return /(^|\.)spotify\.com$|^spotify\.link$|(^|\.)soundcloud\.com$/.test(h) || !!ytId(u); };
+const esMusica = u => { const h = sitioDe(u); return /(^|\.)spotify\.com$|^spotify\.link$|(^|\.)soundcloud\.com$|(^|\.)youtube\.com$/.test(h) || !!ytId(u); };
+// ¿Qué es el link? tema, artista (perfil de banda/grupo/artista), álbum o playlist
+function tipoMusica(u){ try { const x = new URL(u), h = x.hostname, s = x.pathname.split('/').filter(Boolean).filter(t => !/^intl-/i.test(t));
+    if (/spotify/.test(h)) return {artist:'artista', album:'álbum', playlist:'playlist', show:'podcast', episode:'podcast'}[s[0]] || 'tema';
+    if (/soundcloud/.test(h)) return s.length === 1 || ['tracks','albums','popular-tracks','reposts','likes'].includes(s[1]) ? 'artista' : s[1] === 'sets' ? 'playlist' : 'tema';
+    if (ytId(u)) return 'tema';
+    if (/youtube\.com$/.test(h)) return s[0] === 'playlist' ? 'playlist' : 'artista';           // canal, @usuario, /channel/…, /browse/…
+  } catch {} return 'tema'; }
+const TIPOS_MUSICA = ['tema','artista','álbum','playlist','podcast'];
+// Nombre que se puede sacar del link de YouTube: youtube.com/@sodastereo -> "sodastereo"
+const nombreDeLink = u => { try { const t = new URL(u).pathname.split('/').filter(Boolean)[0] || ''; return t.startsWith('@') ? decodeURIComponent(t.slice(1)) : ''; } catch { return ''; } };
 const limpiarSpotify = u => u.replace(/open\.spotify\.com\/intl-[a-z-]+\//i, 'open.spotify.com/');      // los links "intl-es" no los entiende el servicio de Spotify
 // Título y artista prolijos según la app
 function datosTema(i, u){ let t = (i.titulo || '').trim(), a = (i.autor || '').replace(/\s*-\s*Topic$/i, '').trim();
   if (/soundcloud/.test(sitioDe(u)) && a && t.toLowerCase().endsWith(' by ' + a.toLowerCase())) t = t.slice(0, -(a.length + 4)).trim();   // "Tema by Artista"
   return {titulo: t.slice(0, 100), artista: a.slice(0, 80)}; }
-function tarjetaTema(x){ const tapa = x.escuchandoImg || (infoCache.get(x.escuchandoUrl)?.mini || ''), ok = TAPA_OK.test(tapa);
-  return `<a class="esc-card" href="${esc(x.escuchandoUrl)}" target="_blank" rel="noopener" title="abrir en ${esc(nombreSitio(x.escuchandoUrl))}">
-    <span class="esc-tapa" aria-hidden="true"${ok ? ` style="background-image:url(&quot;${esc(tapa)}&quot;)"` : ''}>${ok ? '' : '♪'}</span>
-    <span class="esc-info"><b>${esc(x.escuchando)}</b>${x.escuchandoArtista ? `<span>${esc(x.escuchandoArtista)}</span>` : ''}<span class="esc-app">${esc(nombreSitio(x.escuchandoUrl))} ↗</span></span></a>`; }
+function tarjetaTema(x){ const tapa = x.escuchandoImg || (infoCache.get(x.escuchandoUrl)?.mini || ''), ok = TAPA_OK.test(tapa), tipo = x.escuchandoTipo || 'tema';
+  return `<a class="esc-card${tipo === 'artista' ? ' artista' : ''}" href="${esc(x.escuchandoUrl)}" target="_blank" rel="noopener" title="abrir en ${esc(nombreSitio(x.escuchandoUrl))}">
+    <span class="esc-tapa" aria-hidden="true"${ok ? ` style="background-image:url(&quot;${esc(tapa)}&quot;)"` : ''}>${ok ? '' : (tipo === 'artista' ? '★' : '♪')}</span>
+    <span class="esc-info"><b>${esc(x.escuchando)}</b>${x.escuchandoArtista ? `<span>${esc(x.escuchandoArtista)}</span>` : ''}<span class="esc-app">${tipo !== 'tema' ? esc(tipo) + ' · ' : ''}${esc(nombreSitio(x.escuchandoUrl))} ↗</span></span></a>`; }
 const haceCuanto = t => { const m = Math.max(0, Math.round((Date.now() - t) / 60000)); return m < 1 ? 'recién' : m < 60 ? `hace ${m} min` : `hace ${Math.round(m / 60)} h`; };
 function pintarEscuchando(){ const yo = perfil(); if (!yo) return; const l = $('#esc-lista'); l.innerHTML = '';
   const gente = [yo, ...amigosDe(yo)].filter(x => x.escuchando && x.escuchandoCuando && Date.now() - x.escuchandoCuando < VIGENCIA_TEMA).sort((a,b) => b.escuchandoCuando - a.escuchandoCuando).slice(0, 8);
@@ -1991,28 +2118,32 @@ function pintarEscuchando(){ const yo = perfil(); if (!yo) return; const l = $('
   $('#esc-sacar').hidden = !activo; $('#esc-lbl').textContent = activo ? 'cambiar canción' : '¿qué estás escuchando?'; }
 $('#esc-form').onsubmit = async e => { e.preventDefault(); const p = perfil(), v = $('#esc-txt').value.trim(), btn = e.target.querySelector('[type=submit]'); if (!p) return;
   if (!v) return msg('#esc-msg', 'Escribí qué estás escuchando o pegá un link.');
-  const esLink = /^(https?:\/\/)?[^\s.]+\.[^\s]+\/\S*$/i.test(v) && !/\s/.test(v);
+  // Se puede pegar solo el link, o escribir un nombre y pegar el link (ej: "Soda Stereo https://music.youtube.com/channel/…")
+  const mLink = v.match(/(?:https?:\/\/)?(?:[\w-]+\.)+[a-z]{2,}\/\S*/i), esLink = !!mLink, nombreManual = esLink ? v.replace(mLink[0], '').replace(/\s+/g, ' ').replace(/^[\s:–-]+|[\s:–-]+$/g, '').slice(0, 100) : '';
   btn.disabled = true;
-  if (esLink){ const u = limpiarSpotify(conHttp(v));
-    if (!esMusica(u)){ btn.disabled = false; return msg('#esc-msg', 'Pegá un link de Spotify, YouTube Music o SoundCloud.'); }
+  if (esLink){ const u = limpiarSpotify(conHttp(mLink[0])), tipo = tipoMusica(u);
+    if (!esMusica(u)){ btn.disabled = false; return msg('#esc-msg', 'Pegá un link de Spotify, YouTube Music o SoundCloud (canción o artista).'); }
     if (u.length > 300){ btn.disabled = false; return msg('#esc-msg', 'Ese link es demasiado largo.'); }
-    msg('#esc-msg', 'buscando la canción…', 'ok'); const i = await infoLink(u), d = datosTema(i, u);
-    p.escuchandoUrl = u; p.escuchando = d.titulo || 'un tema en ' + nombreSitio(u); p.escuchandoArtista = d.artista;
+    msg('#esc-msg', tipo === 'tema' ? 'buscando la canción…' : 'buscando…', 'ok'); const i = await infoLink(u), d = datosTema(i, u);
+    p.escuchandoUrl = u; p.escuchandoTipo = tipo;
+    p.escuchando = nombreManual || d.titulo || nombreDeLink(u) || (tipo === 'artista' ? 'un artista' : tipo === 'tema' ? 'un tema' : `un${tipo === 'playlist' ? 'a' : ''} ${tipo}`);
+    if (!nombreManual && !d.titulo && !nombreDeLink(u)){ msg('#esc-msg', 'tip: para que aparezca el nombre, escribilo antes del link (ej: Soda Stereo https://…).', 'ok'); }
+    p.escuchandoArtista = tipo === 'artista' ? '' : d.artista;
     p.escuchandoImg = TAPA_OK.test(i.mini || '') ? i.mini : ''; }
-  else { p.escuchandoUrl = ''; p.escuchandoArtista = ''; p.escuchandoImg = ''; p.escuchando = v.slice(0, 100); }
-  p.escuchandoCuando = Date.now(); btn.disabled = false; $('#esc-msg').className = 'msg'; $('#esc-txt').value = '';
+  else { p.escuchandoUrl = ''; p.escuchandoArtista = ''; p.escuchandoImg = ''; p.escuchandoTipo = 'tema'; p.escuchando = v.slice(0, 100); }
+  p.escuchandoCuando = Date.now(); btn.disabled = false; if (!/tip:/.test($('#esc-msg').textContent)) $('#esc-msg').className = 'msg'; $('#esc-txt').value = '';
   await guardarYa(); pintarEscuchando(); };
-$('#esc-sacar').onclick = async () => { const p = perfil(); if (!p) return; p.escuchando = ''; p.escuchandoUrl = ''; p.escuchandoArtista = ''; p.escuchandoImg = ''; p.escuchandoCuando = 0; await guardarYa(); pintarEscuchando(); };
+$('#esc-sacar').onclick = async () => { const p = perfil(); if (!p) return; p.escuchando = ''; p.escuchandoUrl = ''; p.escuchandoArtista = ''; p.escuchandoImg = ''; p.escuchandoTipo = 'tema'; p.escuchandoCuando = 0; await guardarYa(); pintarEscuchando(); };
 // Lo de tus amigos se actualiza solo cada minuto mientras estás en el inicio
 async function refrescarEscuchando(){ if (!sb || !perfil()) return;
   const {data, error} = await sb.from('profiles').select('id, datos'); if (error) return;
   (data || []).forEach(x => { const q = porUid(x.id); if (!q || x.id === sesion) return; const d = sanearPerfil(x.datos, x.id);
-    q.escuchando = d.escuchando; q.escuchandoUrl = d.escuchandoUrl; q.escuchandoCuando = d.escuchandoCuando; q.escuchandoArtista = d.escuchandoArtista; q.escuchandoImg = d.escuchandoImg; });
+    q.escuchando = d.escuchando; q.escuchandoUrl = d.escuchandoUrl; q.escuchandoCuando = d.escuchandoCuando; q.escuchandoArtista = d.escuchandoArtista; q.escuchandoImg = d.escuchandoImg; q.escuchandoTipo = d.escuchandoTipo; });
   if (location.hash.startsWith('#inicio')) pintarEscuchando(); }
 setInterval(() => { if (sesion && !document.hidden && location.hash.startsWith('#inicio')) refrescarEscuchando(); }, 60 * 1000);
 
 /* ---------- Inicio: posteos tuyos y de tus amigos ---------- */
-let feed = [], pTipo = 'texto', pImg = null, pVid = null, vistos = 0, resaltar = null;
+let feed = [], pTipo = 'texto', pImg = null, pVid = null, pVidConvertir = false, vistos = 0, resaltar = null;
 const hace = t => { const m = Math.floor((Date.now() - t) / 60000); if (m < 1) return 'recién'; if (m < 60) return `hace ${m} min`; const h = Math.floor(m / 60);
   if (h < 24) return `hace ${h} h`; return `el ${fecha(t)} a las ${hora(t)}`; };
 const visiblesFeed = yo => feed.filter(x => { const a = porId(x.de); return a && (a.id === yo.id || sonAmigos(yo, a)); }).sort((a,b) => b.cuando - a.cuando);
@@ -2046,6 +2177,7 @@ function posteoEl(x, yo){
     const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, au);
     const t = document.createElement('div'); t.innerHTML = `<a href="${linkPerfil(au)}"><b>${esc(au.apodo)}</b></a> <span class="muted chico">${hace(c.cuando)}</span><p>${esc(c.texto)}</p>`;
     e.append(av, t); cs.appendChild(e); });
+  d.querySelectorAll('video').forEach(vigilarVideo);
   return d;
 }
 $('#feed').addEventListener('click', e => { const b = e.target.closest('button[data-pacc]'); if (!b) return; const art = b.closest('.posteo'), id = +art.id.slice(5), x = feed.find(q => q.id === id), yo = perfil(); if (!x) return;
@@ -2070,15 +2202,19 @@ $('#recargar').onclick = recargar; $('#hay-nuevos').onclick = recargar;
 function pTipoSet(t){ pTipo = t; $$('[data-ptipo]').forEach(b => b.setAttribute('aria-pressed', b.dataset.ptipo === t));
   $('#post-img-b').hidden = t !== 'imagen'; $('#post-url-b').hidden = t !== 'video'; $('#post-texto-lbl').textContent = t === 'texto' ? '¿qué estás pensando?' : 'texto (opcional)'; }
 $('#fab').onclick = () => { pTipoSet('texto'); $('#modal-post').hidden = false; $('#post-texto').focus(); };
-const cerrarPost = () => { $('#modal-post').hidden = true; $('#post-form').reset(); pImg = null; pVid = null; $('#post-vid-nombre').textContent = 'ningún video elegido'; $('#post-img-nombre').textContent = 'ninguna imagen elegida'; $('#post-msg').className = 'msg'; $('#fab').focus(); };
+const cerrarPost = () => { $('#modal-post').hidden = true; $('#post-form').reset(); pImg = null; pVid = null; pVidConvertir = false; $('#post-vid-nombre').textContent = 'ningún video elegido'; $('#post-img-nombre').textContent = 'ninguna imagen elegida'; $('#post-msg').className = 'msg'; $('#fab').focus(); };
 $('#post-cerrar').onclick = cerrarPost;
 $('#modal-post').addEventListener('click', e => { if (e.target.id === 'modal-post') cerrarPost(); const b = e.target.closest('[data-ptipo]'); if (b) pTipoSet(b.dataset.ptipo); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal-post').hidden) cerrarPost(); });
 $('#post-img').onchange = e => { const f = e.target.files[0]; if (!f) return; pImg = f; $('#post-img-nombre').textContent = 'lista: ' + f.name; };
-$('#post-vid').onchange = e => { const f = e.target.files[0]; if (!f) return;
-  if (f.size > MAX_VIDEO_MB * 1048576){ e.target.value = ''; pVid = null; return msg('#post-msg', `Ese video pesa ${mb(f.size)}. El máximo es ${MAX_VIDEO_MB} MB: probá con uno más corto.`); }
-  pVid = f; $('#post-vid-nombre').textContent = `listo: ${f.name} (${mb(f.size)})`; $('#post-msg').className = 'msg'; };
-$('#post-form').onsubmit = async e => { e.preventDefault(); const yo = perfil(), texto = $('#post-texto').value.trim();
+$('#post-vid').onchange = async e => { const f = e.target.files[0]; if (!f) return; pVid = null; pVidConvertir = false;
+  if (f.size > MAX_VIDEO_MB * 1048576){ e.target.value = ''; return msg('#post-msg', `Ese video pesa ${mb(f.size)}. El máximo es ${MAX_VIDEO_MB} MB: probá con uno más corto.`); }
+  $('#post-vid-nombre').textContent = 'revisando el video…'; $('#post-msg').className = 'msg';
+  const r = await revisarVideo(f);
+  if (r.bloquear){ e.target.value = ''; $('#post-vid-nombre').textContent = 'ningún video elegido'; return msg('#post-msg', AYUDA_HEVC); }
+  pVid = f; pVidConvertir = r.convertir; $('#post-vid-nombre').textContent = `listo: ${f.name} (${mb(f.size)})`;
+  if (r.convertir) msg('#post-msg', 'Este video está en HEVC, un formato que muchos celulares no pueden mostrar. Al publicarlo lo convertimos para que lo vean todos: tarda lo mismo que dura el video (no cierres la página).', 'ok'); };
+$('#post-form').onsubmit = async e => { e.preventDefault(); const yo = perfil(), texto = $('#post-texto').value.trim(), ac = pTipo === 'video' && pVid && pVidConvertir ? nuevoAudio() : null;
   const fila = {tipo:pTipo, texto: texto || null, media_path:null, video_url:null};
   if (pTipo === 'texto' && !texto) return msg('#post-msg','Escribí algo primero.');
   if (pTipo === 'imagen' && !pImg) return msg('#post-msg','Elegí una imagen.');
@@ -2086,13 +2222,18 @@ $('#post-form').onsubmit = async e => { e.preventDefault(); const yo = perfil(),
   const btn = e.target.querySelector('[type=submit]'); btn.disabled = true;
   try {
     if (pTipo === 'imagen'){ msg('#post-msg','subiendo la imagen…','ok'); fila.media_path = await subirArchivo(await achicarBlob(pImg, 1280, .82), 'jpg'); }
-    if (pTipo === 'video' && pVid){ msg('#post-msg',`subiendo el video (${mb(pVid.size)})…`,'ok'); fila.media_path = await subirArchivo(await limpiarUbicacion(pVid), (pVid.name.split('.').pop() || 'mp4').toLowerCase()); }
+    if (pTipo === 'video' && pVid){ let vid = pVid, ext = (pVid.name.split('.').pop() || 'mp4').toLowerCase();
+      if (pVidConvertir){ msg('#post-msg', 'convirtiendo el video para que lo vean todos… 0%', 'ok');
+        try { vid = await convertirVideo(pVid, ac, n => msg('#post-msg', `convirtiendo el video para que lo vean todos… ${n}%`, 'ok')); ext = 'mp4'; }
+        catch (er){ console.error('convertir', er); btn.disabled = false; return msg('#post-msg', AYUDA_HEVC); }
+        if (vid.size > MAX_VIDEO_MB * 1048576){ btn.disabled = false; return msg('#post-msg', `Convertido pesa ${mb(vid.size)} y el máximo es ${MAX_VIDEO_MB} MB: probá con uno más corto.`); } }
+      msg('#post-msg',`subiendo el video (${mb(vid.size)})…`,'ok'); fila.media_path = await subirArchivo(await limpiarUbicacion(vid), ext); }
     const {data, error} = await sb.from('posteos').insert(fila).select(); if (error) throw error;
     const r = data[0]; if (r.media_path) await firmar([r.media_path]);
     feed.push({id:r.id, de:yo.id, tipo:r.tipo, texto:r.texto || '', media_path:r.media_path || '', img: r.tipo === 'imagen' && r.media_path ? r.media_path : '',
       video: r.tipo === 'video' && r.media_path ? r.media_path : '', url:r.video_url || '', cuando:Date.parse(r.creado) || Date.now(), likes:[], comentarios:[]});
   } catch (er){ console.error(er); btn.disabled = false; return msg('#post-msg','No se pudo publicar. Revisá tu conexión y probá de nuevo.'); }
-  btn.disabled = false; cerrarPost(); pintarFeed(); window.scrollTo({top:0, behavior:'smooth'}); };
+  if (ac) ac.close().catch(() => {}); btn.disabled = false; pVidConvertir = false; cerrarPost(); pintarFeed(); window.scrollTo({top:0, behavior:'smooth'}); };
 
 /* ---------- Top perfiles ---------- */
 let tFiltro = 'todos';
