@@ -322,6 +322,24 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
 /* Buscar gente */
 .lupa{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--link)}
 .lupa[aria-current="page"]{color:var(--title)}
+/* Ajustes */
+.aj-lista{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--box)}
+.aj-item{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:54px;padding:0 16px;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);font:inherit;font-size:15px;text-decoration:none;text-align:left;cursor:pointer;width:100%}
+.aj-item:last-child{border-bottom:0}
+.aj-item:hover,.aj-item:focus-visible{background:var(--bg2)}
+.aj-item span[aria-hidden]{color:var(--muted);font-size:20px}
+.aj-salir{color:#FF5C5C;font-weight:bold}
+#ajustes .caja{margin-bottom:14px}
+.aj-switch{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:46px;cursor:pointer}
+.aj-switch input{width:24px;height:24px;flex:none;accent-color:var(--link)}
+.tono{display:grid;grid-template-columns:1fr auto;gap:6px 8px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.tono:first-child{border-top:0}
+.tono b{grid-column:1 / -1;color:var(--title);font-size:13px}
+.tono select{min-height:42px;width:100%;background:var(--bg);color:var(--ink);border:1px solid var(--line);padding:0 8px;font:inherit}
+.tono .btn{min-height:42px;padding:0 12px}
+.tono .tono-propio{grid-column:1 / -1;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px}
+.tono .tono-propio[hidden]{display:none}
+.tono .tono-propio .btn{min-height:36px;font-size:12px}
 
 /* ♥ a los perfiles y ranking */
 .likes-perfil{display:flex;align-items:center;gap:2px}
@@ -502,7 +520,7 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
       <a href="#top" data-sec="top">top</a><span class="sep" aria-hidden="true">|</span>
       <a href="#solicitudes" data-sec="solicitudes">solicitudes</a><span class="sep" aria-hidden="true">|</span>
       <a href="#notificaciones" data-sec="notificaciones">notificaciones</a><span class="sep" aria-hidden="true">|</span>
-      <button type="button" data-salir>salir</button>
+      <a href="#ajustes" data-sec="ajustes" class="lupa engranaje" aria-label="Ajustes" title="ajustes"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></a>
     </nav>
   </div></header>
 </template>
@@ -785,15 +803,44 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
   <main class="pagina" style="max-width:640px">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px">
       <h1 style="font-size:22px;margin:0">notificaciones</h1>
-      <button class="btn" type="button" id="n-sonido" aria-pressed="true" title="sonido de los avisos (mensajes y notificaciones)">🔔 sonido: sí</button>
-    </div>
-    <div class="caja bloque" id="push-b" style="margin-bottom:16px">
-      <p style="margin:0 0 4px;font-weight:bold;color:var(--title)">📲 avisos en este celular</p>
-      <p class="muted chico" id="push-estado" style="margin:0 0 10px">revisando…</p>
-      <button class="btn lleno" type="button" id="push-boton" hidden>activar avisos</button>
-      <p class="msg" id="push-msg" role="alert"></p>
+      <a class="chico" href="#ajustes/notificaciones">⚙ sonidos y avisos</a>
     </div>
     <div id="n-lista"></div>
+  </main>
+</section>
+
+<!-- ================= AJUSTES ================= -->
+<section id="ajustes" class="screen">
+  <div data-sitio="ajustes"></div>
+  <main class="pagina" style="max-width:560px">
+    <div id="aj-menu">
+      <h1 style="font-size:22px;margin:0 0 14px">ajustes</h1>
+      <div class="aj-lista">
+        <a class="aj-item" href="#ajustes/notificaciones"><span>🔔 notificaciones</span><span aria-hidden="true">›</span></a>
+        <a class="aj-item" href="#" data-legal="terminos"><span>📄 legal</span><span aria-hidden="true">›</span></a>
+        <button class="aj-item aj-salir" type="button" data-salir><span>salir</span></button>
+      </div>
+    </div>
+    <div id="aj-notis" hidden>
+      <a class="chico" href="#ajustes" style="display:inline-flex;align-items:center;min-height:40px">‹ ajustes</a>
+      <h1 style="font-size:22px;margin:0 0 14px">notificaciones</h1>
+      <div class="caja bloque">
+        <label class="aj-switch"><span><b>sonido</b><span class="muted chico" style="display:block">suena cuando llega algo con rinconAF abierto</span></span><input type="checkbox" id="aj-sonido"></label>
+      </div>
+      <div class="caja bloque" id="push-b">
+        <p style="margin:0 0 4px;font-weight:bold;color:var(--title)">📲 avisos en este celular</p>
+        <p class="muted chico" id="push-estado" style="margin:0 0 10px">revisando…</p>
+        <button class="btn lleno" type="button" id="push-boton" hidden>activar avisos</button>
+        <p class="msg" id="push-msg" role="alert"></p>
+      </div>
+      <div class="caja bloque" id="aj-tonos-b">
+        <p style="margin:0 0 4px;font-weight:bold;color:var(--title)">🎵 sonido de cada cosa</p>
+        <p class="muted chico" style="margin:0 0 10px">elegí uno de rinconAF o subí uno tuyo desde el celu. se guarda en este dispositivo.</p>
+        <div id="aj-tonos"></div>
+        <p class="msg" id="aj-tonos-msg" role="alert"></p>
+        <p class="muted" style="font-size:11px;margin:10px 0 0">estos sonidos suenan con rinconAF abierto. los avisos que llegan con la página cerrada usan el sonido de notificaciones de tu celular (iPhone y Android no dejan que una página lo cambie).</p>
+      </div>
+    </div>
   </main>
 </section>
 
@@ -1994,20 +2041,70 @@ function audioListo(){ if (!actx){ const C = window.AudioContext || window.webki
   if (actx.state === 'suspended') actx.resume().catch(() => {}); return actx; }
 // Los navegadores (sobre todo el iPhone) solo dejan sonar después de que tocaste algo en la página
 ['pointerdown','keydown','touchend'].forEach(t => document.addEventListener(t, () => { if (sonidoOn()) audioListo(); }, {passive:true}));
-const SONIDOS = {
-  mensaje: [[880, .10, 'sine', .14], [1318, .16, 'sine', .12]],                                   // "bip-bip" corto
-  noti:    [[659, .14, 'triangle', .16], [988, .26, 'triangle', .14]],                            // campanita
-  zumbido: [[120, .07, 'square', .06], [95, .07, 'square', .06], [120, .07, 'square', .06], [95, .07, 'square', .06], [120, .10, 'square', .06]]};
-function sonar(cual){ if (!sonidoOn()) return; const a = audioListo(), notas = SONIDOS[cual]; if (!a || a.state !== 'running' || !notas) return;
-  if (Date.now() - ultimoSonido < 1200 && cual !== 'zumbido') return; ultimoSonido = Date.now();   // si llegan varios juntos, suena una vez
-  let t = a.currentTime + .02;
+// Tonos de rinconAF (se generan en el momento): [frecuencia, duración, forma, volumen]
+const TONOS = {
+  bipbip:    {n:'bip-bip', notas:[[880, .10, 'sine', .14], [1318, .16, 'sine', .12]]},
+  campanita: {n:'campanita', notas:[[659, .14, 'triangle', .16], [988, .26, 'triangle', .14]]},
+  zumbido:   {n:'zumbido', notas:[[120, .07, 'square', .06], [95, .07, 'square', .06], [120, .07, 'square', .06], [95, .07, 'square', .06], [120, .10, 'square', .06]]},
+  burbuja:   {n:'burbuja', notas:[[420, .07, 'sine', .16], [640, .07, 'sine', .15], [980, .12, 'sine', .12]]},
+  moneda:    {n:'moneda', notas:[[988, .07, 'square', .06], [1319, .30, 'square', .06]]},
+  retro:     {n:'retro 8-bit', notas:[[523, .07, 'square', .05], [659, .07, 'square', .05], [784, .07, 'square', .05], [1047, .16, 'square', .05]]},
+  suave:     {n:'suave', notas:[[523, .22, 'sine', .12], [784, .34, 'sine', .10]]},
+  timbre:    {n:'timbre', notas:[[784, .18, 'triangle', .16], [622, .30, 'triangle', .15]]},
+  pop:       {n:'pop', notas:[[300, .05, 'sine', .2], [180, .06, 'sine', .12]]},
+  alerta:    {n:'alerta', notas:[[880, .09, 'sawtooth', .05], [880, .09, 'sawtooth', .05], [1175, .16, 'sawtooth', .05]]}};
+// Para qué suena cada cosa y su tono de fábrica
+const TIPOS_SONIDO = [['mensaje','mensajes del chat','bipbip'], ['zumbido','zumbidos','zumbido'], ['noti','likes, comentarios y grupos','campanita'], ['solicitud','solicitudes de amistad','timbre']];
+const LLAVE_TONOS = 'rinconaf_tonos';
+const tonosElegidos = () => { let t = {}; try { t = JSON.parse(localStorage.getItem(LLAVE_TONOS)) || {}; } catch {} return t; };
+const tonoDe = cual => tonosElegidos()[cual] || (TIPOS_SONIDO.find(x => x[0] === cual) || [,,'campanita'])[2];
+// Sonidos propios (subidos desde el celu): se guardan en este navegador (IndexedDB), no en el servidor
+const propios = new Map();                                   // tipo -> AudioBuffer listo para sonar
+function bdSonidos(){ return new Promise((ok, mal) => { const r = indexedDB.open('rinconaf_sonidos', 1); r.onupgradeneeded = () => r.result.createObjectStore('s');
+  r.onsuccess = () => ok(r.result); r.onerror = () => mal(r.error); }); }
+async function bdOp(modo, fn){ const db = await bdSonidos(); return new Promise((ok, mal) => { const tx = db.transaction('s', modo), q = fn(tx.objectStore('s')); tx.oncomplete = () => ok(q && q.result); tx.onerror = () => mal(tx.error); }); }
+async function decodificar(blob){ const a = audioListo(); if (!a) throw new Error('sin audio'); return await a.decodeAudioData(await blob.arrayBuffer()); }
+async function cargarPropio(cual){ if (propios.has(cual)) return propios.get(cual);
+  try { const g = await bdOp('readonly', st => st.get(cual)); if (!g || !g.blob) return null; const buf = await decodificar(g.blob); propios.set(cual, buf); return buf; } catch { return null; } }
+function tocarNotas(a, notas){ let t = a.currentTime + .02;
   notas.forEach(([f, d, tipo, vol]) => { const o = a.createOscillator(), g = a.createGain(); o.type = tipo; o.frequency.value = f;
     g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .012); g.gain.exponentialRampToValueAtTime(.0001, t + d);
     o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + d + .03); t += d * .8; }); }
-function pintarBotonSonido(){ const b = $('#n-sonido'); if (!b) return; const on = sonidoOn();
-  b.setAttribute('aria-pressed', on); b.textContent = on ? '🔔 sonido: sí' : '🔕 sonido: no'; }
-$('#n-sonido').onclick = () => { const on = !sonidoOn(); try { localStorage.setItem(LLAVE_SONIDO, on ? 'si' : 'no'); } catch {} pintarBotonSonido(); if (on){ audioListo(); setTimeout(() => sonar('noti'), 60); } };
-pintarBotonSonido();
+function tocarBuffer(a, buf){ const s = a.createBufferSource(), g = a.createGain(); s.buffer = buf; g.gain.value = .9; s.connect(g); g.connect(a.destination);
+  s.start(); s.stop(a.currentTime + Math.min(buf.duration, 6)); }                      // como mucho 6 segundos
+async function reproducir(cual, tono){ const a = audioListo(); if (!a) return; if (a.state !== 'running') try { await a.resume(); } catch {} if (a.state !== 'running') return;
+  if (tono === 'propio'){ const buf = await cargarPropio(cual); if (buf) return tocarBuffer(a, buf); tono = (TIPOS_SONIDO.find(x => x[0] === cual) || [,,'campanita'])[2]; }
+  tocarNotas(a, (TONOS[tono] || TONOS.campanita).notas); }
+function sonar(cual){ if (!sonidoOn()) return;
+  if (Date.now() - ultimoSonido < 1200 && cual !== 'zumbido') return; ultimoSonido = Date.now();   // si llegan varios juntos, suena una vez
+  reproducir(cual, tonoDe(cual)); }
+// ---------- Pantalla de ajustes → notificaciones ----------
+function pintarTonos(){ const cont = $('#aj-tonos'); if (!cont) return; const el = tonosElegidos();
+  cont.innerHTML = TIPOS_SONIDO.map(([k, nombre, fabrica]) => { const actual = el[k] || fabrica;
+    return `<div class="tono" data-tipo="${k}"><b>${nombre}</b>
+      <select aria-label="sonido para ${nombre}" data-tono="${k}">${Object.entries(TONOS).map(([id, t]) => `<option value="${id}"${actual === id ? ' selected' : ''}>${t.n}${id === fabrica ? ' (de fábrica)' : ''}</option>`).join('')}
+        <option value="propio"${actual === 'propio' ? ' selected' : ''}>🎵 mi sonido…</option></select>
+      <button class="btn" type="button" data-probar="${k}" aria-label="probar sonido de ${nombre}">▶ probar</button>
+      <div class="tono-propio" ${actual === 'propio' ? '' : 'hidden'}><label class="btn file-btn">subir sonido<input type="file" accept="audio/*" data-subir-tono="${k}" aria-label="subir un sonido para ${nombre}"></label>
+        <span class="muted" data-nombre-tono="${k}"></span></div></div>`; }).join('');
+  TIPOS_SONIDO.forEach(async ([k]) => { try { const g = await bdOp('readonly', st => st.get(k)); const e = cont.querySelector(`[data-nombre-tono="${k}"]`);
+    if (e) e.textContent = g && g.nombre ? '✓ ' + g.nombre : 'todavía no subiste ninguno'; } catch {} }); }
+function pintarAjustes(sub){ const notis = sub === 'notificaciones'; $('#aj-menu').hidden = notis; $('#aj-notis').hidden = !notis;
+  if (notis){ $('#aj-sonido').checked = sonidoOn(); pintarPush(); pintarTonos(); } }
+$('#aj-sonido').onchange = e => { try { localStorage.setItem(LLAVE_SONIDO, e.target.checked ? 'si' : 'no'); } catch {} if (e.target.checked){ ultimoSonido = 0; sonar('noti'); } };
+$('#aj-tonos').addEventListener('change', async e => { const t = e.target;
+  if (t.dataset.tono){ const k = t.dataset.tono, el = tonosElegidos(); el[k] = t.value; try { localStorage.setItem(LLAVE_TONOS, JSON.stringify(el)); } catch {}
+    t.closest('.tono').querySelector('.tono-propio').hidden = t.value !== 'propio';
+    if (t.value !== 'propio') reproducir(k, t.value); else if (propios.has(k) || await cargarPropio(k)) reproducir(k, 'propio'); }
+  if (t.dataset.subirTono){ const k = t.dataset.subirTono, f = t.files[0]; t.value = ''; if (!f) return;
+    if (!f.type.startsWith('audio/') && !/\.(mp3|m4a|aac|wav|ogg|oga|opus|caf|aiff?)$/i.test(f.name)) return msg('#aj-tonos-msg', 'Elegí un archivo de audio (mp3, m4a, wav…).');
+    if (f.size > 2 * 1048576) return msg('#aj-tonos-msg', 'Ese sonido pesa mucho: elegí uno de menos de 2 MB (con unos segundos alcanza).');
+    try { const buf = await decodificar(f);                                          // si el celu no lo puede reproducir, se avisa ya
+      await bdOp('readwrite', st => st.put({blob:f, nombre:f.name.slice(0, 60)}, k)); propios.set(k, buf);
+      msg('#aj-tonos-msg', `listo: «${f.name.slice(0, 40)}» suena para ${TIPOS_SONIDO.find(x => x[0] === k)[1]}${buf.duration > 6 ? ' (se usan los primeros 6 segundos)' : ''}.`, 'ok');
+      const e2 = $(`[data-nombre-tono="${k}"]`); if (e2) e2.textContent = '✓ ' + f.name.slice(0, 60); reproducir(k, 'propio'); }
+    catch (er){ console.error('sonido propio', er); msg('#aj-tonos-msg', 'No se pudo usar ese archivo: probá con otro (mp3 o m4a andan en todos los celus).'); } } });
+$('#aj-tonos').addEventListener('click', e => { const b = e.target.closest('[data-probar]'); if (b) reproducir(b.dataset.probar, tonoDe(b.dataset.probar)); });
 // Notificaciones nuevas (likes, comentarios, amistades aceptadas, grupos): se revisa cada 30 segundos
 const armarNoti = x => { const d = x.datos && typeof x.datos === 'object' && !Array.isArray(x.datos) ? x.datos : {};   // solo los campos conocidos
   return {nid:x.id, tipo:x.tipo, de:porUid(x.de)?.id, cuando:Date.parse(x.creado), leida:x.leida, post:d.post, grupo:d.grupo, conv:d.conv, nombre:d.nombre, resumen:d.resumen, texto:d.texto}; };
@@ -2019,7 +2116,7 @@ async function buscarNotisNuevas(){ const yo = perfil(); if (!yo || !sb) return;
   if (!so.error && perfil() === yo) (so.data || []).forEach(x => { const de = porUid(x.de); if (de && !yo.recibidas.some(r => r.de === de.id)){ yo.recibidas.push({de:de.id, cuando:Date.parse(x.creado)}); solNuevas++; } });
   if (!nuevas.length && !solNuevas) return;
   yo.notis.push(...nuevas); yo.notis.sort((a,b) => a.cuando - b.cuando);
-  if (solNuevas || nuevas.some(n => !n.leida && TIPOS_NOTI.includes(n.tipo))) sonar('noti');
+  if (solNuevas) sonar('solicitud'); else if (nuevas.some(n => !n.leida && TIPOS_NOTI.includes(n.tipo))) sonar('noti');
   actualizarMenu(); if (location.hash.startsWith('#notificaciones')) pintarNotis();
   if (solNuevas && location.hash.startsWith('#solicitudes') && typeof pintarSolicitudes === 'function') pintarSolicitudes(); }
 setInterval(() => { if (sesion) buscarNotisNuevas(); }, 30 * 1000);
@@ -2503,7 +2600,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal
 /* ---------- Barra del sitio y navegación ---------- */
 $$('[data-sitio]').forEach(h => { h.appendChild($('#tpl-sitio').content.cloneNode(true)); const a = h.querySelector(`[data-sec="${h.dataset.sitio}"]`); if (a) a.setAttribute('aria-current','page'); });
 $$('[data-salir]').forEach(b => b.onclick = salir);
-const PANT = ['entrada','inicio','perfil','chat','rincon','solicitudes','notificaciones','buscar','top'];
+const PANT = ['entrada','inicio','perfil','chat','rincon','solicitudes','notificaciones','buscar','top','ajustes'];
 function mostrar(){ const [h, arg] = location.hash.slice(1).split('/'); let id = h;
   if (!PANT.includes(id)) id = perfil() ? 'perfil' : 'entrada';
   if (!perfil()) id = 'entrada'; else if (id === 'entrada') id = 'perfil';
@@ -2527,7 +2624,7 @@ function mostrar(){ const [h, arg] = location.hash.slice(1).split('/'); let id =
         else if (!(chatCon?.p === x && chatCon.conv)){ const c = privadas.find(q => q.otro.id === x.id); chatCon = c ? {conv:c, p:x} : {p:x}; if (c) cargarMensajes(c); else abrirPrivado(x); } }
       pintarChat(); }
     if (id === 'solicitudes') pintarSolicitudes();
-    if (id === 'notificaciones') pintarPush();
+    if (id === 'ajustes') pintarAjustes(arg);
     if (id === 'notificaciones') pintarNotis(); }
   actualizarMenu();
   $$('.screen').forEach(s => s.classList.toggle('activa', s.id === id)); if (id !== 'perfil' && !ed.hidden) cerrarEd(); if (id === 'inicio' && arg){ resaltar = +arg; pintarFeed(); } else window.scrollTo(0,0); }
