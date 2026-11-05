@@ -68,8 +68,9 @@ h1,h2,h3{font-family:var(--ft);color:var(--title);margin:0;line-height:1.25}
 [data-cajas="punteada"] .caja{border-style:dashed}
 
 /* Foto del día */
-.foto-wrap{position:relative;max-width:520px;margin:0 auto}
-.foto{display:block;width:100%;height:auto;border:var(--marco, 1px) solid var(--line)}
+.foto-wrap{position:relative;width:fit-content;max-width:min(420px, 100%);margin:0 auto}
+.foto-wrap .foto-vacia{width:min(420px, calc(100vw - 48px))}
+.foto{display:block;width:auto;max-width:100%;height:auto;max-height:min(60vh, 480px);border:var(--marco, 1px) solid var(--line)}
 .foto-vacia{aspect-ratio:4/3;border:1px dashed var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--muted);text-align:center;padding:16px}
 .foto-vacia i{width:90px;height:90px;background:var(--logo) center/contain no-repeat;filter:var(--logofilt);opacity:.4}
 .sticker{position:absolute;color:#FFF;text-shadow:1px 1px 0 #000, 0 0 4px #000;pointer-events:none;line-height:1}
@@ -93,6 +94,29 @@ h1,h2,h3{font-family:var(--ft);color:var(--title);margin:0;line-height:1.25}
 @media (min-width:900px){.thumbs{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .thumb{display:block;aspect-ratio:1;border:1px solid var(--line);background:var(--box) center/cover no-repeat;padding:0;cursor:pointer}
 .thumb[aria-current="true"]{outline:2px solid var(--link);outline-offset:1px}
+/* Secciones del perfil (perfil / fotos anteriores) */
+.p-secs{display:flex;gap:20px;border-bottom:1px solid var(--line);margin:0 0 18px}
+.p-secs button{background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;color:var(--link);font-family:var(--ft);font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;padding:8px 0;min-height:40px;cursor:pointer}
+.p-secs button[aria-current="true"]{color:var(--title);border-bottom-color:var(--title)}
+.p-secs button[hidden],#p-cols[hidden]{display:none}
+.galeria{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px}
+@media (min-width:900px){.galeria{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}}
+.g-item{display:flex;flex-direction:column;gap:4px;background:none;border:0;padding:0;margin:0;color:var(--ink);font:inherit;text-align:left;cursor:pointer;min-width:0}
+.g-img{display:block;width:100%;aspect-ratio:1;border:1px solid var(--line);background:var(--box) center/cover no-repeat}
+.g-item:hover .g-img,.g-item:focus-visible .g-img{outline:2px solid var(--link);outline-offset:1px}
+.g-dato{font-size:11px;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fila-like{display:flex;align-items:center;gap:4px;margin:4px 0 0}
+.fila-like .like-perfil{width:36px;height:36px;font-size:20px}
+/* Foto anterior abierta */
+#modal-foto .modal{max-width:640px}
+#modal-foto .modal > *{flex-shrink:0}
+.mf-img{position:relative;display:flex;justify-content:center;align-items:center;background:#000;min-height:120px}
+#mf-img{display:block;width:auto;max-width:100%;height:auto;max-height:min(62dvh, 560px)}
+.mf-flecha{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:56px;border:0;background:rgba(0,0,0,.45);color:#FFF;font-size:28px;line-height:1;cursor:pointer;left:0}
+.mf-flecha.der{left:auto;right:0}
+.mf-flecha[hidden]{display:none}
+#modal-foto .libro{margin:4px 0 0;max-width:none}
+#modal-foto h2{font-size:17px}
 .ff{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 @media (min-width:900px){.ff{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .ff a{display:flex;flex-direction:column;gap:3px;text-decoration:none;font-size:12px;text-align:center;word-break:break-word}
@@ -212,6 +236,15 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
 .check-legal{display:flex;gap:8px;align-items:flex-start;line-height:1.45;cursor:pointer}
 .check-legal input{flex:none;width:18px;height:18px;margin:2px 0 0;accent-color:var(--link)}
 #modal-legal{z-index:70}
+#modal-recorte{z-index:80}
+.recorte{position:relative;width:min(280px, 100%);aspect-ratio:1;margin:0 auto;overflow:hidden;background:#000;touch-action:none;cursor:grab;border:1px solid var(--line)}
+.recorte.redondo{border-radius:50%}
+.recorte.agarrando{cursor:grabbing}
+.recorte img{position:absolute;left:0;top:0;transform-origin:0 0;max-width:none;user-select:none;pointer-events:none}
+.legal-esquina{position:fixed;left:10px;bottom:calc(8px + env(safe-area-inset-bottom));z-index:30;font-size:11px;color:var(--ink);opacity:.5;text-decoration:none;padding:4px 6px;font-family:Verdana, sans-serif}
+.legal-esquina:hover,.legal-esquina:focus-visible{opacity:1;text-decoration:underline}
+#entrada.activa ~ .legal-esquina, body.editando .legal-esquina{display:none}
+@media (max-width:899px){#chat.activa ~ .legal-esquina{display:none}}
 .legal-tabs{display:flex;flex-wrap:wrap;gap:6px}
 .legal-tabs .btn{min-height:40px;font-size:12px;padding:0 10px}
 .legal-txt{line-height:1.55;font-size:14px}
@@ -376,7 +409,6 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
       <a href="#top" data-sec="top">top</a><span class="sep" aria-hidden="true">|</span>
       <a href="#solicitudes" data-sec="solicitudes">solicitudes</a><span class="sep" aria-hidden="true">|</span>
       <a href="#notificaciones" data-sec="notificaciones">notificaciones</a><span class="sep" aria-hidden="true">|</span>
-      <a href="#" data-legal="terminos">legal</a><span class="sep" aria-hidden="true">|</span>
       <button type="button" data-salir>salir</button>
     </nav>
   </div></header>
@@ -391,7 +423,7 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
         <h1 style="font-size:22px">inicio</h1>
         <button class="btn" type="button" id="recargar">↻ recargar</button>
       </div>
-      <p class="muted chico" style="margin:0">lo que postean vos y tus amigos. lo nuevo aparece arriba.</p>
+      <p class="muted chico" style="margin:0">lo que postean vos y tus amigos.</p>
       <button class="btn lleno nuevos" type="button" id="hay-nuevos" hidden></button>
       <div id="feed"></div>
     </div>
@@ -437,13 +469,19 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
     </div>
     <p class="chico frase-marq" id="p-frase" style="margin:-6px 0 16px"><span></span></p>
 
-    <div class="cols">
-      <!-- Izquierda: fotos anteriores + sobre mí -->
+    <nav class="p-secs" aria-label="Secciones del perfil">
+      <button type="button" data-psec="perfil" aria-current="true">perfil</button>
+      <button type="button" data-psec="fotos" aria-current="false" id="psec-fotos">fotos anteriores</button>
+    </nav>
+
+    <!-- Fotos anteriores: miniaturas; al tocarlas se abren con likes y libro de visitas -->
+    <section id="p-galeria-sec" hidden aria-labelledby="psec-fotos">
+      <div class="galeria" id="p-galeria"></div>
+    </section>
+
+    <div class="cols" id="p-cols">
+      <!-- Izquierda: sobre mí -->
       <aside class="col-izq">
-        <div class="bloque" id="p-anteriores-b">
-          <p class="titulo-col">fotos anteriores</p>
-          <div class="thumbs" id="p-anteriores"></div>
-        </div>
         <div class="bloque" id="p-sobre-b">
           <p class="titulo-col">sobre mí</p>
           <div class="datos" id="p-datos"></div>
@@ -557,6 +595,41 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
   </form>
 </div>
 
+<!-- Una foto anterior, más grande, con likes y libro de visitas -->
+<div class="modal-fondo" id="modal-foto" hidden>
+  <div class="modal" role="dialog" aria-labelledby="mf-titulo" aria-modal="true">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="muted chico" id="mf-pos"></span>
+      <button type="button" class="btn" id="mf-cerrar" aria-label="Cerrar">×</button></div>
+    <div class="mf-img"><img id="mf-img" alt="">
+      <button type="button" class="mf-flecha" id="mf-ant" aria-label="Foto más nueva">‹</button><button type="button" class="mf-flecha der" id="mf-sig" aria-label="Foto más vieja">›</button></div>
+    <div class="fila-like"><button type="button" class="like-perfil" id="mf-like" aria-pressed="false"></button><span class="chico" id="mf-like-cuenta"></span></div>
+    <div><h2 id="mf-titulo"></h2><p class="texto" id="mf-texto" style="margin:6px 0;white-space:pre-line;word-break:break-word"></p><p class="muted chico" id="mf-fecha" style="margin:0"></p></div>
+    <section class="libro" aria-labelledby="mf-libro-t">
+      <h3 id="mf-libro-t"></h3>
+      <div id="mf-firmas"></div>
+      <form class="firmar" id="mf-firmar">
+        <label class="lbl" for="mf-txt" id="mf-firmar-lbl">firmá el libro</label>
+        <textarea class="field" id="mf-txt" maxlength="300"></textarea>
+        <button class="btn" type="submit">firmar</button>
+      </form>
+      <p class="aviso" id="mf-lleno" hidden>el libro de esta foto está lleno (20 firmas).</p>
+    </section>
+  </div>
+</div>
+
+<!-- Acomodar la foto de perfil (avatar) antes de subirla -->
+<div class="modal-fondo" id="modal-recorte" hidden>
+  <div class="modal" role="dialog" aria-labelledby="rec-t" aria-modal="true">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h2 id="rec-t" style="font-size:17px">acomodá tu foto</h2>
+      <button type="button" class="btn" id="rec-cerrar" aria-label="Cancelar">×</button></div>
+    <p class="muted chico" style="margin:0">arrastrá la foto para elegir qué parte se ve y usá la barra para acercar o alejar.</p>
+    <div class="recorte" id="rec-area"><img id="rec-img" alt="vista previa de tu foto de perfil" draggable="false"></div>
+    <div><label class="lbl" for="rec-zoom">zoom</label><input class="rango" id="rec-zoom" type="range" min="1" max="4" step="0.01" value="1"></div>
+    <p class="msg" id="rec-msg" role="alert"></p>
+    <button class="btn lleno" type="button" id="rec-usar">usar esta parte</button>
+  </div>
+</div>
+
 <!-- Ventana para crear un grupo -->
 <div class="modal-fondo" id="modal-grupo" hidden>
   <form class="modal" id="grupo-form" role="dialog" aria-labelledby="grupo-t" aria-modal="true">
@@ -635,6 +708,9 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
   </main>
 </section>
 
+<!-- Legal: link chiquito fijo en la esquina (en la entrada está en el pie) -->
+<a href="#" class="legal-esquina" data-legal="terminos">legal</a>
+
 <p class="aviso-flot" id="aviso-flot" role="alert" hidden></p>
 
 <!-- ================= EDITOR ================= -->
@@ -674,7 +750,7 @@ const FUENTES_B = {verdana:['Verdana, Tahoma, sans-serif','Verdana'], tahoma:['T
 const STICKERS = ['✝','☆','★','✦','♥','☾','✿','♪','∞','天','愛','夢','☠','⚡'];
 
 function base(){ return {
-  apodo:'', frase:'', bio:'', ciudad:'', cumple:'', escuchando:'', musica:'', favoritos:'flor\ntomi\ncaro',
+  apodo:'', frase:'', bio:'', ciudad:'', cumple:'', escuchando:'', musica:'', favoritos:'',
   avatar:'', avatarForma:'cuadrado', fondoImg:'', fondoModo:'mosaico',
   tema:'clasico', ...pick(TEMAS.clasico, [...COLS,'patron','fuenteTitulo','fuenteTexto']),
   tamano:14, efectoTitulo:'ninguno', cajas:'simple', marco:1, stickers:[],
@@ -700,6 +776,7 @@ function sanearPerfil(d, uid){ const b = base(), r = {}; d = d && typeof d === '
   Object.entries(OPC).forEach(([k, l]) => r[k] = l.includes(d[k]) ? d[k] : b[k]);
   Object.entries(LARGOS).forEach(([k, n]) => r[k] = typeof d[k] === 'string' ? d[k].slice(0, n) : b[k]);
   BOOLS.forEach(k => r[k] = typeof d[k] === 'boolean' ? d[k] : b[k]);
+  if (r.favoritos.trim() === 'flor\ntomi\ncaro') r.favoritos = '';                       // los de ejemplo que venían de fábrica
   r.cumple = typeof d.cumple === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d.cumple) ? d.cumple : '';
   r.tamano = Number.isInteger(d.tamano) && d.tamano >= 12 && d.tamano <= 19 ? d.tamano : b.tamano;
   r.marco = [0,1,4,10].includes(d.marco) ? d.marco : b.marco;
@@ -715,7 +792,7 @@ function leidosLocales(uid, viejo){ let loc = {}; try { loc = JSON.parse(localSt
   try { localStorage.setItem(llaveLeidos(uid), JSON.stringify(loc)); } catch {} return loc; }
 function guardarLeidos(){ const p = perfil(); if (p) try { localStorage.setItem(llaveLeidos(p.uid), JSON.stringify(p.leidos)); } catch {} }
 const armarPerfil = x => { const d = sanearPerfil(x.datos, x.id); return {...base(), ...d, uid:x.id, id:x.numero, apodo:String(x.apodo ?? '').slice(0, 24), visitas:x.visitas, creado:Date.parse(x.creado),
-  fotos:d.fotos.map(f => ({...f, firmas:[]})), ff:[], recibidas:[], notis:[], fans:[], leidos: x.id === sesion ? leidosLocales(x.id, x.datos?.leidos) : {}}; };
+  fotos:d.fotos.map(f => ({...f, firmas:[], likes:[]})), ff:[], recibidas:[], notis:[], fans:[], leidos: x.id === sesion ? leidosLocales(x.id, x.datos?.leidos) : {}}; };
 
 /* ---------- Supabase ----------
    Cuentas, perfiles, amistades, posteos, likes, comentarios, firmas, notificaciones y archivos
@@ -733,12 +810,23 @@ function avisar(t){ const a = $('#aviso-flot'); a.textContent = t; a.hidden = fa
 const falla = (que, error) => { if (error){ console.error(que, error); avisar(`No se pudo ${que}. Revisá tu conexión y probá de nuevo.`); return true; } return false; };
 
 // Mi perfil se guarda con un pequeño retraso, para no mandar un pedido por cada letra que escribís
-let tGuardar = null;
+let tGuardar = null, apodoGuardado = null;              // el último nick que aceptó la base
+const normNick = t => String(t ?? '').trim().toLowerCase();
+// Nick: no vacío, que no lo use otra persona (sin importar mayúsculas) y sin tomar los "npc + número" de otros
+function errorNick(v, yo){ if (!v) return 'el nick no puede quedar vacío.';
+  if (/^npc\d+$/i.test(v) && v.toLowerCase() !== 'npc' + yo.id) return 'los nicks «npc + número» están reservados. elegí otro.';
+  if (miembros().some(x => x.uid !== yo.uid && normNick(x.apodo) === normNick(v))) return 'ese nick ya existe. elegí otro.';
+  return ''; }
 function guardar(){ clearTimeout(tGuardar); tGuardar = setTimeout(guardarYa, 700); return true; }
 async function guardarYa(){ clearTimeout(tGuardar); const p = perfil(); if (!p) return;
   guardarLeidos();
   const datos = sanearPerfil(p, p.uid);                     // solo claves conocidas y válidas; "leidos" ya no se sube
   const {error} = await sb.from('profiles').update({apodo: p.apodo, datos}).eq('id', p.uid);
+  if (error && apodoGuardado != null && p.apodo !== apodoGuardado && /apodo/i.test(`${error.message} ${error.details} ${error.hint}`)){
+    avisar(error.code === '23505' ? 'Ese nick ya existe. Elegí otro.' : 'Ese nick no se puede usar. Elegí otro.');
+    p.apodo = apodoGuardado; aplicar(p); pintar(); if (!$('#editor').hidden) pintarEd();
+    return guardarYa(); }                                    // se guarda el resto con el nick anterior
+  if (!error) apodoGuardado = p.apodo;
   falla('guardar tu perfil', error); }
 
 /* Videos: se borran las coordenadas (formato ISO 6709, el que usan iPhone y Android) de los metadatos MP4/MOV.
@@ -796,12 +884,14 @@ async function subirImagen(file, max){ const blob = await achicarBlob(file, max,
 // Trae todo lo que el usuario puede ver (la seguridad del servidor ya filtra lo ajeno)
 async function cargarTodo(){
   const t = n => sb.from(n).select('*');
+  const lfP = Promise.resolve(t('likes_foto')).catch(error => ({error}));    // likes a fotos: si la tabla todavía no existe, el resto anda igual
   const r = await Promise.all([t('profiles'), t('amistades'), t('solicitudes'), sb.from('notificaciones').select('*').eq('para', sesion),
     t('likes_perfil'), t('firmas'), t('posteos'), t('likes'), t('comentarios')]);
   const err = r.find(x => x.error); if (err) throw err.error;
   const [pr, am, so, no, lp, fi, po, lk, co] = r.map(x => x.data || []);
   const nuevo = {};
   pr.forEach(x => { nuevo[x.id] = {perfil: armarPerfil(x)}; });
+  const miFila = pr.find(x => x.id === sesion); if (miFila) apodoGuardado = String(miFila.apodo ?? '');
   usuarios = nuevo;
   if (pr.some(x => x.id === sesion && x.datos && 'leidos' in x.datos)) guardar();   // saca "leidos" del perfil guardado (ahora vive en este navegador)
   const P = uid => usuarios[uid]?.perfil;
@@ -811,6 +901,8 @@ async function cargarTodo(){
   fi.forEach(x => { const p = P(x.perfil), a = P(x.autor), f = p && p.fotos.find(q => q.cuando === Number(x.foto));
     if (f && a) f.firmas.push({deId:a.id, de:a.apodo, texto:x.texto, cuando:Date.parse(x.creado)}); });
   usuarios && Object.values(usuarios).forEach(u => u.perfil.fotos.forEach(f => f.firmas.sort((a,b) => a.cuando - b.cuando)));
+  const lf = await lfP; if (lf.error) console.warn('likes de fotos', lf.error);
+  else (lf.data || []).forEach(x => { const p = P(x.perfil), u = P(x.usuario), f = p && p.fotos.find(q => q.cuando === Number(x.foto)); if (f && u && !f.likes.includes(u.id)) f.likes.push(u.id); });
   const yo = perfil();
   if (yo) yo.notis = no.map(x => { const d = x.datos && typeof x.datos === 'object' && !Array.isArray(x.datos) ? x.datos : {};   // solo los campos conocidos
       return {nid:x.id, tipo:x.tipo, de:P(x.de)?.id, cuando:Date.parse(x.creado), leida:x.leida, post:d.post, grupo:d.grupo, conv:d.conv, nombre:d.nombre, resumen:d.resumen, texto:d.texto}; })
@@ -931,27 +1023,25 @@ function pintar(){
   else caja.innerHTML = `<div class="foto-vacia"><i aria-hidden="true"></i><span>${mio ? 'todavía no subiste ninguna foto.<br>la primera va arriba ↑' : esc(p.apodo) + ' todavía no subió ninguna foto.'}</span></div>`;
   p.stickers.forEach((st,i) => { const [x,y,t] = POS[i % POS.length]; const e = document.createElement('span'); e.className = 'sticker'; e.textContent = st; e.setAttribute('aria-hidden','true');
     e.style.left = x + '%'; e.style.top = y + '%'; e.style.fontSize = t + 'px'; caja.appendChild(e); });
-  $('#p-pie').innerHTML = f ? `<h2>${esc(f.titulo || 'sin título')}</h2>${f.texto ? `<p class="texto">${esc(f.texto)}</p>` : ''}<p class="subida">foto subida el ${fechaLarga(f.cuando)} a las ${hora(f.cuando)}</p>` : '';
+  $('#p-pie').innerHTML = f ? `<h2>${esc(f.titulo || 'sin título')}</h2>${filaLike(f, mio)}${f.texto ? `<p class="texto">${esc(f.texto)}</p>` : ''}<p class="subida">foto subida el ${fechaLarga(f.cuando)} a las ${hora(f.cuando)}</p>` : '';
   // Libro de visitas de esa foto (firman todos, también en perfiles ajenos)
   $('#p-libro').hidden = !f;
   if (f){ $('#p-libro-t').textContent = `libro de visitas (${f.firmas.length}/${MAX_FIRMAS})`;
     $('#firmar-lbl').textContent = mio ? 'firmá tu libro' : `firmale el libro a ${p.apodo}`;
-    const l = $('#p-firmas'); l.innerHTML = '';
-    if (!f.firmas.length) l.innerHTML = '<p class="muted chico" style="margin:0">nadie firmó todavía. ¡estrenalo!</p>';
-    f.firmas.forEach(x => { const autor = (x.deId && porId(x.deId)) || {apodo:x.de, avatar:x.avatar || '', avatarForma:x.forma || 'cuadrado'};
-      const d = document.createElement('div'); d.className = 'firma';
-      const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, autor);
-      const c = document.createElement('div');
-      c.innerHTML = `<a class="quien" href="${autor.id ? linkPerfil(autor) : '#perfil'}">${esc(autor.apodo)}</a> <span class="cuando">dijo el ${fecha(x.cuando)} a las ${hora(x.cuando)}:</span><p>${esc(x.texto)}</p>`;
-      d.append(av, c); l.appendChild(d); });
+    listaFirmas($('#p-firmas'), f);
     const lleno = f.firmas.length >= MAX_FIRMAS; $('#firmar-form').hidden = lleno; $('#p-lleno').hidden = !lleno; }
-  // Fotos anteriores
-  $('#p-anteriores-b').hidden = !p.anteriores;
-  const th = $('#p-anteriores'); th.innerHTML = '';
-  if (!p.fotos.length) th.innerHTML = '<p class="muted chico" style="margin:0;grid-column:1/-1">todavía no hay fotos.</p>';
-  p.fotos.map((x,i) => [x,i]).reverse().slice(0,10).forEach(([x,i]) => { const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'thumb';
-    bt.style.backgroundImage = `url("${ver(x.img)}")`; bt.setAttribute('aria-label', `ver foto del ${fechaLarga(x.cuando)}`); bt.setAttribute('aria-current', i === idx);
-    bt.onclick = () => { verFoto = i; pintar(); $('#p-foto').scrollIntoView({behavior:'smooth', block:'start'}); }; th.appendChild(bt); });
+  // Secciones: perfil / fotos anteriores (todas menos la última)
+  const ant = anteriores(p); if (!p.anteriores) seccionPerfil = 'perfil';
+  const bf = $('#psec-fotos'); bf.hidden = !p.anteriores; bf.textContent = `fotos anteriores (${ant.length})`;
+  $$('.p-secs [data-psec]').forEach(b => b.setAttribute('aria-current', b.dataset.psec === seccionPerfil));
+  $('#p-cols').hidden = seccionPerfil !== 'perfil'; $('#p-galeria-sec').hidden = seccionPerfil !== 'fotos';
+  const g = $('#p-galeria'); g.innerHTML = '';
+  if (!ant.length) g.innerHTML = `<p class="muted chico" style="margin:0;grid-column:1/-1">${mio ? 'todavía no tenés fotos anteriores. cuando subas la foto de mañana, la de hoy pasa acá.' : esc(p.apodo) + ' todavía no tiene fotos anteriores.'}</p>`;
+  ant.forEach(x => { const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'g-item'; bt.dataset.foto = x.cuando;
+    bt.setAttribute('aria-label', `abrir foto del ${fechaLarga(x.cuando)}${x.titulo ? ': ' + x.titulo : ''}, ${x.likes.length} likes, ${x.firmas.length} firmas`);
+    bt.innerHTML = `<span class="g-img" style="background-image:url(&quot;${esc(ver(x.img))}&quot;)"></span><span class="g-dato">${fecha(x.cuando)} · ♥ ${x.likes.length} · ✎ ${x.firmas.length}</span>`;
+    g.appendChild(bt); });
+  if (!$('#modal-foto').hidden) pintarModalFoto();
   // Sobre mí
   $('#p-sobre-b').hidden = !p.sobre;
   const datos = [p.bio && `<p style="white-space:pre-line">${esc(p.bio)}</p>`, p.ciudad && `<p>de ${esc(p.ciudad)}</p>`,
@@ -964,9 +1054,67 @@ function pintar(){
   if (!amigos.length) ffb.innerHTML = `<p class="muted chico" style="margin:0;grid-column:1/-1">${mio ? 'todavía no tenés amigos. entrá al perfil de alguien y mandale una solicitud.' : esc(p.apodo) + ' todavía no tiene f/f.'}</p>`;
   amigos.forEach(x => ffb.appendChild(tile(x)));
   $('#p-favs-b').hidden = !p.favs;
-  $('#p-favs').innerHTML = p.favoritos.split('\n').map(t => t.trim()).filter(Boolean).slice(0,15).map(t => { const m = miembros().find(x => x.apodo.toLowerCase() === t.toLowerCase());
-    return `<li><a href="${m ? linkPerfil(m) : (/^https?:\/\//.test(t) ? esc(t) : '#perfil')}"${!m && /^https?:\/\//.test(t) ? ' target="_blank" rel="noopener"' : ''}>${esc(t)}</a></li>`; }).join('') || '<li class="muted">sin favoritos</li>';
+  // Favoritos: solo gente que existe en rinconAF (o links); los nicks que no existen no se muestran
+  $('#p-favs').innerHTML = p.favoritos.split('\n').map(t => t.trim()).filter(Boolean).map(t => ({t, m: miembros().find(x => normNick(x.apodo) === normNick(t))}))
+    .filter(x => x.m || /^https?:\/\//.test(x.t)).slice(0,15).map(({t, m}) =>
+    `<li><a href="${m ? linkPerfil(m) : esc(t)}"${m ? '' : ' target="_blank" rel="noopener"'}>${esc(m ? m.apodo : t)}</a></li>`).join('')
+    || `<li class="muted">${mio ? 'todavía no agregaste favoritos. sumalos desde «editar mi perfil».' : 'sin favoritos'}</li>`;
 }
+
+/* ---------- Libro de visitas, likes a fotos y fotos anteriores ---------- */
+let seccionPerfil = 'perfil', mf = null;                 // mf = {p, cuando}: foto anterior abierta
+const anteriores = p => p.fotos.slice(0, -1).reverse();  // todas menos la última, de la más nueva a la más vieja
+function listaFirmas(l, f){ l.innerHTML = '';
+  if (!f.firmas.length) l.innerHTML = '<p class="muted chico" style="margin:0">nadie firmó todavía. ¡estrenalo!</p>';
+  f.firmas.forEach(x => { const autor = (x.deId && porId(x.deId)) || {apodo:x.de, avatar:x.avatar || '', avatarForma:x.forma || 'cuadrado'};
+    const d = document.createElement('div'); d.className = 'firma';
+    const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, autor);
+    const c = document.createElement('div');
+    c.innerHTML = `<a class="quien" href="${autor.id ? linkPerfil(autor) : '#perfil'}">${esc(autor.apodo)}</a> <span class="cuando">dijo el ${fecha(x.cuando)} a las ${hora(x.cuando)}:</span><p>${esc(x.texto)}</p>`;
+    d.append(av, c); l.appendChild(d); }); }
+const textoLikes = n => `${n} ${n === 1 ? 'like' : 'likes'}`;
+function ponerLike(b, cuenta, f, mio){ const dio = f.likes.includes(perfil().id); b.hidden = mio;   // en tus fotos solo ves la cantidad
+  b.setAttribute('aria-pressed', dio); b.textContent = dio ? '♥' : '♡'; b.setAttribute('aria-label', dio ? 'Sacar like a esta foto' : 'Dar like a esta foto'); cuenta.textContent = textoLikes(f.likes.length); }
+const filaLike = (f, mio) => { const dio = f.likes.includes(perfil().id);
+  return `<p class="fila-like">${mio ? '' : `<button type="button" class="like-perfil" data-like-foto="${f.cuando}" aria-pressed="${dio}" aria-label="${dio ? 'Sacar like a esta foto' : 'Dar like a esta foto'}">${dio ? '♥' : '♡'}</button>`}<span class="chico">${mio ? '♥ ' : ''}${textoLikes(f.likes.length)}</span></p>`; };
+function likeFoto(p, f){ const yo = perfil(); if (!yo || !p || !f || p.uid === yo.uid) return;
+  const vuelta = () => { pintar(); };
+  if (f.likes.includes(yo.id)){ f.likes = f.likes.filter(i => i !== yo.id);
+    sb.from('likes_foto').delete().match({perfil:p.uid, foto:f.cuando, usuario:yo.uid}).then(({error}) => { if (falla('sacar el like', error)){ f.likes.push(yo.id); vuelta(); } }); }
+  else { f.likes.push(yo.id);
+    sb.from('likes_foto').insert({perfil:p.uid, foto:f.cuando}).then(({error}) => { if (falla('dar like', error)){ f.likes = f.likes.filter(i => i !== yo.id); vuelta(); } }); }
+  vuelta(); }
+function firmarFoto(p, f, t){ const yo = perfil(); if (!t || !p || !f || f.firmas.length >= MAX_FIRMAS) return false;
+  f.firmas.push({deId:yo.id, de:yo.apodo, texto:t, cuando:Date.now()});
+  sb.from('firmas').insert({perfil:p.uid, foto:f.cuando, texto:t}).then(({error}) => falla('firmar', error)); return true; }
+// Foto anterior abierta
+function abrirFoto(p, cuando){ mf = {p, cuando}; $('#mf-txt').value = ''; $('#modal-foto').hidden = false; pintarModalFoto(); $('#modal-foto .modal').scrollTop = 0; $('#mf-cerrar').focus({preventScroll:true}); }
+function cerrarFoto(){ $('#modal-foto').hidden = true; mf = null; }
+function pintarModalFoto(){ if (!mf) return; mf.p = porId(mf.p.id) || mf.p; const p = mf.p, lista = anteriores(p), i = lista.findIndex(x => x.cuando === mf.cuando), f = lista[i];
+  if (!f) return cerrarFoto(); const mio = !!(perfil() && p.uid === perfil().uid);
+  const im = $('#mf-img'); if (im.dataset.foto !== String(f.cuando)){ im.src = ver(f.img); im.dataset.foto = f.cuando; }
+  im.alt = f.titulo || 'foto del ' + fechaLarga(f.cuando);
+  $('#mf-pos').textContent = `${i + 1} de ${lista.length}`; $('#mf-ant').hidden = i <= 0; $('#mf-sig').hidden = i >= lista.length - 1;
+  ponerLike($('#mf-like'), $('#mf-like-cuenta'), f, mio); if (mio) $('#mf-like-cuenta').textContent = '♥ ' + textoLikes(f.likes.length);
+  $('#mf-titulo').textContent = f.titulo || 'sin título'; $('#mf-texto').textContent = f.texto; $('#mf-texto').hidden = !f.texto;
+  $('#mf-fecha').textContent = `foto subida el ${fechaLarga(f.cuando)} a las ${hora(f.cuando)}`;
+  $('#mf-libro-t').textContent = `libro de visitas (${f.firmas.length}/${MAX_FIRMAS})`;
+  $('#mf-firmar-lbl').textContent = mio ? 'firmá tu libro' : `firmale el libro a ${p.apodo}`;
+  listaFirmas($('#mf-firmas'), f); const lleno = f.firmas.length >= MAX_FIRMAS; $('#mf-firmar').hidden = lleno; $('#mf-lleno').hidden = !lleno; }
+function moverFoto(d){ if (!mf) return; const lista = anteriores(mf.p), i = lista.findIndex(x => x.cuando === mf.cuando), n = lista[i + d];
+  if (n){ mf.cuando = n.cuando; $('#mf-txt').value = ''; pintarModalFoto(); } }
+$('.p-secs').addEventListener('click', e => { const b = e.target.closest('[data-psec]'); if (!b) return; seccionPerfil = b.dataset.psec; pintar(); });
+$('#p-galeria').addEventListener('click', e => { const b = e.target.closest('[data-foto]'); if (b && viendo) abrirFoto(viendo, +b.dataset.foto); });
+$('#p-pie').addEventListener('click', e => { const b = e.target.closest('[data-like-foto]'); if (!b || !viendo) return;
+  likeFoto(viendo, viendo.fotos.find(x => x.cuando === +b.dataset.likeFoto)); $('#p-pie [data-like-foto]')?.focus(); });
+$('#mf-like').onclick = () => { if (mf) likeFoto(mf.p, mf.p.fotos.find(x => x.cuando === mf.cuando)); };
+$('#mf-firmar').onsubmit = e => { e.preventDefault(); if (!mf) return;
+  if (firmarFoto(mf.p, mf.p.fotos.find(x => x.cuando === mf.cuando), $('#mf-txt').value.trim())){ $('#mf-txt').value = ''; pintar(); } };
+$('#mf-ant').onclick = () => moverFoto(-1); $('#mf-sig').onclick = () => moverFoto(1);
+$('#mf-cerrar').onclick = cerrarFoto;
+$('#modal-foto').addEventListener('click', e => { if (e.target.id === 'modal-foto') cerrarFoto(); });
+document.addEventListener('keydown', e => { if ($('#modal-foto').hidden || e.target.closest('textarea, input')) { if (e.key === 'Escape' && !$('#modal-foto').hidden) cerrarFoto(); return; }
+  if (e.key === 'Escape') cerrarFoto(); if (e.key === 'ArrowLeft') moverFoto(-1); if (e.key === 'ArrowRight') moverFoto(1); });
 
 /* ---------- Inicio: todos los perfiles de la banda ---------- */
 function pintarInicio(){
@@ -985,15 +1133,13 @@ $('#subir-form').onsubmit = async e => { e.preventDefault(); const p = perfil();
   const btn = e.target.querySelector('[type=submit]'); btn.disabled = true; msg('#subir-msg', 'subiendo la foto…', 'ok');
   let img; try { img = await subirImagen(fotoNueva, 1000); } catch (er){ btn.disabled = false; console.error(er); return msg('#subir-msg', 'No se pudo subir la foto. Probá de nuevo.'); }
   btn.disabled = false;
-  p.fotos.push({img, titulo:$('#subir-titulo').value.trim(), texto:$('#subir-texto').value.trim(), cuando:Date.now(), firmas:[]}); p.nuevo = false;
+  p.fotos.push({img, titulo:$('#subir-titulo').value.trim(), texto:$('#subir-texto').value.trim(), cuando:Date.now(), firmas:[], likes:[]}); p.nuevo = false;
   await guardarYa();
   fotoNueva = null; verFoto = null; e.target.reset(); $('#subir-nombre').textContent = 'ninguna foto elegida'; $('#subir-msg').className = 'msg'; pintar(); };
 
 /* ---------- Firmar ---------- */
 $('#firmar-form').onsubmit = e => { e.preventDefault(); const yo = perfil(), p = viendo, t = $('#firmar-txt').value.trim(); if (!t || !p) return;
-  const f = p.fotos[verFoto ?? p.fotos.length - 1]; if (!f || f.firmas.length >= MAX_FIRMAS) return;
-  f.firmas.push({deId:yo.id, de:yo.apodo, texto:t, cuando:Date.now()}); $('#firmar-txt').value = ''; pintar();
-  sb.from('firmas').insert({perfil:p.uid, foto:f.cuando, texto:t}).then(({error}) => falla('firmar', error)); };
+  const f = p.fotos[verFoto ?? p.fotos.length - 1]; if (firmarFoto(p, f, t)){ $('#firmar-txt').value = ''; pintar(); } };
 $('#like-perfil').onclick = () => { const yo = perfil(), p = viendo; if (!p || esMio()) return;
   if (p.fans.includes(yo.id)){ p.fans = p.fans.filter(i => i !== yo.id); sb.from('likes_perfil').delete().match({perfil:p.uid, usuario:yo.uid}).then(({error}) => falla('sacar el like', error)); }
   else { p.fans.push(yo.id); sb.from('likes_perfil').insert({perfil:p.uid}).then(({error}) => falla('dar like', error)); }   // el aviso lo crea la base de datos
@@ -1024,7 +1170,7 @@ function pintarEd(){
     h += campo('apodo','nick',{max:24}) + campo('frase','frase debajo de tu nick',{max:90});
     h += campo('bio','sobre mí',{area:true, max:400}) + campo('ciudad','de dónde sos',{max:40}) + campo('cumple','cumpleaños',{tipo:'date'});
     h += campo('escuchando','escuchando ahora',{max:60, ph:'artista – tema'}) + campo('musica','tema de tu perfil (link)',{tipo:'url', max:300, ph:'https://…'});
-    h += campo('favoritos','favoritos (un nick o link por renglón)',{area:true, max:400});
+    h += campo('favoritos','favoritos (nicks de gente de rinconAF o links, uno por renglón)',{area:true, max:400});
   }
   if (pest === 'colores'){
     h += `<div class="ed-grupo"><h3>colores listos</h3><div class="temas">${Object.entries(TEMAS).map(([k,t]) =>
@@ -1072,12 +1218,18 @@ ed.addEventListener('click', e => { const t = e.target.closest('button'); if (!t
   if (t.dataset.stk){ const s = t.dataset.stk; return cambiar('stickers', p.stickers.includes(s) ? p.stickers.filter(x => x !== s) : [...p.stickers, s].slice(-8), true); }
   if (t.dataset.quitar) return cambiar(t.dataset.quitar, '', true); });
 ed.addEventListener('input', e => { const t = e.target;
+  if (t.dataset.key === 'apodo'){ const v = t.value.trim(), er = errorNick(v, perfil());   // el nick se cambia solo si es válido
+    t.toggleAttribute('aria-invalid', !!er); const a = $('#ed-aviso');
+    if (er){ alertaEd(er); if (a) a.dataset.nick = '1'; return; }
+    if (a && a.dataset.nick){ a.hidden = true; delete a.dataset.nick; }
+    if (v !== perfil().apodo) cambiar('apodo', v); return; }
   if (t.dataset.key){ cambiar(t.dataset.key, t.value); const c = $('#cont-' + t.dataset.key); if (c) c.textContent = t.value.length + '/' + t.maxLength; }
   if (t.dataset.color){ perfil().tema = 'propio'; cambiar(t.dataset.color, t.value); }
   if (t.dataset.num){ cambiar(t.dataset.num, +t.value); $('#tam-v').textContent = t.value; } });
 ed.addEventListener('change', e => { const t = e.target;
   if (t.dataset.color) pintarEd();
   if (t.dataset.bool) cambiar(t.dataset.bool, t.checked);
+  if (t.dataset.img === 'avatar' && t.files[0]){ abrirRecorte(t.files[0]); t.value = ''; return; }      // el avatar se acomoda antes de subirlo
   if (t.dataset.img && t.files[0]){ alertaEd('subiendo imagen…'); subirImagen(t.files[0], +t.dataset.max).then(u => cambiar(t.dataset.img, u, true)).catch(er => { console.error(er); alertaEd('No se pudo subir la imagen.'); }); } });
 function abrirEd(){ if (!esMio()) return; pintarEd(); ed.hidden = false; document.body.classList.add('editando'); $('#ed-tabs [aria-selected="true"]').focus(); }
 function cerrarEd(){ ed.hidden = true; document.body.classList.remove('editando'); }
@@ -1086,6 +1238,40 @@ $('#ed-reset').onclick = () => { if (!confirm('¿Volver los colores, letras y fo
   const p = perfil(); const keep = pick(p, ['apodo','frase','bio','ciudad','cumple','escuchando','musica','favoritos','avatar','visitas','creado','fotos']);
   usuarios[sesion].perfil = {...base(), ...keep, ...pick(p, ['uid','id','ff','recibidas','notis','fans','leidos']), nuevo:false}; guardar(); viendo = perfil(); aplicar(viendo); pintar(); pintarEd(); };
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !ed.hidden) cerrarEd(); });
+
+/* ---------- Acomodar la foto de perfil ----------
+   Se elige un cuadrado de la foto (arrastrando y con zoom) y se sube solo esa parte, ya recortada. */
+const REC = {url:'', w:0, h:0, x:0, y:0, esc:1, base:1, arrastre:null};
+const recLado = () => $('#rec-area').clientWidth;
+function recPintar(){ const L = recLado(), e = REC.esc;                                  // la foto siempre cubre todo el cuadro
+  REC.x = Math.min(0, Math.max(L - REC.w * e, REC.x)); REC.y = Math.min(0, Math.max(L - REC.h * e, REC.y));
+  $('#rec-img').style.transform = `translate(${REC.x}px, ${REC.y}px) scale(${e})`; }
+function recZoom(z){ const L = recLado(), cx = (L / 2 - REC.x) / REC.esc, cy = (L / 2 - REC.y) / REC.esc;   // acerca o aleja sin mover el centro
+  REC.esc = REC.base * z; REC.x = L / 2 - cx * REC.esc; REC.y = L / 2 - cy * REC.esc; recPintar(); }
+function abrirRecorte(file){ if (!file.type.startsWith('image/')) return alertaEd('Elegí una imagen.');
+  if (REC.url) URL.revokeObjectURL(REC.url); REC.url = URL.createObjectURL(file);
+  const im = $('#rec-img'); $('#rec-msg').className = 'msg'; $('#rec-usar').disabled = false;
+  $('#rec-area').classList.toggle('redondo', perfil()?.avatarForma === 'circulo');
+  im.onload = () => { REC.w = im.naturalWidth; REC.h = im.naturalHeight; im.style.width = REC.w + 'px'; im.style.height = REC.h + 'px';
+    $('#modal-recorte').hidden = false; const L = recLado(); REC.base = L / Math.min(REC.w, REC.h); REC.esc = REC.base;
+    REC.x = (L - REC.w * REC.esc) / 2; REC.y = (L - REC.h * REC.esc) / 2; $('#rec-zoom').value = 1; recPintar(); $('#rec-usar').focus(); };
+  im.onerror = () => alertaEd('No se pudo abrir esa imagen.'); im.src = REC.url; }
+function cerrarRecorte(){ $('#modal-recorte').hidden = true; if (REC.url){ URL.revokeObjectURL(REC.url); REC.url = ''; } $('#rec-img').removeAttribute('src'); }
+$('#rec-area').addEventListener('pointerdown', e => { e.preventDefault(); $('#rec-area').setPointerCapture(e.pointerId); $('#rec-area').classList.add('agarrando');
+  REC.arrastre = {px:e.clientX, py:e.clientY, x:REC.x, y:REC.y}; });
+$('#rec-area').addEventListener('pointermove', e => { const a = REC.arrastre; if (!a) return; REC.x = a.x + e.clientX - a.px; REC.y = a.y + e.clientY - a.py; recPintar(); });
+['pointerup','pointercancel'].forEach(t => $('#rec-area').addEventListener(t, () => { REC.arrastre = null; $('#rec-area').classList.remove('agarrando'); }));
+$('#rec-area').addEventListener('wheel', e => { e.preventDefault(); const z = $('#rec-zoom'); z.value = Math.min(4, Math.max(1, +z.value - e.deltaY / 500)); recZoom(+z.value); }, {passive:false});
+$('#rec-zoom').addEventListener('input', e => recZoom(+e.target.value));
+$('#rec-cerrar').onclick = cerrarRecorte;
+$('#modal-recorte').addEventListener('click', e => { if (e.target.id === 'modal-recorte') cerrarRecorte(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal-recorte').hidden) cerrarRecorte(); });
+$('#rec-usar').onclick = async () => { const b = $('#rec-usar'), L = recLado(), lado = 400, c = document.createElement('canvas'); c.width = c.height = lado;
+  c.getContext('2d').drawImage($('#rec-img'), -REC.x / REC.esc, -REC.y / REC.esc, L / REC.esc, L / REC.esc, 0, 0, lado, lado);
+  b.disabled = true; msg('#rec-msg', 'subiendo tu foto…', 'ok');
+  try { const blob = await new Promise((ok, mal) => c.toBlob(x => x ? ok(x) : mal(new Error('sin imagen')), 'image/jpeg', .85));
+    const path = await subirArchivo(blob, 'jpg'); await firmar([path]); cerrarRecorte(); cambiar('avatar', urlPublica(path), true); }
+  catch (er){ console.error(er); b.disabled = false; msg('#rec-msg', 'No se pudo subir la foto. Probá de nuevo.'); } };
 
 /* ---------- Archivos del chat ----------
    DEMO: las fotos y videos del chat se guardan en IndexedDB (lugar del navegador para archivos grandes),
@@ -1798,9 +1984,9 @@ function mostrar(){ const [h, arg] = location.hash.slice(1).split('/'); let id =
   if (!PANT.includes(id)) id = perfil() ? 'perfil' : 'entrada';
   if (!perfil()) id = 'entrada'; else if (id === 'entrada') id = 'perfil';
   if (id === 'perfil'){ const nuevo = (arg && porId(+arg)) || perfil();
-    if (viendo !== nuevo){ viendo = nuevo; verFoto = null; if (!esMio()){ viendo.visitas++; sb.rpc('sumar_visita', {p:viendo.uid}).then(({error}) => { if (error) console.error(error); }); } }
+    if (viendo !== nuevo){ viendo = nuevo; verFoto = null; seccionPerfil = 'perfil'; cerrarFoto(); if (!esMio()){ viendo.visitas++; sb.rpc('sumar_visita', {p:viendo.uid}).then(({error}) => { if (error) console.error(error); }); } }
     aplicar(viendo); pintar();                          // cada perfil se ve con el estilo de su dueño
-  } else { viendo = null; if (perfil()) aplicar(perfil());
+  } else { viendo = null; cerrarFoto(); if (perfil()) aplicar(perfil());
     if (id === 'inicio'){ resaltar = null; pintarFeed(); }
     if (id === 'top') pintarTop();
     if (id === 'buscar'){ pintarBuscar(); setTimeout(() => $('#buscar-txt').focus(), 50); }
