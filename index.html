@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
 <meta name="robots" content="noindex, nofollow">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="rinconAF">
 <title>rinconAF</title>
 <link rel="icon" href="data:image/png;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -119,6 +122,12 @@ h1,h2,h3{font-family:var(--ft);color:var(--title);margin:0;line-height:1.25}
 #modal-foto h2{font-size:17px}
 .ff{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 @media (min-width:900px){.ff{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.amigos-lista{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:4px 12px}
+@media (min-width:900px){.amigos-lista{grid-template-columns:1fr}}
+.amigos-lista a{display:flex;align-items:center;gap:8px;min-height:38px;text-decoration:none;min-width:0}
+.amigos-lista a span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.amigos-lista a:hover span:last-child{text-decoration:underline}
+.amigos-lista .avatar{width:30px;height:30px;font-size:10px}
 .ff a{display:flex;flex-direction:column;gap:3px;text-decoration:none;font-size:12px;text-align:center;word-break:break-word}
 .ff .avatar{width:100%;height:auto;aspect-ratio:1}
 .favs{list-style:none;margin:0;padding:0;font-size:13px}
@@ -205,11 +214,35 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
 .media-link .play{width:44px;height:44px;flex:none;border-radius:50%;background:var(--link);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:16px}
 .media-link .sitio{display:block;font-size:12px;color:var(--muted);word-break:break-all}
 .pin-embed{display:block;width:100%;max-width:345px;height:520px;margin-top:8px;border:1px solid var(--line);background:#fff}
+/* Rincón: tarjetas chicas para canciones y videos */
+.r-card{display:flex;align-items:center;gap:10px;margin-top:8px;padding:8px;border:1px solid var(--line);background:var(--box);text-decoration:none;max-width:420px;color:var(--ink)}
+.r-card:hover,.r-card:focus-visible{border-color:var(--link)}
+.r-mini{position:relative;flex:none;width:48px;height:48px;background:var(--bg2) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--link);font-size:18px;overflow:hidden}
+.r-card.video .r-mini{width:120px;height:68px}
+.r-card.video .r-mini::after{content:"►";position:absolute;right:4px;bottom:4px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.65);color:#FFF;font-size:10px;display:flex;align-items:center;justify-content:center}
+.r-info{min-width:0;display:flex;flex-direction:column;gap:2px}
+.r-tit{color:var(--title);font-weight:bold;font-size:13px;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
+.r-sub{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#rincon .post img.compartida{max-width:min(100%, 300px);max-height:320px}
 .borrar{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:12px;min-height:32px;padding:0}
 
 /* Inicio: posteos de amigos */
 .feed-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
-.feed{max-width:620px;margin:0 auto}
+.feed{max-width:620px;margin:0 auto;width:100%}
+.inicio-cols{display:flex;flex-direction:column;gap:12px}
+@media (max-width:899px){.inicio-cols .feed{display:contents}                 /* celu: título, "escuchando ahora" y después los posteos */
+  .feed-top{order:0}.inicio-cols .feed > p{order:1}.escuchando-b{order:2;padding:10px}.inicio-cols #hay-nuevos,.inicio-cols #feed{order:3}}
+@media (min-width:900px){.inicio-cols{display:grid;grid-template-columns:minmax(0,620px) 230px;justify-content:center;align-items:start;gap:28px}
+  .escuchando-b{position:sticky;top:12px}}
+.escuchando-b{border:1px solid var(--line);background:var(--box);padding:12px}
+.esc-lista{list-style:none;margin:0 0 10px;padding:0;display:flex;flex-direction:column;gap:10px}
+.esc-lista li{display:flex;gap:8px;align-items:flex-start;min-width:0}
+.esc-lista .avatar{width:30px;height:30px;font-size:10px;flex:none}
+.esc-lista > li > a{text-decoration:none;flex:none}
+.esc-lista .esc-txt{min-width:0;font-size:12px;line-height:1.4;word-break:break-word}
+.esc-lista .esc-tema{display:block;color:var(--title);font-weight:bold}
+.esc-form{display:flex;flex-direction:column;gap:6px}
+.esc-form .btn{min-height:40px;font-size:12px}
 .posteo{border:1px solid var(--line);background:var(--box);padding:12px;margin-top:14px}
 .posteo.resaltado{outline:2px solid var(--link);outline-offset:2px}
 .posteo-cab{display:flex;align-items:center;gap:10px}
@@ -241,10 +274,12 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
 .recorte.redondo{border-radius:50%}
 .recorte.agarrando{cursor:grabbing}
 .recorte img{position:absolute;left:0;top:0;transform-origin:0 0;max-width:none;user-select:none;pointer-events:none}
-.legal-esquina{position:fixed;left:10px;bottom:calc(8px + env(safe-area-inset-bottom));z-index:30;font-size:11px;color:var(--ink);opacity:.5;text-decoration:none;padding:4px 6px;font-family:Verdana, sans-serif}
-.legal-esquina:hover,.legal-esquina:focus-visible{opacity:1;text-decoration:underline}
-#entrada.activa ~ .legal-esquina, body.editando .legal-esquina{display:none}
-@media (max-width:899px){#chat.activa ~ .legal-esquina{display:none}}
+.screen.activa:not(#entrada){min-height:calc(100dvh - 34px)}             /* así "legal" queda abajo del todo aunque la página sea corta */
+.pie-legal{text-align:center;padding:6px 0 calc(8px + env(safe-area-inset-bottom));font-family:Verdana, sans-serif;font-size:11px;line-height:20px}
+.pie-legal a{color:var(--ink);opacity:.5;text-decoration:none;padding:4px 6px}
+.pie-legal a:hover,.pie-legal a:focus-visible{opacity:1;text-decoration:underline}
+#entrada.activa ~ .pie-legal{display:none}
+@media (max-width:899px){#chat.activa ~ .pie-legal{display:none}}
 .legal-tabs{display:flex;flex-wrap:wrap;gap:6px}
 .legal-tabs .btn{min-height:40px;font-size:12px;padding:0 10px}
 .legal-txt{line-height:1.55;font-size:14px}
@@ -418,6 +453,7 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
 <section id="inicio" class="screen">
   <div data-sitio="inicio"></div>
   <main class="pagina">
+    <div class="inicio-cols">
     <div class="feed">
       <div class="feed-top">
         <h1 style="font-size:22px">inicio</h1>
@@ -426,6 +462,18 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
       <p class="muted chico" style="margin:0">lo que postean vos y tus amigos.</p>
       <button class="btn lleno nuevos" type="button" id="hay-nuevos" hidden></button>
       <div id="feed"></div>
+    </div>
+    <!-- Costado: qué está escuchando cada uno (lo pone cada persona) -->
+    <aside class="escuchando-b" aria-labelledby="esc-t">
+      <p class="titulo-col" id="esc-t">escuchando ahora</p>
+      <ul class="esc-lista" id="esc-lista"></ul>
+      <form id="esc-form" class="esc-form">
+        <label class="lbl" for="esc-txt" id="esc-lbl">¿qué estás escuchando?</label>
+        <input class="field" id="esc-txt" maxlength="300" autocomplete="off" placeholder="artista – tema, o un link">
+        <div style="display:flex;gap:6px"><button class="btn" type="submit" style="flex:1;padding:0 10px">agregar canción</button><button class="btn" type="button" id="esc-sacar" hidden>sacar</button></div>
+        <p class="msg" id="esc-msg" role="alert"></p>
+      </form>
+    </aside>
     </div>
   </main>
   <button class="fab" type="button" id="fab" aria-label="Postear algo" title="postear">+</button>
@@ -521,8 +569,8 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
       <!-- Derecha: F/F + favoritos -->
       <aside class="col-der">
         <div class="bloque" id="p-ff-b">
-          <p class="titulo-col">f/f (amigos)</p>
-          <div class="ff" id="p-ff"></div>
+          <p class="titulo-col">amigos</p>
+          <ul class="amigos-lista" id="p-ff"></ul>
         </div>
         <div class="bloque" id="p-favs-b">
           <p class="titulo-col">favoritos</p>
@@ -708,8 +756,8 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
   </main>
 </section>
 
-<!-- Legal: link chiquito fijo en la esquina (en la entrada está en el pie) -->
-<a href="#" class="legal-esquina" data-legal="terminos">legal</a>
+<!-- Legal: link chiquito al final de la página (en la entrada está en el pie) -->
+<footer class="pie-legal"><a href="#" data-legal="terminos">legal</a></footer>
 
 <p class="aviso-flot" id="aviso-flot" role="alert" hidden></p>
 
@@ -729,7 +777,7 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 const K = {chats:'r2k3_chats', rincon:'r2k3_rincon', grupos:'r2k3_grupos'};
-// Grupos y chats que vivían solo en el navegador (antes de Supabase): se borran al cerrar sesión. El rincón sigue siendo local.
+// Grupos y chats que vivían solo en el navegador (antes de Supabase): se borran al cerrar sesión. El rincón viejo se pasa a Supabase al entrar.
 function borrarDatosLocalesViejos(){ try { localStorage.removeItem(K.grupos); localStorage.removeItem(K.chats); } catch {} try { indexedDB.deleteDatabase('r2k3_media'); } catch {} }
 try { localStorage.removeItem('r2k3_feed'); } catch {}   // resto del prototipo: el inicio ahora vive en Supabase
 const MAX_FIRMAS = 20;
@@ -765,7 +813,7 @@ function pick(o, ks){ const r = {}; ks.forEach(k => r[k] = o[k]); return r; }
 const OPC = {tema:[...Object.keys(TEMAS),'propio'], patron:['liso','puntos','cuadrille','rayas','grilla','estrellas','corazones','estatica'],
   fuenteTitulo:Object.keys(FUENTES_T), fuenteTexto:Object.keys(FUENTES_B),
   efectoTitulo:['ninguno','sombra','glitch','brillo','arcoiris'], cajas:['simple','punteada','sin','win98'], avatarForma:['cuadrado','circulo'], fondoModo:['mosaico','cubrir']};
-const LARGOS = {frase:90, bio:400, ciudad:40, escuchando:60, musica:300, favoritos:400};
+const LARGOS = {frase:90, bio:400, ciudad:40, escuchando:100, musica:300, favoritos:400};
 const BOOLS = ['anteriores','sobre','ff_ver','favs','contador','marquesina','estela','nuevo'];
 const esColor = v => typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v);
 // Imágenes: solo del bucket "media" de este Supabase y de la carpeta del dueño del perfil
@@ -777,6 +825,8 @@ function sanearPerfil(d, uid){ const b = base(), r = {}; d = d && typeof d === '
   Object.entries(LARGOS).forEach(([k, n]) => r[k] = typeof d[k] === 'string' ? d[k].slice(0, n) : b[k]);
   BOOLS.forEach(k => r[k] = typeof d[k] === 'boolean' ? d[k] : b[k]);
   if (r.favoritos.trim() === 'flor\ntomi\ncaro') r.favoritos = '';                       // los de ejemplo que venían de fábrica
+  r.escuchandoUrl = typeof d.escuchandoUrl === 'string' && d.escuchandoUrl.length <= 300 && /^https?:\/\/\S+$/i.test(d.escuchandoUrl) ? d.escuchandoUrl : '';
+  r.escuchandoCuando = Number.isFinite(d.escuchandoCuando) && d.escuchandoCuando > 0 ? d.escuchandoCuando : 0;
   r.cumple = typeof d.cumple === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d.cumple) ? d.cumple : '';
   r.tamano = Number.isInteger(d.tamano) && d.tamano >= 12 && d.tamano <= 19 ? d.tamano : b.tamano;
   r.marco = [0,1,4,10].includes(d.marco) ? d.marco : b.marco;
@@ -797,7 +847,7 @@ const armarPerfil = x => { const d = sanearPerfil(x.datos, x.id); return {...bas
 /* ---------- Supabase ----------
    Cuentas, perfiles, amistades, posteos, likes, comentarios, firmas, notificaciones y archivos
    viven en Supabase. Credenciales en config.js; tablas y seguridad en supabase/schema.sql.
-   El rincón todavía se guarda solo en este navegador. */
+   El rincón también vive en Supabase (tabla rincon: lo ven el autor y sus amigos). */
 const CFG = window.RINCON_CONFIG || {};
 const configurado = !!(window.supabase && CFG.supabaseUrl && CFG.supabaseAnonKey && !/TU-PROYECTO|TU_ANON_KEY/.test(CFG.supabaseUrl + CFG.supabaseAnonKey));
 const sb = configurado ? window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey) : null;
@@ -1051,8 +1101,11 @@ function pintar(){
   // F/F del dueño del perfil (miniatura = su última foto) y favoritos
   $('#p-ff-b').hidden = !p.ff_ver; const ffb = $('#p-ff'); ffb.innerHTML = '';
   const amigos = amigosDe(p);
-  if (!amigos.length) ffb.innerHTML = `<p class="muted chico" style="margin:0;grid-column:1/-1">${mio ? 'todavía no tenés amigos. entrá al perfil de alguien y mandale una solicitud.' : esc(p.apodo) + ' todavía no tiene f/f.'}</p>`;
-  amigos.forEach(x => ffb.appendChild(tile(x)));
+  if (!amigos.length) ffb.innerHTML = `<li class="muted chico" style="grid-column:1/-1">${mio ? 'todavía no tenés amigos. entrá al perfil de alguien y mandale una solicitud.' : esc(p.apodo) + ' todavía no tiene amigos.'}</li>`;
+  amigos.forEach(x => { const li = document.createElement('li'), a = document.createElement('a'), av = document.createElement('span'), n = document.createElement('span');
+    a.href = linkPerfil(x); av.className = 'avatar'; ponerAvatar(av, x); av.removeAttribute('role'); av.removeAttribute('aria-label'); av.setAttribute('aria-hidden','true');
+    if (!x.avatar){ const m = ver(miniatura(x)); if (m){ av.style.backgroundImage = `url("${m}")`; av.textContent = ''; } }   // sin avatar: su última foto
+    n.textContent = x.apodo; a.append(av, n); li.appendChild(a); ffb.appendChild(li); });
   $('#p-favs-b').hidden = !p.favs;
   // Favoritos: solo gente que existe en rinconAF (o links); los nicks que no existen no se muestran
   $('#p-favs').innerHTML = p.favoritos.split('\n').map(t => t.trim()).filter(Boolean).map(t => ({t, m: miembros().find(x => normNick(x.apodo) === normNick(t))}))
@@ -1169,7 +1222,7 @@ function pintarEd(){
   if (pest === 'info'){
     h += campo('apodo','nick',{max:24}) + campo('frase','frase debajo de tu nick',{max:90});
     h += campo('bio','sobre mí',{area:true, max:400}) + campo('ciudad','de dónde sos',{max:40}) + campo('cumple','cumpleaños',{tipo:'date'});
-    h += campo('escuchando','escuchando ahora',{max:60, ph:'artista – tema'}) + campo('musica','tema de tu perfil (link)',{tipo:'url', max:300, ph:'https://…'});
+    h += campo('escuchando','escuchando ahora',{max:100, ph:'artista – tema'}) + campo('musica','tema de tu perfil (link)',{tipo:'url', max:300, ph:'https://…'});
     h += campo('favoritos','favoritos (nicks de gente de rinconAF o links, uno por renglón)',{area:true, max:400});
   }
   if (pest === 'colores'){
@@ -1198,7 +1251,7 @@ function pintarEd(){
   }
   if (pest === 'partes'){
     h += ops('cajas','estilo de las cajas',[['simple','simple'],['punteada','punteada'],['sin','sin cajas'],['win98','windows 98']]);
-    h += `<div class="ed-grupo"><h3>qué se muestra</h3>${sw('anteriores','fotos anteriores')}${sw('sobre','sobre mí')}${sw('ff_ver','f/f (amigos)')}${sw('favs','favoritos')}${sw('contador','contador de visitas')}</div>`;
+    h += `<div class="ed-grupo"><h3>qué se muestra</h3>${sw('anteriores','fotos anteriores')}${sw('sobre','sobre mí')}${sw('ff_ver','amigos')}${sw('favs','favoritos')}${sw('contador','contador de visitas')}</div>`;
     h += `<div class="ed-grupo"><h3>efectos</h3>${sw('marquesina','frase en marquesina')}${sw('estela','estela de estrellitas con el mouse')}</div>`;
   }
   h += '<p class="ed-aviso" id="ed-aviso" hidden></p>';
@@ -1223,6 +1276,7 @@ ed.addEventListener('input', e => { const t = e.target;
     if (er){ alertaEd(er); if (a) a.dataset.nick = '1'; return; }
     if (a && a.dataset.nick){ a.hidden = true; delete a.dataset.nick; }
     if (v !== perfil().apodo) cambiar('apodo', v); return; }
+  if (t.dataset.key === 'escuchando'){ const p = perfil(); p.escuchandoUrl = ''; p.escuchandoCuando = t.value.trim() ? Date.now() : 0; }   // escrito a mano: sin link
   if (t.dataset.key){ cambiar(t.dataset.key, t.value); const c = $('#cont-' + t.dataset.key); if (c) c.textContent = t.value.length + '/' + t.maxLength; }
   if (t.dataset.color){ perfil().tema = 'propio'; cambiar(t.dataset.color, t.value); }
   if (t.dataset.num){ cambiar(t.dataset.num, +t.value); $('#tam-v').textContent = t.value; } });
@@ -1712,10 +1766,56 @@ function pintarInicioExtra(){
 }
 
 /* ---------- Rincón: canciones, imágenes y videos (solo tuyos y de tus amigos) ---------- */
-let posts = cargar(K.rincon, []), rTipo = 'musica', rFiltro = 'todo', rImg = null;
-const guardarPosts = () => { try { localStorage.setItem(K.rincon, JSON.stringify(posts)); return true; } catch { return false; } };
+let rposts = [], rEstado = 'nada', rTipo = 'musica', rFiltro = 'todo', rImg = null;   // rEstado: nada | cargando | listo | error
 const RTXT = {musica:['link de la canción (youtube, spotify, soundcloud…)','compartió una canción'], imagen:['','compartió una imagen'], video:['link del video (youtube, tiktok, instagram…)','compartió un video']};
-const visiblesPara = yo => posts.filter(x => { const a = porId(x.de); return a && (a.id === yo.id || sonAmigos(yo, a)); });
+const conHttp = u => /^https?:\/\//i.test(u) ? u : 'https://' + u;
+/* ---------- Links de canciones y videos: título y miniatura ----------
+   Se le pregunta al sitio (YouTube, SoundCloud, Spotify, Vimeo, TikTok) con su servicio público "oEmbed".
+   Si el sitio no responde, la tarjeta se muestra igual con el nombre del sitio. Lo que llega se guarda en este navegador. */
+const ytId = u => { try { const x = new URL(u), h = x.hostname.replace(/^(www|m|music)\./, ''); let id = null;
+    if (h === 'youtu.be') id = x.pathname.slice(1).split('/')[0];
+    else if (h === 'youtube.com' || h === 'youtube-nocookie.com'){ id = x.searchParams.get('v'); if (!id){ const m = x.pathname.match(/^\/(shorts|embed|live|v)\/([^/?#]+)/); if (m) id = m[2]; } }
+    return id && /^[\w-]{6,20}$/.test(id) ? id : null; } catch { return null; } };
+const NOMBRES = {'youtube.com':'YouTube','youtu.be':'YouTube','music.youtube.com':'YouTube Music','soundcloud.com':'SoundCloud','on.soundcloud.com':'SoundCloud','open.spotify.com':'Spotify','spotify.link':'Spotify','vimeo.com':'Vimeo','tiktok.com':'TikTok','vm.tiktok.com':'TikTok','instagram.com':'Instagram','music.apple.com':'Apple Music','deezer.com':'Deezer','bandcamp.com':'Bandcamp'};
+const nombreSitio = u => { const h = sitioDe(u); return NOMBRES[h] || NOMBRES[h.split('.').slice(-2).join('.')] || h; };
+const oembedDe = u => { const h = sitioDe(u), e = encodeURIComponent(u);
+  if (ytId(u)) return [`https://www.youtube.com/oembed?format=json&url=${e}`];
+  if (/(^|\.)soundcloud\.com$/.test(h)) return [`https://soundcloud.com/oembed?format=json&url=${e}`];
+  if (/(^|\.)spotify\.com$/.test(h)) return [`https://open.spotify.com/oembed?url=${e}`];
+  if (/(^|\.)vimeo\.com$/.test(h)) return [`https://vimeo.com/api/oembed.json?url=${e}`];
+  if (/(^|\.)tiktok\.com$/.test(h)) return [`https://www.tiktok.com/oembed?url=${e}`];
+  return []; };
+const LLAVE_LINKS = 'rinconaf_links', infoCache = new Map(), infoPend = new Map();
+try { Object.entries(JSON.parse(localStorage.getItem(LLAVE_LINKS)) || {}).forEach(([k, v]) => infoCache.set(k, v)); } catch {}
+function guardarInfo(){ try { localStorage.setItem(LLAVE_LINKS, JSON.stringify(Object.fromEntries([...infoCache].slice(-200)))); } catch {} }
+async function pedirJSON(url){ const c = new AbortController(), t = setTimeout(() => c.abort(), 6000);
+  try { const r = await fetch(url, {signal:c.signal, credentials:'omit', referrerPolicy:'no-referrer'}); if (!r.ok) throw new Error(r.status); return await r.json(); } finally { clearTimeout(t); } }
+function infoLink(u){ if (infoCache.has(u)) return Promise.resolve(infoCache.get(u)); if (infoPend.has(u)) return infoPend.get(u);
+  const id = ytId(u), base = {titulo:'', autor:'', mini: id ? `https://i.ytimg.com/vi/${id}/mqdefault.jpg` : ''};
+  const fuentes = oembedDe(u); if (fuentes.length) fuentes.push(`https://noembed.com/embed?url=${encodeURIComponent(u)}`);   // plan B
+  const pr = (async () => { for (const f of fuentes){ try { const j = await pedirJSON(f); if (!j || j.error) continue;
+        const r = {titulo:String(j.title || '').slice(0, 150), autor:String(j.author_name || '').slice(0, 80), mini: base.mini || (/^https:\/\/\S+$/.test(j.thumbnail_url || '') ? j.thumbnail_url : '')};
+        if (r.titulo){ infoCache.set(u, r); guardarInfo(); return r; } } catch {} }
+      return base; })().finally(() => infoPend.delete(u));
+  infoPend.set(u, pr); return pr; }
+// Tarjeta chica: miniatura + título (si se consigue) + sitio. Tocándola se abre el link.
+function tarjetaLink(u, tipo){ const i = infoCache.get(u), id = ytId(u), mini = (i && i.mini) || (id ? `https://i.ytimg.com/vi/${id}/mqdefault.jpg` : '');
+  const tit = (i && i.titulo) || (tipo === 'musica' ? 'escuchar en ' : 'ver en ') + nombreSitio(u);
+  return `<a class="r-card ${tipo === 'video' || id ? 'video' : 'musica'}" href="${esc(u)}" target="_blank" rel="noopener" data-link="${esc(u)}">
+    <span class="r-mini" aria-hidden="true"${mini ? ` style="background-image:url(&quot;${esc(mini)}&quot;)"` : ''}>${mini ? '' : (tipo === 'musica' ? '♪' : '►')}</span>
+    <span class="r-info"><span class="r-tit">${esc(tit)}</span><span class="r-sub">${esc(i && i.titulo ? [i.autor, nombreSitio(u)].filter(Boolean).join(' · ') : sitioDe(u))}</span></span></a>`; }
+function completarTarjetas(cont){ cont.querySelectorAll('.r-card[data-link]').forEach(a => { const u = a.dataset.link; if (infoCache.has(u)) return;
+  infoLink(u).then(i => { if (!i.titulo || !a.isConnected) return; a.querySelector('.r-tit').textContent = i.titulo;
+    a.querySelector('.r-sub').textContent = [i.autor, nombreSitio(u)].filter(Boolean).join(' · ');
+    if (i.mini){ const m = a.querySelector('.r-mini'); m.style.backgroundImage = `url("${i.mini}")`; m.textContent = ''; } }); }); }
+// Trae lo que podés ver (la base ya filtra: lo tuyo y lo de tus amigos)
+async function cargarRincon(){ if (!sb || !perfil()) return; rEstado = rposts.length ? rEstado : 'cargando';
+  const {data, error} = await sb.from('rincon').select('*').order('creado', {ascending:false}).limit(300);
+  if (error){ console.error('rincón', error); rEstado = 'error'; return; }
+  rposts = (data || []).map(x => ({id:x.id, de:porUid(x.autor)?.id, tipo:x.tipo, texto:x.texto || '', url:x.url || '', media_path:x.media_path || '', cuando:Date.parse(x.creado)}))
+    .filter(x => x.de != null && RTXT[x.tipo]);
+  await firmar(rposts.map(x => x.media_path).filter(Boolean)); rEstado = 'listo'; }
+const recargarRincon = () => cargarRincon().then(() => { if (location.hash.startsWith('#rincon')) pintarRincon(); });
 const esPinterest = u => /(^|\/\/|\.)(pinterest\.[a-z.]+|pin\.it|pinimg\.com)(\/|$)/i.test(u);
 const pinId = u => { const m = /pinterest\.[a-z.]+\/pin\/(?:[^\/]*--)?(\d+)/i.exec(u); return m ? m[1] : null; };
 const esImagenDirecta = u => /pinimg\.com\//i.test(u) || /\.(jpe?g|png|gif|webp)(\?|$)/i.test(u);
@@ -1726,42 +1826,104 @@ function pintarRincon(){
   $$('[data-rfiltro]').forEach(b => b.setAttribute('aria-pressed', b.dataset.rfiltro === rFiltro));
   $('#r-url-b').hidden = rTipo === 'imagen'; $('#r-img-b').hidden = rTipo !== 'imagen'; $('#r-url-lbl').textContent = RTXT[rTipo][0];
   const l = $('#r-lista'); l.innerHTML = '';
-  const lista = visiblesPara(yo).filter(x => rFiltro === 'todo' || x.tipo === rFiltro).sort((a,b) => b.cuando - a.cuando);
+  if (rEstado === 'cargando' || rEstado === 'nada'){ l.innerHTML = '<p class="muted chico">cargando…</p>'; return; }
+  if (rEstado === 'error' && !rposts.length){ l.innerHTML = '<p class="muted chico">no se pudo cargar el rincón. revisá tu conexión y entrá de nuevo.</p>'; return; }
+  const lista = rposts.filter(x => rFiltro === 'todo' || x.tipo === rFiltro).sort((a,b) => b.cuando - a.cuando);
   if (!lista.length){ l.innerHTML = `<p class="muted chico">${amigosDe(yo).length ? 'todavía no hay nada acá. ¡compartí lo primero!' : 'cuando tengas amigos, acá vas a ver lo que comparten. por ahora solo ves lo tuyo.'}</p>`; return; }
   lista.forEach(x => { const a = porId(x.de), d = document.createElement('article'); d.className = 'post';
     const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, a);
     const c = document.createElement('div'); c.className = 'post-cuerpo';
     let media = '';
-    if (x.tipo === 'imagen' && x.img) media = `<img class="compartida" src="${x.img}" alt="${esc(x.texto || 'imagen que compartió ' + a.apodo)}">`;
-    else if (x.tipo === 'imagen' && x.pin){ const u = /^https?:\/\//.test(x.pin) ? x.pin : 'https://' + x.pin, id = pinId(u);
+    if (x.tipo === 'imagen' && x.media_path) media = `<img class="compartida" src="${esc(ver(x.media_path))}" alt="${esc(x.texto || 'imagen que compartió ' + a.apodo)}">`;
+    else if (x.tipo === 'imagen'){ const u = conHttp(x.url), id = pinId(u);
       media = esImagenDirecta(u) ? `<img class="compartida" src="${esc(u)}" alt="${esc(x.texto || 'imagen de pinterest que compartió ' + a.apodo)}" referrerpolicy="no-referrer">`
         : id ? `<iframe class="pin-embed" src="https://assets.pinterest.com/ext/embed.html?id=${id}" title="Pin de Pinterest que compartió ${esc(a.apodo)}" loading="lazy" scrolling="no"></iframe><a class="chico" href="${esc(u)}" target="_blank" rel="noopener">ver en pinterest</a>`
         : `<a class="media-link" href="${esc(u)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true">P</span><span><b>ver imagen en pinterest</b><span class="sitio">${esc(sitioDe(u))}</span></span></a>`; }
-    else { const u = /^https?:\/\//.test(x.url) ? x.url : 'https://' + x.url;
-      media = `<a class="media-link" href="${esc(u)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true">${x.tipo === 'musica' ? '♪' : '►'}</span><span><b>${x.tipo === 'musica' ? 'escuchar' : 'ver video'}</b><span class="sitio">${esc(sitioDe(u))}</span></span></a>`; }
+    else media = tarjetaLink(conHttp(x.url), x.tipo);
     c.innerHTML = `<a href="${linkPerfil(a)}"><b>${esc(a.apodo)}</b></a> <span class="muted chico">${RTXT[x.tipo][1]} · ${fecha(x.cuando)} ${hora(x.cuando)}</span>
       ${x.texto ? `<p style="margin:4px 0 0;word-break:break-word">${esc(x.texto)}</p>` : ''}${media}
       ${a.id === yo.id ? `<div><button class="borrar" type="button" data-borrar="${x.id}">borrar</button></div>` : ''}`;
     d.append(av, c); l.appendChild(d); });
+  completarTarjetas(l);
 }
 $('#rincon').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.rtipo){ rTipo = b.dataset.rtipo; $('#r-msg').className = 'msg'; pintarRincon(); }
   if (b.dataset.rfiltro){ rFiltro = b.dataset.rfiltro; pintarRincon(); }
-  if (b.dataset.borrar && confirm('¿Borrar esto de tu rincón?')){ posts = posts.filter(x => x.id !== +b.dataset.borrar); guardarPosts(); pintarRincon(); } });
+  if (b.dataset.borrar && confirm('¿Borrar esto de tu rincón?')){ const id = +b.dataset.borrar, x = rposts.find(q => q.id === id); if (!x) return;
+    rposts = rposts.filter(q => q !== x); pintarRincon();
+    sb.from('rincon').delete().eq('id', id).then(({error}) => {
+      if (falla('borrar del rincón', error)){ rposts.push(x); pintarRincon(); return; }
+      if (x.media_path) sb.storage.from(BUCKET).remove([x.media_path]); }); } });
 $('#r-img').onchange = e => { const f = e.target.files[0]; if (!f) return;
-  achicar(f, 1000, .8).then(u => { rImg = u; $('#r-img-nombre').textContent = 'lista: ' + f.name; }).catch(() => msg('#r-msg','No pude leer esa imagen.')); };
-$('#r-form').onsubmit = e => { e.preventDefault(); const yo = perfil(), texto = $('#r-texto').value.trim();
-  const post = {id:Date.now(), de:yo.id, tipo:rTipo, texto, cuando:Date.now()};
+  if (!f.type.startsWith('image/')) return msg('#r-msg','Elegí una imagen.'); rImg = f; $('#r-img-nombre').textContent = 'lista: ' + f.name; };
+$('#r-form').onsubmit = async e => { e.preventDefault(); const texto = $('#r-texto').value.trim(), btn = e.target.querySelector('[type=submit]');
+  let url = null, archivo = null;
   if (rTipo === 'imagen'){ const pin = $('#r-pin').value.trim();
-    if (pin){ if (!esPinterest(pin)) return msg('#r-msg','Ese link no es de Pinterest.'); post.pin = pin; }
-    else if (rImg) post.img = rImg; else return msg('#r-msg','Elegí una imagen o pegá un link de Pinterest.'); }
-  else { const u = $('#r-url').value.trim(); if (!/^(https?:\/\/)?[^\s.]+\.[^\s]+$/.test(u)) return msg('#r-msg','Pegá un link válido.'); post.url = u; }
-  posts.push(post); if (!guardarPosts()){ posts.pop(); return msg('#r-msg','No entró: el navegador se quedó sin lugar en esta demo.'); }
-  rImg = null; e.target.reset(); $('#r-img-nombre').textContent = 'ninguna imagen elegida'; $('#r-msg').className = 'msg'; rFiltro = 'todo'; pintarRincon(); };
-function pintarInicioRincon(){ const yo = perfil(); if (!yo) return;
-  const ult = visiblesPara(yo).filter(x => x.de !== yo.id).sort((a,b) => b.cuando - a.cuando).slice(0,3);
-  $('#i-rincon').innerHTML = ult.length ? ult.map(x => `<p style="margin:0 0 4px"><b>${esc(porId(x.de).apodo)}</b> ${RTXT[x.tipo][1]}${x.texto ? ': ' + esc(x.texto) : ''}</p>`).join('') + '<p style="margin:6px 0 0"><a href="#rincon">ir al rincón »</a></p>'
-    : '<p class="muted" style="margin:0">tus amigos todavía no compartieron nada. <a href="#rincon">ir al rincón »</a></p>'; }
+    if (pin){ if (!esPinterest(pin)) return msg('#r-msg','Ese link no es de Pinterest.'); url = conHttp(pin); }
+    else if (rImg) archivo = rImg; else return msg('#r-msg','Elegí una imagen o pegá un link de Pinterest.'); }
+  else { const u = $('#r-url').value.trim(); if (!/^(https?:\/\/)?[^\s.]+\.[^\s]+$/.test(u)) return msg('#r-msg','Pegá un link válido.'); url = conHttp(u); }
+  if (url && url.length > 500) return msg('#r-msg','Ese link es demasiado largo.');
+  btn.disabled = true; msg('#r-msg', 'compartiendo…', 'ok');
+  let media_path = null;
+  try { if (archivo){ media_path = await subirArchivo(await achicarBlob(archivo, 1000, .8), 'jpg'); }
+    const {error} = await sb.from('rincon').insert({tipo:rTipo, texto:texto || null, url, media_path});
+    if (error) throw error; }
+  catch (er){ console.error(er); btn.disabled = false; if (media_path) sb.storage.from(BUCKET).remove([media_path]);
+    return msg('#r-msg', 'No se pudo compartir. Revisá tu conexión y probá de nuevo.'); }
+  btn.disabled = false; rImg = null; e.target.reset(); $('#r-img-nombre').textContent = 'ninguna imagen elegida'; $('#r-msg').className = 'msg'; rFiltro = 'todo';
+  await cargarRincon(); pintarRincon(); };
+// Lo que cada uno había compartido cuando el rincón era solo de este navegador: se sube una vez (solo lo tuyo) y se saca de acá
+async function pasarRinconViejo(){ const yo = perfil(); if (!yo || !sb) return;
+  let viejos; try { viejos = JSON.parse(localStorage.getItem(K.rincon)) || []; } catch { return; }
+  if (!Array.isArray(viejos) || !viejos.some(x => x && x.de === yo.id)) return;
+  let subidos = 0;
+  for (const x of viejos.filter(q => q && q.de === yo.id)){
+    let media_path = null;
+    try { let url = null;
+      if (x.tipo === 'imagen' && typeof x.img === 'string' && x.img.startsWith('data:image/')) media_path = await subirArchivo(await (await fetch(x.img)).blob(), 'jpg');
+      else if (typeof (x.pin || x.url) === 'string') url = conHttp(String(x.pin || x.url).trim());
+      const ok = RTXT[x.tipo] && (media_path || (url && url.length <= 500 && /^https?:\/\/\S+$/i.test(url)));
+      if (ok){ const cuando = Number.isFinite(x.cuando) && x.cuando <= Date.now() ? new Date(x.cuando).toISOString() : undefined;
+        const {error} = await sb.from('rincon').insert({tipo:x.tipo, texto:String(x.texto || '').slice(0, 200) || null, url, media_path, ...(cuando ? {creado:cuando} : {})});
+        if (error) throw error; subidos++; }
+      viejos = viejos.filter(q => q !== x);                                       // subido (o inservible): se saca de este navegador
+      try { viejos.length ? localStorage.setItem(K.rincon, JSON.stringify(viejos)) : localStorage.removeItem(K.rincon); } catch {}
+    } catch (er){ console.error('pasar el rincón viejo', er); if (media_path) sb.storage.from(BUCKET).remove([media_path]); return; }   // se reintenta la próxima vez
+  }
+  if (subidos) recargarRincon(); }
+
+/* ---------- Inicio: "escuchando ahora" (lo pone cada uno; se ve lo tuyo y lo de tus amigos de las últimas 24 h) ---------- */
+const VIGENCIA_TEMA = 24 * 3600 * 1000;
+const haceCuanto = t => { const m = Math.max(0, Math.round((Date.now() - t) / 60000)); return m < 1 ? 'recién' : m < 60 ? `hace ${m} min` : `hace ${Math.round(m / 60)} h`; };
+function pintarEscuchando(){ const yo = perfil(); if (!yo) return; const l = $('#esc-lista'); l.innerHTML = '';
+  const gente = [yo, ...amigosDe(yo)].filter(x => x.escuchando && x.escuchandoCuando && Date.now() - x.escuchandoCuando < VIGENCIA_TEMA).sort((a,b) => b.escuchandoCuando - a.escuchandoCuando).slice(0, 8);
+  if (!gente.length) l.innerHTML = `<li class="muted chico">${amigosDe(yo).length ? 'nadie puso qué está escuchando. ¡arrancá vos!' : 'poné qué estás escuchando; cuando tengas amigos, acá ves lo de ellos.'}</li>`;
+  gente.forEach(x => { const li = document.createElement('li'), av = document.createElement('a'), sp = document.createElement('span'), t = document.createElement('div');
+    av.href = linkPerfil(x); av.setAttribute('aria-label', 'perfil de ' + x.apodo); sp.className = 'avatar'; ponerAvatar(sp, x); sp.removeAttribute('role'); sp.removeAttribute('aria-label'); av.appendChild(sp);
+    t.className = 'esc-txt';
+    const tema = x.escuchandoUrl ? `<a class="esc-tema" href="${esc(x.escuchandoUrl)}" target="_blank" rel="noopener">♪ ${esc(x.escuchando)}</a>` : `<span class="esc-tema">♪ ${esc(x.escuchando)}</span>`;
+    t.innerHTML = `<a href="${linkPerfil(x)}">${x.id === yo.id ? 'vos' : esc(x.apodo)}</a> ${x.id === yo.id ? 'estás' : 'está'} escuchando:${tema}<span class="muted">${haceCuanto(x.escuchandoCuando)}</span>`;
+    li.append(av, t); l.appendChild(li); });
+  const activo = yo.escuchando && yo.escuchandoCuando && Date.now() - yo.escuchandoCuando < VIGENCIA_TEMA;
+  $('#esc-sacar').hidden = !activo; $('#esc-lbl').textContent = activo ? 'cambiar canción' : '¿qué estás escuchando?'; }
+$('#esc-form').onsubmit = async e => { e.preventDefault(); const p = perfil(), v = $('#esc-txt').value.trim(), btn = e.target.querySelector('[type=submit]'); if (!p) return;
+  if (!v) return msg('#esc-msg', 'Escribí qué estás escuchando o pegá un link.');
+  const esLink = /^(https?:\/\/)?[^\s.]+\.[^\s]+\/\S*$/i.test(v) && !/\s/.test(v);
+  btn.disabled = true;
+  if (esLink){ const u = conHttp(v); if (u.length > 300){ btn.disabled = false; return msg('#esc-msg', 'Ese link es demasiado largo.'); }
+    msg('#esc-msg', 'buscando la canción…', 'ok'); const i = await infoLink(u);
+    p.escuchandoUrl = u; p.escuchando = (i.titulo ? i.titulo + (i.autor && !i.titulo.includes(i.autor) ? ' – ' + i.autor : '') : 'un tema en ' + nombreSitio(u)).slice(0, 100); }
+  else { p.escuchandoUrl = ''; p.escuchando = v.slice(0, 100); }
+  p.escuchandoCuando = Date.now(); btn.disabled = false; $('#esc-msg').className = 'msg'; $('#esc-txt').value = '';
+  await guardarYa(); pintarEscuchando(); };
+$('#esc-sacar').onclick = async () => { const p = perfil(); if (!p) return; p.escuchando = ''; p.escuchandoUrl = ''; p.escuchandoCuando = 0; await guardarYa(); pintarEscuchando(); };
+// Lo de tus amigos se actualiza solo cada minuto mientras estás en el inicio
+async function refrescarEscuchando(){ if (!sb || !perfil()) return;
+  const {data, error} = await sb.from('profiles').select('id, datos'); if (error) return;
+  (data || []).forEach(x => { const q = porUid(x.id); if (!q || x.id === sesion) return; const d = sanearPerfil(x.datos, x.id);
+    q.escuchando = d.escuchando; q.escuchandoUrl = d.escuchandoUrl; q.escuchandoCuando = d.escuchandoCuando; });
+  if (location.hash.startsWith('#inicio')) pintarEscuchando(); }
+setInterval(() => { if (sesion && !document.hidden && location.hash.startsWith('#inicio')) refrescarEscuchando(); }, 60 * 1000);
 
 /* ---------- Inicio: posteos tuyos y de tus amigos ---------- */
 let feed = [], pTipo = 'texto', pImg = null, pVid = null, vistos = 0, resaltar = null;
@@ -1925,7 +2087,7 @@ async function entrar(session){
   seguirEntrando(); }
 function seguirEntrando(){
   viendo = null; verFoto = null; aplicar(perfil());
-  conectarRealtime(); cargarConvs();
+  conectarRealtime(); cargarConvs(); rposts = []; rEstado = 'nada'; pasarRinconViejo();
   if (perfil().nuevo) setTimeout(() => { if (esMio()) abrirEd(); }, 300);   // la primera vez se abre el editor
   if (location.hash === '#perfil') mostrar(); else location.hash = '#perfil'; }
 async function salir(){ await guardarYa(); cerrarChat(); firmadas.clear(); borrarDatosLocalesViejos(); if (sb) await sb.auth.signOut(); sesion = null; viendo = null; usuarios = {}; feed = []; document.documentElement.removeAttribute('style'); document.body.className = ''; document.body.dataset.cajas = 'simple';
@@ -1964,7 +2126,7 @@ $('#aceptar-form').onsubmit = async e => { e.preventDefault(); const btn = e.tar
 $('#aceptar-salir').onclick = () => { $('#aceptar-form').reset(); $('#modal-aceptar').hidden = true; salir(); };
 
 // Lector de documentos legales
-const DOCS_LEGALES = {"terminos": "<h2>TÉRMINOS Y CONDICIONES DE RINCONAF</h2><p><b>Última actualización: noviembre de 2026</b></p><h3>1. Aceptación</h3><p>Al crear una cuenta o utilizar rinconAF, el usuario declara haber leído y aceptado estos Términos y Condiciones y la Política de Privacidad.</p><p>La aceptación de ambos documentos es obligatoria para completar el registro.</p><h3>2. Descripción del servicio</h3><p>rinconAF es una red social que permite crear perfiles, compartir fotografías y publicaciones, interactuar con otros usuarios y utilizar funciones de comunicación privada.</p><p>Las funciones pueden modificarse, ampliarse o suspenderse por razones técnicas, de seguridad o de evolución del proyecto.</p><h3>3. Edad mínima</h3><p>rinconAF está destinado exclusivamente a personas de <b>18 años cumplidos o más</b>.</p><p>No se permite registrarse ni utilizar la plataforma a personas menores de 18 años.</p><p>Durante el registro, el usuario deberá proporcionar su fecha de nacimiento para que el sistema calcule si cumple con la edad mínima.</p><p>El usuario declara que la información proporcionada es verdadera.</p><p>La fecha de nacimiento se utilizará exclusivamente para calcular el cumplimiento de la edad mínima y no deberá conservarse en la base de datos de rinconAF.</p><p>La plataforma podrá suspender o cancelar cuentas cuando existan indicios razonables de incumplimiento de este requisito.</p><h3>4. Registro y cuentas</h3><p>El usuario debe proporcionar información válida y mantener la confidencialidad de sus credenciales.</p><p>Cada usuario es responsable de la actividad realizada desde su cuenta y debe comunicar cualquier acceso no autorizado que detecte.</p><p>Está prohibido suplantar identidades o crear cuentas con información ajena sin autorización.</p><h3>5. Conductas prohibidas</h3><p>No está permitido:</p><ul><li>Acosar, amenazar o intimidar a otros usuarios.</li><li>Suplantar identidades.</li><li>Publicar información privada de terceros sin autorización.</li><li>Compartir contenido ilegal.</li><li>Difundir material íntimo sin consentimiento.</li><li>Realizar fraudes, extorsiones o engaños.</li><li>Intentar acceder a cuentas, conversaciones o archivos ajenos.</li><li>Interferir deliberadamente con la seguridad o funcionamiento de rinconAF.</li><li>Distribuir código malicioso.</li><li>Utilizar la plataforma para actividades ilícitas.</li></ul><h3>6. Publicaciones y fotografías</h3><p>Cada usuario conserva la responsabilidad por el contenido que publica.</p><p>El usuario declara contar con los derechos y autorizaciones necesarios para compartir sus fotografías, textos y demás materiales.</p><p>Al publicar contenido, autoriza a rinconAF a almacenarlo, reproducirlo técnicamente y mostrarlo dentro de la plataforma, de acuerdo con las funciones de visibilidad disponibles.</p><p>Esta autorización no implica una transferencia de propiedad intelectual.</p><p>Las fotografías de perfil y publicaciones podrán ser visibles para los usuarios de rinconAF según los permisos y opciones de visibilidad correspondientes.</p><h3>7. Conversaciones privadas</h3><p>Las conversaciones privadas están destinadas a sus participantes.</p><p>Los archivos compartidos en conversaciones deben estar protegidos mediante controles de acceso que impidan su consulta por personas ajenas a ellas.</p><p>La expresión \"privado\" no significa que exista cifrado de extremo a extremo.</p><p>Los usuarios deben evitar compartir contraseñas, datos financieros u otra información especialmente delicada.</p><h3>8. Grupos</h3><p>Las funciones de grupos pueden permitir compartir mensajes y archivos entre sus integrantes.</p><p>Los permisos y la disponibilidad de estas funciones dependerán de la implementación técnica vigente.</p><p>Los mensajes, fotografías y archivos de los grupos se almacenan en el servidor y solo pueden acceder a ellos sus integrantes actuales. Quien sale de un grupo o es quitado pierde el acceso.</p><h3>9. Moderación</h3><p>rinconAF podrá retirar contenido, restringir funciones o suspender cuentas ante incumplimientos de estos términos o de las Normas de Comunidad.</p><p>Las medidas dependerán de la gravedad y circunstancias del caso.</p><p>No se garantiza la supervisión permanente de todas las publicaciones y conversaciones.</p><h3>10. Disponibilidad</h3><p>No se garantiza disponibilidad ininterrumpida ni ausencia total de errores.</p><p>Podrán realizarse tareas de mantenimiento, actualizaciones e interrupciones técnicas.</p><h3>11. Servicios de terceros</h3><p>rinconAF utiliza proveedores externos para su funcionamiento, incluyendo Supabase, Vercel y GitHub.</p><p>Los servicios de estos proveedores están sujetos a sus propias condiciones y políticas.</p><h3>12. Eliminación de cuentas</h3><p>El usuario podrá solicitar la eliminación de su cuenta y de sus datos personales mediante el correo de contacto.</p><p>La eliminación podrá estar sujeta a obligaciones legales o necesidades legítimas de conservación.</p><h3>13. Legislación aplicable</h3><p>Estos términos se interpretarán conforme a la legislación de la República Argentina y las normas imperativas que resulten aplicables.</p><h3>14. Contacto</h3><p>Titular del proyecto: Ignacio Jeremías Gabriel Toscani.</p><p>Ubicación declarada: Neuquén, Argentina.</p><p>Correo de contacto: <a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a>.</p>", "privacidad": "<h2>POLÍTICA DE PRIVACIDAD DE RINCONAF</h2><p><b>Última actualización: noviembre de 2026</b></p><h3>1. Responsable</h3><p>rinconAF es un proyecto administrado por Ignacio Jeremías Gabriel Toscani.</p><p>Ubicación declarada: Neuquén, Argentina.</p><p>Correo de contacto y privacidad: <a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a>.</p><h3>2. Información recopilada</h3><p>Para prestar sus servicios, rinconAF puede tratar:</p><ul><li>Dirección de correo electrónico.</li><li>Identificador de cuenta.</li><li>Nombre de usuario y apodo.</li><li>Fotografía de perfil.</li><li>Información de personalización del perfil.</li><li>Publicaciones, fotografías, comentarios y reacciones.</li><li>Mensajes y archivos adjuntos de conversaciones.</li><li>Información técnica necesaria para el funcionamiento y seguridad del servicio.</li><li>Registros de aceptación de documentos legales.</li><li>Registro interno de visitas a perfiles (qué cuenta visitó qué perfil y en qué día), que no es visible para otros usuarios y se usa únicamente para contar una visita por persona por día.</li></ul><p>Las publicaciones de la sección Rincón se guardan únicamente en el navegador del dispositivo donde se crean y no se almacenan en los servidores de rinconAF.</p><h3>3. Información sobre mayoría de edad</h3><p>rinconAF es exclusivamente para personas mayores de 18 años.</p><p>Durante el registro se solicita la fecha de nacimiento para calcular si el usuario cumple con la edad mínima.</p><p>La fecha de nacimiento se utiliza únicamente para esa validación y no debe almacenarse ni conservarse en la base de datos de rinconAF.</p><p>La plataforma conserva únicamente la confirmación de mayoría de edad, el identificador de cuenta, la fecha y hora de la declaración, las versiones de los documentos aceptados y si la aceptación se realizó al registrarse o al iniciar sesión.</p><p>Esta declaración no constituye una verificación documental de identidad.</p><h3>4. Aceptación de documentos</h3><p>Al registrarse, el usuario debe aceptar expresamente los Términos y Condiciones y la Política de Privacidad.</p><p>Para dejar constancia de la aceptación se conserva:</p><ul><li>Identificador del usuario.</li><li>Fecha y hora de aceptación.</li><li>Versión de los documentos aceptados.</li><li>Confirmación de mayoría de edad.</li></ul><p>Esta información se utiliza para mantener un registro de las condiciones aceptadas por cada cuenta.</p><h3>5. Finalidad del tratamiento</h3><p>Los datos se utilizan para:</p><ul><li>Crear y administrar cuentas.</li><li>Permitir la autenticación.</li><li>Mostrar perfiles y publicaciones.</li><li>Facilitar interacciones entre usuarios.</li><li>Gestionar conversaciones privadas.</li><li>Almacenar fotografías y archivos.</li><li>Mantener la seguridad.</li><li>Atender consultas y denuncias.</li><li>Cumplir obligaciones legales.</li></ul><p>Los datos personales no se venden a terceros.</p><h3>6. Fotografías de perfil y publicaciones</h3><p>Las fotografías de perfil y las imágenes publicadas en rinconAF pueden ser visibles para otros usuarios de la plataforma, de acuerdo con las opciones de visibilidad y los permisos correspondientes.</p><p>La visibilidad dentro de rinconAF no debe confundirse con la publicación abierta en Internet.</p><p>La plataforma busca restringir el acceso directo a los archivos mediante controles de autenticación y permisos adecuados.</p><p>Las imágenes se muestran mediante enlaces temporales que vencen a la hora; mientras están vigentes, cualquier persona que reciba uno de esos enlaces puede abrirlo.</p><p>Los usuarios deben tener en cuenta que otros usuarios pueden guardar o capturar contenido que tengan permitido visualizar.</p><h3>7. Mensajes y archivos privados</h3><p>Los mensajes privados y sus archivos adjuntos están destinados exclusivamente a los participantes de cada conversación.</p><p>Los archivos deben almacenarse mediante mecanismos privados de acceso y controles que permitan consultar el contenido únicamente a participantes autorizados.</p><p>La privacidad de las conversaciones no equivale a cifrado de extremo a extremo.</p><p>Los proveedores tecnológicos utilizados pueden procesar información necesaria para prestar el servicio.</p><h3>8. Grupos</h3><p>Las funciones de grupos pueden incluir mensajes, fotografías y archivos compartidos entre integrantes.</p><p>Los mensajes, fotografías y archivos de los grupos se almacenan en el servidor y solo pueden acceder a ellos sus integrantes actuales. Quien sale de un grupo o es quitado pierde el acceso.</p><h3>9. Proveedores tecnológicos</h3><p>rinconAF utiliza servicios externos:</p><ul><li><b>Supabase:</b> autenticación, base de datos y almacenamiento.</li><li><b>Vercel:</b> alojamiento de la aplicación.</li><li><b>GitHub:</b> alojamiento y control de versiones del código.</li></ul><p>El proyecto de Supabase se encuentra configurado en la región East US (Ohio), Estados Unidos.</p><p>Por ello, determinados datos pueden almacenarse o procesarse fuera de Argentina.</p><p>Estos proveedores pueden tratar información conforme a sus propias condiciones y políticas.</p><h3>10. Conservación de la información</h3><p>Los datos se conservarán durante el tiempo necesario para prestar el servicio, mantener la seguridad y cumplir obligaciones legales.</p><p>Ante una solicitud de eliminación de cuenta, se evaluará la supresión de los datos asociados, salvo aquellos que deban conservarse por obligaciones legales o motivos legítimos.</p><p>La eliminación de una cuenta no implica necesariamente la desaparición inmediata de todas las copias técnicas y respaldos.</p><h3>11. Derechos de los usuarios</h3><p>Los usuarios pueden solicitar acceso, rectificación, actualización y supresión de sus datos personales conforme a la legislación aplicable.</p><p>Las solicitudes pueden enviarse a:</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p><p>Podrá solicitarse una verificación razonable de identidad para proteger la información.</p><h3>12. Seguridad</h3><p>rinconAF utiliza medidas técnicas disponibles en su infraestructura, como autenticación, políticas de acceso y almacenamiento diferenciado.</p><p>Ningún sistema conectado a Internet puede garantizar seguridad absoluta.</p><p>En caso de detectar un incidente que comprometa información personal, se evaluarán las medidas y comunicaciones que correspondan.</p><h3>13. Modificaciones</h3><p>Esta política podrá actualizarse cuando cambien las funciones, proveedores o prácticas de tratamiento de datos.</p><p>La versión vigente estará disponible en la sección Legal de rinconAF.</p><h3>14. Contacto</h3><p>Responsable: Ignacio Jeremías Gabriel Toscani.</p><p>Ubicación declarada: Neuquén, Argentina.</p><p>Correo de privacidad: <a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a>.</p>", "normas": "<h2>NORMAS DE COMUNIDAD DE RINCONAF</h2><p><b>Última actualización: noviembre de 2026</b></p><p>rinconAF busca ser un espacio de interacción respetuosa entre personas adultas.</p><h3>Respeto</h3><p>No se permite acosar, amenazar, intimidar, perseguir ni discriminar a otros usuarios.</p><h3>Privacidad</h3><p>No publiques información personal, fotografías privadas ni datos de terceros sin autorización.</p><h3>Identidad</h3><p>No suplantes a otras personas ni utilices perfiles para engañar a otros usuarios.</p><h3>Contenido</h3><p>No compartas contenido ilegal, amenazas, fraudes ni material íntimo sin consentimiento.</p><h3>Seguridad</h3><p>No intentes acceder a cuentas, conversaciones o archivos ajenos ni comprometer el funcionamiento de rinconAF.</p><h3>Edad</h3><p>rinconAF es exclusivamente para personas de 18 años cumplidos o más.</p><h3>Denuncias</h3><p>Si encontrás contenido o conductas que incumplan estas normas, podés comunicarlo a:</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p><p>Las infracciones podrán dar lugar a la eliminación de contenido, restricciones o suspensión de cuentas.</p>", "denuncias": "<h2>POLÍTICA DE DENUNCIAS Y MODERACIÓN</h2><p><b>Última actualización: noviembre de 2026</b></p><h3>1. Objetivo</h3><p>Esta política explica cómo comunicar situaciones que puedan incumplir las normas de rinconAF.</p><h3>2. Qué se puede denunciar</h3><ul><li>Acoso o amenazas.</li><li>Suplantación de identidad.</li><li>Publicaciones ilegales.</li><li>Difusión de información privada sin autorización.</li><li>Fraudes o intentos de engaño.</li><li>Cuentas que incumplan la edad mínima.</li><li>Vulneraciones de seguridad.</li><li>Otras infracciones de las Normas de Comunidad.</li></ul><h3>3. Cómo denunciar</h3><p>Las denuncias pueden enviarse a:</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p><p>Se recomienda incluir el usuario involucrado, una descripción del problema y enlaces o capturas pertinentes, evitando compartir información innecesaria.</p><h3>4. Revisión</h3><p>Las denuncias serán evaluadas según la información disponible, la gravedad y las posibilidades operativas del servicio.</p><p>El envío de una denuncia no garantiza una resolución inmediata.</p><h3>5. Medidas posibles</h3><p>Según el caso, podrán retirarse publicaciones, restringirse funciones o suspenderse cuentas.</p><h3>6. Denuncias falsas</h3><p>No deben presentarse denuncias deliberadamente falsas ni utilizar este mecanismo para hostigar a otros usuarios.</p><h3>7. Contacto</h3><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p>", "eliminacion": "<h2>ELIMINACIÓN DE CUENTAS Y DATOS PERSONALES</h2><p>Los usuarios de rinconAF pueden solicitar la eliminación de su cuenta y la supresión de sus datos personales cuando corresponda conforme a la legislación aplicable.</p><h3>Cómo solicitarlo</h3><p>Enviar un correo a:</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p><p>Asunto: Solicitud de eliminación de cuenta de rinconAF.</p><p>Incluir el nombre de usuario, el correo asociado a la cuenta y la solicitud expresa de eliminación.</p><p>Por seguridad, podrá solicitarse una verificación razonable de identidad.</p><h3>Qué sucede después</h3><p>Una vez verificada la solicitud, se evaluará la eliminación de los datos personales asociados a la cuenta.</p><p>Determinados datos podrán conservarse cuando exista una obligación legal o una razón legítima que justifique su conservación.</p><p>La eliminación de una cuenta no implica necesariamente la eliminación inmediata de todas las copias técnicas o respaldos de los proveedores.</p><h3>Contacto</h3><p>Ignacio Jeremías Gabriel Toscani</p><p>Neuquén, Argentina</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p>"};
+const DOCS_LEGALES = {"terminos": "<h2>TÉRMINOS Y CONDICIONES DE RINCONAF</h2><p><b>Última actualización: noviembre de 2026</b></p><h3>1. Aceptación</h3><p>Al crear una cuenta o utilizar rinconAF, el usuario declara haber leído y aceptado estos Términos y Condiciones y la Política de Privacidad.</p><p>La aceptación de ambos documentos es obligatoria para completar el registro.</p><h3>2. Descripción del servicio</h3><p>rinconAF es una red social que permite crear perfiles, compartir fotografías y publicaciones, interactuar con otros usuarios y utilizar funciones de comunicación privada.</p><p>Las funciones pueden modificarse, ampliarse o suspenderse por razones técnicas, de seguridad o de evolución del proyecto.</p><h3>3. Edad mínima</h3><p>rinconAF está destinado exclusivamente a personas de <b>18 años cumplidos o más</b>.</p><p>No se permite registrarse ni utilizar la plataforma a personas menores de 18 años.</p><p>Durante el registro, el usuario deberá proporcionar su fecha de nacimiento para que el sistema calcule si cumple con la edad mínima.</p><p>El usuario declara que la información proporcionada es verdadera.</p><p>La fecha de nacimiento se utilizará exclusivamente para calcular el cumplimiento de la edad mínima y no deberá conservarse en la base de datos de rinconAF.</p><p>La plataforma podrá suspender o cancelar cuentas cuando existan indicios razonables de incumplimiento de este requisito.</p><h3>4. Registro y cuentas</h3><p>El usuario debe proporcionar información válida y mantener la confidencialidad de sus credenciales.</p><p>Cada usuario es responsable de la actividad realizada desde su cuenta y debe comunicar cualquier acceso no autorizado que detecte.</p><p>Está prohibido suplantar identidades o crear cuentas con información ajena sin autorización.</p><h3>5. Conductas prohibidas</h3><p>No está permitido:</p><ul><li>Acosar, amenazar o intimidar a otros usuarios.</li><li>Suplantar identidades.</li><li>Publicar información privada de terceros sin autorización.</li><li>Compartir contenido ilegal.</li><li>Difundir material íntimo sin consentimiento.</li><li>Realizar fraudes, extorsiones o engaños.</li><li>Intentar acceder a cuentas, conversaciones o archivos ajenos.</li><li>Interferir deliberadamente con la seguridad o funcionamiento de rinconAF.</li><li>Distribuir código malicioso.</li><li>Utilizar la plataforma para actividades ilícitas.</li></ul><h3>6. Publicaciones y fotografías</h3><p>Cada usuario conserva la responsabilidad por el contenido que publica.</p><p>El usuario declara contar con los derechos y autorizaciones necesarios para compartir sus fotografías, textos y demás materiales.</p><p>Al publicar contenido, autoriza a rinconAF a almacenarlo, reproducirlo técnicamente y mostrarlo dentro de la plataforma, de acuerdo con las funciones de visibilidad disponibles.</p><p>Esta autorización no implica una transferencia de propiedad intelectual.</p><p>Las fotografías de perfil y publicaciones podrán ser visibles para los usuarios de rinconAF según los permisos y opciones de visibilidad correspondientes.</p><h3>7. Conversaciones privadas</h3><p>Las conversaciones privadas están destinadas a sus participantes.</p><p>Los archivos compartidos en conversaciones deben estar protegidos mediante controles de acceso que impidan su consulta por personas ajenas a ellas.</p><p>La expresión \"privado\" no significa que exista cifrado de extremo a extremo.</p><p>Los usuarios deben evitar compartir contraseñas, datos financieros u otra información especialmente delicada.</p><h3>8. Grupos</h3><p>Las funciones de grupos pueden permitir compartir mensajes y archivos entre sus integrantes.</p><p>Los permisos y la disponibilidad de estas funciones dependerán de la implementación técnica vigente.</p><p>Los mensajes, fotografías y archivos de los grupos se almacenan en el servidor y solo pueden acceder a ellos sus integrantes actuales. Quien sale de un grupo o es quitado pierde el acceso.</p><h3>9. Moderación</h3><p>rinconAF podrá retirar contenido, restringir funciones o suspender cuentas ante incumplimientos de estos términos o de las Normas de Comunidad.</p><p>Las medidas dependerán de la gravedad y circunstancias del caso.</p><p>No se garantiza la supervisión permanente de todas las publicaciones y conversaciones.</p><h3>10. Disponibilidad</h3><p>No se garantiza disponibilidad ininterrumpida ni ausencia total de errores.</p><p>Podrán realizarse tareas de mantenimiento, actualizaciones e interrupciones técnicas.</p><h3>11. Servicios de terceros</h3><p>rinconAF utiliza proveedores externos para su funcionamiento, incluyendo Supabase, Vercel y GitHub.</p><p>Los servicios de estos proveedores están sujetos a sus propias condiciones y políticas.</p><h3>12. Eliminación de cuentas</h3><p>El usuario podrá solicitar la eliminación de su cuenta y de sus datos personales mediante el correo de contacto.</p><p>La eliminación podrá estar sujeta a obligaciones legales o necesidades legítimas de conservación.</p><h3>13. Legislación aplicable</h3><p>Estos términos se interpretarán conforme a la legislación de la República Argentina y las normas imperativas que resulten aplicables.</p><h3>14. Contacto</h3><p>Titular del proyecto: Ignacio Jeremías Gabriel Toscani.</p><p>Ubicación declarada: Neuquén, Argentina.</p><p>Correo de contacto: <a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a>.</p>", "privacidad": "<h2>POLÍTICA DE PRIVACIDAD DE RINCONAF</h2><p><b>Última actualización: noviembre de 2026</b></p><h3>1. Responsable</h3><p>rinconAF es un proyecto administrado por Ignacio Jeremías Gabriel Toscani.</p><p>Ubicación declarada: Neuquén, Argentina.</p><p>Correo de contacto y privacidad: <a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a>.</p><h3>2. Información recopilada</h3><p>Para prestar sus servicios, rinconAF puede tratar:</p><ul><li>Dirección de correo electrónico.</li><li>Identificador de cuenta.</li><li>Nombre de usuario y apodo.</li><li>Fotografía de perfil.</li><li>Información de personalización del perfil.</li><li>Publicaciones, fotografías, comentarios y reacciones.</li><li>Mensajes y archivos adjuntos de conversaciones.</li><li>Información técnica necesaria para el funcionamiento y seguridad del servicio.</li><li>Registros de aceptación de documentos legales.</li><li>Registro interno de visitas a perfiles (qué cuenta visitó qué perfil y en qué día), que no es visible para otros usuarios y se usa únicamente para contar una visita por persona por día.</li></ul><p>Las publicaciones de la sección Rincón (canciones, imágenes y videos) se almacenan en el servidor y solo pueden verlas su autor y sus amigos.</p><h3>3. Información sobre mayoría de edad</h3><p>rinconAF es exclusivamente para personas mayores de 18 años.</p><p>Durante el registro se solicita la fecha de nacimiento para calcular si el usuario cumple con la edad mínima.</p><p>La fecha de nacimiento se utiliza únicamente para esa validación y no debe almacenarse ni conservarse en la base de datos de rinconAF.</p><p>La plataforma conserva únicamente la confirmación de mayoría de edad, el identificador de cuenta, la fecha y hora de la declaración, las versiones de los documentos aceptados y si la aceptación se realizó al registrarse o al iniciar sesión.</p><p>Esta declaración no constituye una verificación documental de identidad.</p><h3>4. Aceptación de documentos</h3><p>Al registrarse, el usuario debe aceptar expresamente los Términos y Condiciones y la Política de Privacidad.</p><p>Para dejar constancia de la aceptación se conserva:</p><ul><li>Identificador del usuario.</li><li>Fecha y hora de aceptación.</li><li>Versión de los documentos aceptados.</li><li>Confirmación de mayoría de edad.</li></ul><p>Esta información se utiliza para mantener un registro de las condiciones aceptadas por cada cuenta.</p><h3>5. Finalidad del tratamiento</h3><p>Los datos se utilizan para:</p><ul><li>Crear y administrar cuentas.</li><li>Permitir la autenticación.</li><li>Mostrar perfiles y publicaciones.</li><li>Facilitar interacciones entre usuarios.</li><li>Gestionar conversaciones privadas.</li><li>Almacenar fotografías y archivos.</li><li>Mantener la seguridad.</li><li>Atender consultas y denuncias.</li><li>Cumplir obligaciones legales.</li></ul><p>Los datos personales no se venden a terceros.</p><h3>6. Fotografías de perfil y publicaciones</h3><p>Las fotografías de perfil y las imágenes publicadas en rinconAF pueden ser visibles para otros usuarios de la plataforma, de acuerdo con las opciones de visibilidad y los permisos correspondientes.</p><p>La visibilidad dentro de rinconAF no debe confundirse con la publicación abierta en Internet.</p><p>La plataforma busca restringir el acceso directo a los archivos mediante controles de autenticación y permisos adecuados.</p><p>Las imágenes se muestran mediante enlaces temporales que vencen a la hora; mientras están vigentes, cualquier persona que reciba uno de esos enlaces puede abrirlo.</p><p>Los usuarios deben tener en cuenta que otros usuarios pueden guardar o capturar contenido que tengan permitido visualizar.</p><h3>7. Mensajes y archivos privados</h3><p>Los mensajes privados y sus archivos adjuntos están destinados exclusivamente a los participantes de cada conversación.</p><p>Los archivos deben almacenarse mediante mecanismos privados de acceso y controles que permitan consultar el contenido únicamente a participantes autorizados.</p><p>La privacidad de las conversaciones no equivale a cifrado de extremo a extremo.</p><p>Los proveedores tecnológicos utilizados pueden procesar información necesaria para prestar el servicio.</p><h3>8. Grupos</h3><p>Las funciones de grupos pueden incluir mensajes, fotografías y archivos compartidos entre integrantes.</p><p>Los mensajes, fotografías y archivos de los grupos se almacenan en el servidor y solo pueden acceder a ellos sus integrantes actuales. Quien sale de un grupo o es quitado pierde el acceso.</p><h3>9. Proveedores tecnológicos</h3><p>rinconAF utiliza servicios externos:</p><ul><li><b>Supabase:</b> autenticación, base de datos y almacenamiento.</li><li><b>Vercel:</b> alojamiento de la aplicación.</li><li><b>GitHub:</b> alojamiento y control de versiones del código.</li></ul><p>El proyecto de Supabase se encuentra configurado en la región East US (Ohio), Estados Unidos.</p><p>Por ello, determinados datos pueden almacenarse o procesarse fuera de Argentina.</p><p>Estos proveedores pueden tratar información conforme a sus propias condiciones y políticas.</p><h3>10. Conservación de la información</h3><p>Los datos se conservarán durante el tiempo necesario para prestar el servicio, mantener la seguridad y cumplir obligaciones legales.</p><p>Ante una solicitud de eliminación de cuenta, se evaluará la supresión de los datos asociados, salvo aquellos que deban conservarse por obligaciones legales o motivos legítimos.</p><p>La eliminación de una cuenta no implica necesariamente la desaparición inmediata de todas las copias técnicas y respaldos.</p><h3>11. Derechos de los usuarios</h3><p>Los usuarios pueden solicitar acceso, rectificación, actualización y supresión de sus datos personales conforme a la legislación aplicable.</p><p>Las solicitudes pueden enviarse a:</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p><p>Podrá solicitarse una verificación razonable de identidad para proteger la información.</p><h3>12. Seguridad</h3><p>rinconAF utiliza medidas técnicas disponibles en su infraestructura, como autenticación, políticas de acceso y almacenamiento diferenciado.</p><p>Ningún sistema conectado a Internet puede garantizar seguridad absoluta.</p><p>En caso de detectar un incidente que comprometa información personal, se evaluarán las medidas y comunicaciones que correspondan.</p><h3>13. Modificaciones</h3><p>Esta política podrá actualizarse cuando cambien las funciones, proveedores o prácticas de tratamiento de datos.</p><p>La versión vigente estará disponible en la sección Legal de rinconAF.</p><h3>14. Contacto</h3><p>Responsable: Ignacio Jeremías Gabriel Toscani.</p><p>Ubicación declarada: Neuquén, Argentina.</p><p>Correo de privacidad: <a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a>.</p>", "normas": "<h2>NORMAS DE COMUNIDAD DE RINCONAF</h2><p><b>Última actualización: noviembre de 2026</b></p><p>rinconAF busca ser un espacio de interacción respetuosa entre personas adultas.</p><h3>Respeto</h3><p>No se permite acosar, amenazar, intimidar, perseguir ni discriminar a otros usuarios.</p><h3>Privacidad</h3><p>No publiques información personal, fotografías privadas ni datos de terceros sin autorización.</p><h3>Identidad</h3><p>No suplantes a otras personas ni utilices perfiles para engañar a otros usuarios.</p><h3>Contenido</h3><p>No compartas contenido ilegal, amenazas, fraudes ni material íntimo sin consentimiento.</p><h3>Seguridad</h3><p>No intentes acceder a cuentas, conversaciones o archivos ajenos ni comprometer el funcionamiento de rinconAF.</p><h3>Edad</h3><p>rinconAF es exclusivamente para personas de 18 años cumplidos o más.</p><h3>Denuncias</h3><p>Si encontrás contenido o conductas que incumplan estas normas, podés comunicarlo a:</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p><p>Las infracciones podrán dar lugar a la eliminación de contenido, restricciones o suspensión de cuentas.</p>", "denuncias": "<h2>POLÍTICA DE DENUNCIAS Y MODERACIÓN</h2><p><b>Última actualización: noviembre de 2026</b></p><h3>1. Objetivo</h3><p>Esta política explica cómo comunicar situaciones que puedan incumplir las normas de rinconAF.</p><h3>2. Qué se puede denunciar</h3><ul><li>Acoso o amenazas.</li><li>Suplantación de identidad.</li><li>Publicaciones ilegales.</li><li>Difusión de información privada sin autorización.</li><li>Fraudes o intentos de engaño.</li><li>Cuentas que incumplan la edad mínima.</li><li>Vulneraciones de seguridad.</li><li>Otras infracciones de las Normas de Comunidad.</li></ul><h3>3. Cómo denunciar</h3><p>Las denuncias pueden enviarse a:</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p><p>Se recomienda incluir el usuario involucrado, una descripción del problema y enlaces o capturas pertinentes, evitando compartir información innecesaria.</p><h3>4. Revisión</h3><p>Las denuncias serán evaluadas según la información disponible, la gravedad y las posibilidades operativas del servicio.</p><p>El envío de una denuncia no garantiza una resolución inmediata.</p><h3>5. Medidas posibles</h3><p>Según el caso, podrán retirarse publicaciones, restringirse funciones o suspenderse cuentas.</p><h3>6. Denuncias falsas</h3><p>No deben presentarse denuncias deliberadamente falsas ni utilizar este mecanismo para hostigar a otros usuarios.</p><h3>7. Contacto</h3><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p>", "eliminacion": "<h2>ELIMINACIÓN DE CUENTAS Y DATOS PERSONALES</h2><p>Los usuarios de rinconAF pueden solicitar la eliminación de su cuenta y la supresión de sus datos personales cuando corresponda conforme a la legislación aplicable.</p><h3>Cómo solicitarlo</h3><p>Enviar un correo a:</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p><p>Asunto: Solicitud de eliminación de cuenta de rinconAF.</p><p>Incluir el nombre de usuario, el correo asociado a la cuenta y la solicitud expresa de eliminación.</p><p>Por seguridad, podrá solicitarse una verificación razonable de identidad.</p><h3>Qué sucede después</h3><p>Una vez verificada la solicitud, se evaluará la eliminación de los datos personales asociados a la cuenta.</p><p>Determinados datos podrán conservarse cuando exista una obligación legal o una razón legítima que justifique su conservación.</p><p>La eliminación de una cuenta no implica necesariamente la eliminación inmediata de todas las copias técnicas o respaldos de los proveedores.</p><h3>Contacto</h3><p>Ignacio Jeremías Gabriel Toscani</p><p>Neuquén, Argentina</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p>"};
 const NOMBRES_LEGALES = {terminos:'Términos y Condiciones', privacidad:'Política de Privacidad', normas:'Normas de Comunidad', denuncias:'Denuncias y Moderación', eliminacion:'Eliminación de cuenta y datos'};
 function abrirLegal(k){ if (!DOCS_LEGALES[k]) k = 'terminos';
   $('#legal-tabs').innerHTML = Object.entries(NOMBRES_LEGALES).map(([c, n]) => `<button type="button" class="btn${c === k ? ' lleno' : ''}" data-doc="${c}" aria-pressed="${c === k}">${n}</button>`).join('');
@@ -1987,10 +2149,10 @@ function mostrar(){ const [h, arg] = location.hash.slice(1).split('/'); let id =
     if (viendo !== nuevo){ viendo = nuevo; verFoto = null; seccionPerfil = 'perfil'; cerrarFoto(); if (!esMio()){ viendo.visitas++; sb.rpc('sumar_visita', {p:viendo.uid}).then(({error}) => { if (error) console.error(error); }); } }
     aplicar(viendo); pintar();                          // cada perfil se ve con el estilo de su dueño
   } else { viendo = null; cerrarFoto(); if (perfil()) aplicar(perfil());
-    if (id === 'inicio'){ resaltar = null; pintarFeed(); }
+    if (id === 'inicio'){ resaltar = null; pintarFeed(); pintarEscuchando(); refrescarEscuchando(); }
     if (id === 'top') pintarTop();
     if (id === 'buscar'){ pintarBuscar(); setTimeout(() => $('#buscar-txt').focus(), 50); }
-    if (id === 'rincon') pintarRincon();
+    if (id === 'rincon'){ pintarRincon(); recargarRincon(); }
     if (id === 'chat'){
       if (!arg) chatCon = null;
       else if (arg[0] === 'g'){ const id = arg.slice(1), g = grupos.find(q => q.id === id);
