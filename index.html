@@ -639,6 +639,40 @@ function base(){ return {
 }; }
 function pick(o, ks){ const r = {}; ks.forEach(k => r[k] = o[k]); return r; }
 
+/* ---------- Validación de perfiles ----------
+   Lo que llega de Supabase lo escribió cada usuario y se puede modificar a mano:
+   solo se aceptan claves conocidas con valores válidos; lo demás vuelve al valor por defecto. */
+const OPC = {tema:[...Object.keys(TEMAS),'propio'], patron:['liso','puntos','cuadrille','rayas','grilla','estrellas','corazones','estatica'],
+  fuenteTitulo:Object.keys(FUENTES_T), fuenteTexto:Object.keys(FUENTES_B),
+  efectoTitulo:['ninguno','sombra','glitch','brillo','arcoiris'], cajas:['simple','punteada','sin','win98'], avatarForma:['cuadrado','circulo'], fondoModo:['mosaico','cubrir']};
+const LARGOS = {frase:90, bio:400, ciudad:40, escuchando:60, musica:300, favoritos:400};
+const BOOLS = ['anteriores','sobre','ff_ver','favs','contador','marquesina','estela','nuevo'];
+const esColor = v => typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v);
+// Imágenes: solo del bucket "media" de este Supabase y de la carpeta del dueño del perfil
+const imagenPropia = (v, uid) => { const pre = String((window.RINCON_CONFIG || {}).supabaseUrl || '').replace(/\/+$/, '') + '/storage/v1/object/public/media/' + uid + '/';
+  return typeof v === 'string' && uid && v.startsWith(pre) && /^[A-Za-z0-9._-]+$/.test(v.slice(pre.length)) ? v : ''; };
+function sanearPerfil(d, uid){ const b = base(), r = {}; d = d && typeof d === 'object' && !Array.isArray(d) ? d : {};
+  COLS.forEach(k => r[k] = esColor(d[k]) ? d[k] : b[k]);
+  Object.entries(OPC).forEach(([k, l]) => r[k] = l.includes(d[k]) ? d[k] : b[k]);
+  Object.entries(LARGOS).forEach(([k, n]) => r[k] = typeof d[k] === 'string' ? d[k].slice(0, n) : b[k]);
+  BOOLS.forEach(k => r[k] = typeof d[k] === 'boolean' ? d[k] : b[k]);
+  r.cumple = typeof d.cumple === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d.cumple) ? d.cumple : '';
+  r.tamano = Number.isInteger(d.tamano) && d.tamano >= 12 && d.tamano <= 19 ? d.tamano : b.tamano;
+  r.marco = [0,1,4,10].includes(d.marco) ? d.marco : b.marco;
+  r.stickers = Array.isArray(d.stickers) ? [...new Set(d.stickers.filter(x => STICKERS.includes(x)))].slice(0, 8) : [];
+  r.avatar = imagenPropia(d.avatar, uid); r.fondoImg = imagenPropia(d.fondoImg, uid);
+  r.fotos = (Array.isArray(d.fotos) ? d.fotos : []).filter(f => f && typeof f === 'object').map(f => ({img:imagenPropia(f.img, uid),
+    titulo:typeof f.titulo === 'string' ? f.titulo.slice(0, 60) : '', texto:typeof f.texto === 'string' ? f.texto.slice(0, 500) : '', cuando:Number.isFinite(f.cuando) ? f.cuando : 0}));
+  return r; }
+// "Leídos" de los grupos: se guardan solo en este navegador (antes iban en el perfil, visibles para todos)
+const llaveLeidos = uid => 'rinconaf_leidos_' + uid;
+function leidosLocales(uid, viejo){ let loc = {}; try { loc = JSON.parse(localStorage.getItem(llaveLeidos(uid))) || {}; } catch {}
+  if (viejo && typeof viejo === 'object') Object.entries(viejo).forEach(([k, t]) => { if (Number.isFinite(t) && !(loc[k] >= t)) loc[k] = t; });   // se trae lo que había en el perfil
+  try { localStorage.setItem(llaveLeidos(uid), JSON.stringify(loc)); } catch {} return loc; }
+function guardarLeidos(){ const p = perfil(); if (p) try { localStorage.setItem(llaveLeidos(p.uid), JSON.stringify(p.leidos)); } catch {} }
+const armarPerfil = x => { const d = sanearPerfil(x.datos, x.id); return {...base(), ...d, uid:x.id, id:x.numero, apodo:String(x.apodo ?? '').slice(0, 24), visitas:x.visitas, creado:Date.parse(x.creado),
+  fotos:d.fotos.map(f => ({...f, firmas:[]})), ff:[], recibidas:[], notis:[], fans:[], leidos: x.id === sesion ? leidosLocales(x.id, x.datos?.leidos) : {}}; };
+
 /* ---------- Supabase ----------
    Cuentas, perfiles, amistades, posteos, likes, comentarios, firmas, notificaciones y archivos
    viven en Supabase. Credenciales en config.js; tablas y seguridad en supabase/schema.sql.
@@ -655,12 +689,11 @@ function avisar(t){ const a = $('#aviso-flot'); a.textContent = t; a.hidden = fa
 const falla = (que, error) => { if (error){ console.error(que, error); avisar(`No se pudo ${que}. Revisá tu conexión y probá de nuevo.`); return true; } return false; };
 
 // Mi perfil se guarda con un pequeño retraso, para no mandar un pedido por cada letra que escribís
-const DERIVADOS = ['id','uid','apodo','visitas','creado','ff','recibidas','notis','fans'];
 let tGuardar = null;
 function guardar(){ clearTimeout(tGuardar); tGuardar = setTimeout(guardarYa, 700); return true; }
 async function guardarYa(){ clearTimeout(tGuardar); const p = perfil(); if (!p) return;
-  const datos = {}; Object.keys(p).forEach(k => { if (!DERIVADOS.includes(k)) datos[k] = p[k]; });
-  datos.fotos = p.fotos.map(({firmas, ...f}) => f);
+  guardarLeidos();
+  const datos = sanearPerfil(p, p.uid);                     // solo claves conocidas y válidas; "leidos" ya no se sube
   const {error} = await sb.from('profiles').update({apodo: p.apodo, datos}).eq('id', p.uid);
   falla('guardar tu perfil', error); }
 
@@ -680,10 +713,9 @@ async function cargarTodo(){
   const err = r.find(x => x.error); if (err) throw err.error;
   const [pr, am, so, no, lp, fi, po, lk, co] = r.map(x => x.data || []);
   const nuevo = {};
-  pr.forEach(x => { const d = x.datos || {};
-    nuevo[x.id] = {perfil: {...base(), ...d, uid:x.id, id:x.numero, apodo:x.apodo, visitas:x.visitas, creado:Date.parse(x.creado),
-      fotos:(d.fotos || []).map(f => ({...f, firmas:[]})), ff:[], recibidas:[], notis:[], fans:[], leidos:d.leidos || {}}}; });
+  pr.forEach(x => { nuevo[x.id] = {perfil: armarPerfil(x)}; });
   usuarios = nuevo;
+  if (pr.some(x => x.id === sesion && x.datos && 'leidos' in x.datos)) guardar();   // saca "leidos" del perfil guardado (ahora vive en este navegador)
   const P = uid => usuarios[uid]?.perfil;
   am.forEach(x => { const a = P(x.a), b = P(x.b); if (a && b){ a.ff.push(b.id); b.ff.push(a.id); } });
   so.forEach(x => { const para = P(x.para), de = P(x.de); if (para && de) para.recibidas.push({de:de.id, cuando:Date.parse(x.creado)}); });
@@ -895,7 +927,7 @@ const campo = (k, l, o = {}) => { const p = perfil(), tag = o.area ? 'textarea' 
   return `<div class="ed-grupo"><label class="lbl" for="ed-${k}">${l}</label><${tag} class="field" id="ed-${k}" data-key="${k}" ${o.tipo ? `type="${o.tipo}"` : ''} maxlength="${o.max || 80}" placeholder="${o.ph || ''}" ${o.area ? '' : `value="${esc(p[k])}"`}>${o.area ? esc(p[k]) : ''}</${tag}>${o.area ? `<div class="contador" id="cont-${k}">${p[k].length}/${o.max}</div>` : ''}</div>`; };
 const ops = (k, t, lista, grande) => `<div class="ed-grupo"><h3 id="h-${k}">${t}</h3><div class="ops" role="group" aria-labelledby="h-${k}">${lista.map(([v,n,st]) =>
   `<button type="button" class="op${grande ? ' grande' : ''}" data-op="${k}" data-val="${v}" aria-pressed="${String(perfil()[k]) === String(v)}" ${st ? `style="${st}"` : ''}>${n}</button>`).join('')}</div></div>`;
-const img = (k, t, max) => { const p = perfil(); return `<div class="ed-grupo"><h3>${t}</h3><div class="img-ed"><div class="img-prev" style="${p[k] ? `background-image:url('${p[k]}')` : ''}">${p[k] ? '' : 'nada'}</div>
+const img = (k, t, max) => { const p = perfil(); return `<div class="ed-grupo"><h3>${t}</h3><div class="img-ed"><div class="img-prev" style="${p[k] ? `background-image:url('${esc(p[k])}')` : ''}">${p[k] ? '' : 'nada'}</div>
   <div style="display:flex;flex-direction:column;gap:6px"><label class="ed-btn file-btn">subir<input type="file" accept="image/*" data-img="${k}" data-max="${max}" aria-label="Subir ${t}"></label>${p[k] ? `<button type="button" class="ed-btn" data-quitar="${k}">quitar</button>` : ''}</div></div></div>`; };
 const sw = (k, l) => `<label class="switch"><span>${l}</span><input type="checkbox" data-bool="${k}" ${perfil()[k] ? 'checked' : ''}></label>`;
 
@@ -913,7 +945,7 @@ function pintarEd(){
     h += `<div class="ed-grupo"><h3>colores listos</h3><div class="temas">${Object.entries(TEMAS).map(([k,t]) =>
       `<button type="button" class="tema-btn" data-tema="${k}" aria-pressed="${p.tema === k}"><span class="muestras">${['bg','box','ink','link','title'].map(c => `<i style="background:${t[c]}"></i>`).join('')}</span>${t.nombre}</button>`).join('')}</div></div>`;
     h += `<div class="ed-grupo"><h3>tus colores${p.tema === 'propio' ? ' (propios)' : ''}</h3><div class="colores">${COLS.map(k =>
-      `<label class="color"><input type="color" data-color="${k}" value="${p[k]}">${NOMBRE_COL[k]}</label>`).join('')}</div></div>`;
+      `<label class="color"><input type="color" data-color="${k}" value="${esc(p[k])}">${NOMBRE_COL[k]}</label>`).join('')}</div></div>`;
     if (contraste(p.ink, p.bg) < 4.5) h += '<p class="ed-aviso">ojo: el texto se lee poco sobre el fondo.</p>';
     if (contraste(p.link, p.bg) < 3) h += '<p class="ed-aviso">ojo: los links se leen poco sobre el fondo.</p>';
   }
@@ -1012,8 +1044,6 @@ const porUid = uid => usuarios[uid]?.perfil;
 const convsDe = yo => [...privadas.map(c => ({conv:c, p:c.otro})), ...gruposDe(yo).map(g => ({g}))];
 const noLeidosC = (yo, c) => { if (!c.g) return c.conv.noLeidos || 0;
   const t = yo.leidos[llaveLeido(c)] || 0; return (chats[clave(yo, c)] || []).filter(m => m.de !== yo.id && m.tipo !== 'sistema' && m.cuando > t).length; };
-const armarPerfil = x => { const d = x.datos || {}; return {...base(), ...d, uid:x.id, id:x.numero, apodo:x.apodo, visitas:x.visitas, creado:Date.parse(x.creado),
-  fotos:(d.fotos || []).map(f => ({...f, firmas:[]})), ff:[], recibidas:[], notis:[], fans:[], leidos:d.leidos || {}}; };
 async function asegurarPerfiles(uids){ const faltan = [...new Set(uids)].filter(u => u && !usuarios[u]); if (!faltan.length) return;
   const r = await Promise.all(faltan.map(u => sb.from('profiles').select('*').eq('id', u)));
   r.forEach(({data}) => (data || []).forEach(x => usuarios[x.id] = {perfil: armarPerfil(x)})); }
@@ -1107,7 +1137,7 @@ function cargarMediaPriv(el){ const path = el.dataset.adj;
 function pintarChat(){
   const yo = perfil(); if (!yo) return;
   if (chatCon?.g && !chatCon.g.miembros.includes(yo.id)) chatCon = null;
-  if (chatCon?.g){ yo.leidos[llaveLeido(chatCon)] = Date.now(); guardar(); }
+  if (chatCon?.g){ yo.leidos[llaveLeido(chatCon)] = Date.now(); guardarLeidos(); }
   const ultG = g => (chats['g' + g.id] || []).at(-1);
   const cuando = c => c.g ? (ultG(c.g)?.cuando || c.g.creado || 0) : c.conv.actualizado;
   const convs = convsDe(yo).sort((a,b) => cuando(b) - cuando(a));
