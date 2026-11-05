@@ -417,7 +417,8 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
   .editor{left:auto;right:0;transform:none;top:0;height:100dvh;max-width:380px;border-width:0 0 0 1px}
   body.editando{padding-right:380px}
 }
-@media (prefers-reduced-motion: reduce){ *{animation:none !important} .frase-marq span{padding-left:0} }
+/* "Reducir movimiento" del celu: se frena todo, menos el efecto del nick (lo elige cada uno para su perfil) */
+@media (prefers-reduced-motion: reduce){ *:not(.nick):not(.letra){animation:none !important} .frase-marq span{padding-left:0} }
 </style>
 </head>
 <body data-cajas="simple">
@@ -972,6 +973,29 @@ function codecDeVideo(buf){ const dv = new DataView(buf.buffer, buf.byteOffset, 
     i += tam; }
   return ''; }
 const esHEVC = c => c === 'hvc1' || c === 'hev1';
+/* Muchos celulares guardan el índice del video ("moov") al final: el navegador tiene que buscarlo antes de arrancar.
+   Se pasa al principio (como hace "faststart"), corrigiendo las posiciones de los datos. La imagen y el sonido no se tocan. */
+function cajasMP4(buf, desde, hasta){ const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength), l = []; let i = desde;
+  while (i + 8 <= hasta){ let tam = dv.getUint32(i), cab = 8; const t = String.fromCharCode(buf[i+4], buf[i+5], buf[i+6], buf[i+7]);
+    if (tam === 1){ if (i + 16 > hasta) return null; tam = Number(dv.getBigUint64(i + 8)); cab = 16; } else if (tam === 0) tam = hasta - i;
+    if (tam < cab || i + tam > hasta) return null; l.push({t, i, tam, cab}); i += tam; }
+  return i === hasta ? l : null; }
+function corregirPosiciones(moov, corr){ const dv = new DataView(moov.buffer, moov.byteOffset, moov.byteLength);
+  const recorrer = (desde, hasta) => { const l = cajasMP4(moov, desde, hasta); if (!l) throw new Error('moov raro');
+    for (const c of l){ const a = c.i + c.cab, n = dv.getUint32(a + 4);
+      if (['trak','mdia','minf','stbl'].includes(c.t)) recorrer(a, c.i + c.tam);
+      else if (c.t === 'stco'){ for (let k = 0; k < n; k++){ const p = a + 8 + k * 4, v = dv.getUint32(p) + corr; if (v > 0xFFFFFFFF) throw new Error('muy grande'); dv.setUint32(p, v); } }
+      else if (c.t === 'co64'){ for (let k = 0; k < n; k++){ const p = a + 8 + k * 8; dv.setBigUint64(p, dv.getBigUint64(p) + BigInt(corr)); } } } };
+  const l = cajasMP4(moov, 0, moov.length); if (!l || l.length !== 1 || l[0].t !== 'moov') throw new Error('moov raro');
+  recorrer(l[0].i + l[0].cab, moov.length); }
+async function indiceAdelante(file){ try {
+    const buf = new Uint8Array(await file.arrayBuffer()), cajas = cajasMP4(buf, 0, buf.length); if (!cajas) return file;
+    const im = cajas.findIndex(c => c.t === 'moov'), id = cajas.findIndex(c => c.t === 'mdat');
+    if (im < 0 || id < 0 || im < id) return file;                                         // ya está adelante (o no es un MP4/MOV común)
+    const mv = cajas[im], moov = buf.slice(mv.i, mv.i + mv.tam); corregirPosiciones(moov, mv.tam);
+    const partes = []; cajas.forEach((c, k) => { if (k === id) partes.push(moov); if (k !== im) partes.push(buf.subarray(c.i, c.i + c.tam)); });
+    return new File(partes, file.name || 'video.mp4', {type: file.type || 'video/mp4'});
+  } catch (er){ console.warn('índice del video', er); return file; } }
 const TIPOS_REC = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4;codecs=avc1.4D401E,mp4a.40.2', 'video/mp4;codecs=avc1,mp4a.40.2', 'video/mp4;codecs=avc1', 'video/mp4'];
 const tipoGrabacion = () => { try { return (window.MediaRecorder && TIPOS_REC.find(t => MediaRecorder.isTypeSupported(t))) || ''; } catch { return ''; } };
 // ¿Este navegador puede mostrar la imagen del video? (si solo tiene audio para mostrar, videoWidth queda en 0)
@@ -981,10 +1005,11 @@ function seVeEnEsteEquipo(file){ return new Promise(ok => { const v = document.c
   v.muted = true; v.playsInline = true; v.preload = 'auto';
   v.onloadedmetadata = () => { if (v.videoWidth > 0) fin(true); }; v.onloadeddata = () => fin(v.videoWidth > 0); v.onerror = () => fin(false); v.src = u; }); }
 const AYUDA_HEVC = 'Este video está grabado en HEVC (H.265), un formato que muchos celulares no pueden mostrar, y desde este dispositivo no se puede convertir. Probá subirlo desde otro celular o compu, o cambiá la cámara a un formato compatible: en iPhone, Ajustes → Cámara → Formatos → "Más compatible"; en Android, en los ajustes de la cámara desactivá "video de alta eficiencia" o "HEVC".';
+const ACHICAR_DESDE_MB = 6;                                            // videos más pesados que esto se achican (720p) para que carguen rápido
 async function revisarVideo(f){ let codec = ''; try { codec = codecDeVideo(new Uint8Array(await f.arrayBuffer())); } catch {}
-  if (!esHEVC(codec)) return {convertir:false};
-  if (tipoGrabacion() && await seVeEnEsteEquipo(f)) return {convertir:true};
-  return {bloquear:true}; }
+  if (esHEVC(codec)){ if (tipoGrabacion() && await seVeEnEsteEquipo(f)) return {convertir:true}; return {bloquear:true}; }
+  if (f.size > ACHICAR_DESDE_MB * 1048576 && tipoGrabacion() && await seVeEnEsteEquipo(f)) return {convertir:true, achicar:true};
+  return {convertir:false}; }
 // Audio para la conversión: se prepara apenas tocás el botón (los navegadores lo piden así)
 const nuevoAudio = () => { try { const C = window.AudioContext || window.webkitAudioContext; const a = new C(); a.resume().catch(() => {}); return a; } catch { return null; } };
 async function convertirVideo(file, ac, progreso){ const tipo = tipoGrabacion(); if (!tipo) throw new Error('este navegador no puede convertir videos');
@@ -1643,11 +1668,14 @@ function armarComposer(c){
       let vid = f, ext = esVideo ? ((f.name.split('.').pop() || 'mp4').toLowerCase()) : 'jpg';
       if (esVideo){ est.textContent = 'revisando el video…'; const r = await revisarVideo(f);
         if (r.bloquear){ est.textContent = AYUDA_HEVC; return; }
-        if (r.convertir){ est.textContent = 'el video está en HEVC: lo convierto para que se vea en todos los celus… 0% (no cierres la página)';
-          vid = await convertirVideo(f, ac, n => { est.textContent = `convirtiendo el video… ${n}% (no cierres la página)`; }); ext = 'mp4';
+        if (r.convertir){ const que = r.achicar ? 'achicando el video para que cargue rápido' : 'el video está en HEVC: lo convierto para que se vea en todos los celus';
+          est.textContent = `${que}… 0% (no cierres la página)`;
+          try { const nuevo = await convertirVideo(f, ac, n => { est.textContent = `${que}… ${n}% (no cierres la página)`; });
+            if (!r.achicar || nuevo.size < f.size){ vid = nuevo; ext = 'mp4'; } }
+          catch (er){ if (!r.achicar) throw er; console.warn('achicar', er); }
           if (vid.size > MAX_VIDEO_MB * 1048576){ est.textContent = `convertido pesa ${mb(vid.size)} y el máximo es ${MAX_VIDEO_MB} MB: probá con uno más corto.`; return; } } }
       est.textContent = esVideo ? `subiendo video (${mb(vid.size)})…` : 'achicando y subiendo la foto…';
-      const blob = esVideo ? await limpiarUbicacion(vid) : await achicarBlob(f, MAX_FOTO_LADO, .8);
+      const blob = esVideo ? await indiceAdelante(await limpiarUbicacion(vid)) : await achicarBlob(f, MAX_FOTO_LADO, .8);
       const path = `${c.id}/${sesion}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
       const {error} = await sb.storage.from(BUCKET_CHAT).upload(path, blob, {contentType: blob.type || undefined, upsert:false}); if (error) throw error;
       const texto = $('#chat-txt').value.trim(); $('#chat-txt').value = ''; est.textContent = '';
@@ -2143,7 +2171,7 @@ async function refrescarEscuchando(){ if (!sb || !perfil()) return;
 setInterval(() => { if (sesion && !document.hidden && location.hash.startsWith('#inicio')) refrescarEscuchando(); }, 60 * 1000);
 
 /* ---------- Inicio: posteos tuyos y de tus amigos ---------- */
-let feed = [], pTipo = 'texto', pImg = null, pVid = null, pVidConvertir = false, vistos = 0, resaltar = null;
+let feed = [], pTipo = 'texto', pImg = null, pVid = null, pVidConvertir = false, pVidAchicar = false, vistos = 0, resaltar = null;
 const hace = t => { const m = Math.floor((Date.now() - t) / 60000); if (m < 1) return 'recién'; if (m < 60) return `hace ${m} min`; const h = Math.floor(m / 60);
   if (h < 24) return `hace ${h} h`; return `el ${fecha(t)} a las ${hora(t)}`; };
 const visiblesFeed = yo => feed.filter(x => { const a = porId(x.de); return a && (a.id === yo.id || sonAmigos(yo, a)); }).sort((a,b) => b.cuando - a.cuando);
@@ -2202,18 +2230,19 @@ $('#recargar').onclick = recargar; $('#hay-nuevos').onclick = recargar;
 function pTipoSet(t){ pTipo = t; $$('[data-ptipo]').forEach(b => b.setAttribute('aria-pressed', b.dataset.ptipo === t));
   $('#post-img-b').hidden = t !== 'imagen'; $('#post-url-b').hidden = t !== 'video'; $('#post-texto-lbl').textContent = t === 'texto' ? '¿qué estás pensando?' : 'texto (opcional)'; }
 $('#fab').onclick = () => { pTipoSet('texto'); $('#modal-post').hidden = false; $('#post-texto').focus(); };
-const cerrarPost = () => { $('#modal-post').hidden = true; $('#post-form').reset(); pImg = null; pVid = null; pVidConvertir = false; $('#post-vid-nombre').textContent = 'ningún video elegido'; $('#post-img-nombre').textContent = 'ninguna imagen elegida'; $('#post-msg').className = 'msg'; $('#fab').focus(); };
+const cerrarPost = () => { $('#modal-post').hidden = true; $('#post-form').reset(); pImg = null; pVid = null; pVidConvertir = false; pVidAchicar = false; $('#post-vid-nombre').textContent = 'ningún video elegido'; $('#post-img-nombre').textContent = 'ninguna imagen elegida'; $('#post-msg').className = 'msg'; $('#fab').focus(); };
 $('#post-cerrar').onclick = cerrarPost;
 $('#modal-post').addEventListener('click', e => { if (e.target.id === 'modal-post') cerrarPost(); const b = e.target.closest('[data-ptipo]'); if (b) pTipoSet(b.dataset.ptipo); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal-post').hidden) cerrarPost(); });
 $('#post-img').onchange = e => { const f = e.target.files[0]; if (!f) return; pImg = f; $('#post-img-nombre').textContent = 'lista: ' + f.name; };
-$('#post-vid').onchange = async e => { const f = e.target.files[0]; if (!f) return; pVid = null; pVidConvertir = false;
+$('#post-vid').onchange = async e => { const f = e.target.files[0]; if (!f) return; pVid = null; pVidConvertir = false; pVidAchicar = false;
   if (f.size > MAX_VIDEO_MB * 1048576){ e.target.value = ''; return msg('#post-msg', `Ese video pesa ${mb(f.size)}. El máximo es ${MAX_VIDEO_MB} MB: probá con uno más corto.`); }
   $('#post-vid-nombre').textContent = 'revisando el video…'; $('#post-msg').className = 'msg';
   const r = await revisarVideo(f);
   if (r.bloquear){ e.target.value = ''; $('#post-vid-nombre').textContent = 'ningún video elegido'; return msg('#post-msg', AYUDA_HEVC); }
-  pVid = f; pVidConvertir = r.convertir; $('#post-vid-nombre').textContent = `listo: ${f.name} (${mb(f.size)})`;
-  if (r.convertir) msg('#post-msg', 'Este video está en HEVC, un formato que muchos celulares no pueden mostrar. Al publicarlo lo convertimos para que lo vean todos: tarda lo mismo que dura el video (no cierres la página).', 'ok'); };
+  pVid = f; pVidConvertir = r.convertir; pVidAchicar = !!r.achicar; $('#post-vid-nombre').textContent = `listo: ${f.name} (${mb(f.size)})`;
+  if (r.achicar) msg('#post-msg', `El video pesa ${mb(f.size)}: al publicarlo lo achicamos para que cargue rápido. Tarda lo mismo que dura el video (no cierres la página).`, 'ok');
+  else if (r.convertir) msg('#post-msg', 'Este video está en HEVC, un formato que muchos celulares no pueden mostrar. Al publicarlo lo convertimos para que lo vean todos: tarda lo mismo que dura el video (no cierres la página).', 'ok'); };
 $('#post-form').onsubmit = async e => { e.preventDefault(); const yo = perfil(), texto = $('#post-texto').value.trim(), ac = pTipo === 'video' && pVid && pVidConvertir ? nuevoAudio() : null;
   const fila = {tipo:pTipo, texto: texto || null, media_path:null, video_url:null};
   if (pTipo === 'texto' && !texto) return msg('#post-msg','Escribí algo primero.');
@@ -2223,17 +2252,19 @@ $('#post-form').onsubmit = async e => { e.preventDefault(); const yo = perfil(),
   try {
     if (pTipo === 'imagen'){ msg('#post-msg','subiendo la imagen…','ok'); fila.media_path = await subirArchivo(await achicarBlob(pImg, 1280, .82), 'jpg'); }
     if (pTipo === 'video' && pVid){ let vid = pVid, ext = (pVid.name.split('.').pop() || 'mp4').toLowerCase();
-      if (pVidConvertir){ msg('#post-msg', 'convirtiendo el video para que lo vean todos… 0%', 'ok');
-        try { vid = await convertirVideo(pVid, ac, n => msg('#post-msg', `convirtiendo el video para que lo vean todos… ${n}%`, 'ok')); ext = 'mp4'; }
-        catch (er){ console.error('convertir', er); btn.disabled = false; return msg('#post-msg', AYUDA_HEVC); }
+      if (pVidConvertir){ const que = pVidAchicar ? 'achicando el video para que cargue rápido' : 'convirtiendo el video para que lo vean todos';
+        msg('#post-msg', `${que}… 0%`, 'ok');
+        try { const nuevo = await convertirVideo(pVid, ac, n => msg('#post-msg', `${que}… ${n}%`, 'ok'));
+          if (!pVidAchicar || nuevo.size < pVid.size){ vid = nuevo; ext = 'mp4'; } }                // si achicado pesa más, queda el original
+        catch (er){ console.error('convertir', er); if (!pVidAchicar){ btn.disabled = false; return msg('#post-msg', AYUDA_HEVC); } }   // si falla achicar, se sube el original
         if (vid.size > MAX_VIDEO_MB * 1048576){ btn.disabled = false; return msg('#post-msg', `Convertido pesa ${mb(vid.size)} y el máximo es ${MAX_VIDEO_MB} MB: probá con uno más corto.`); } }
-      msg('#post-msg',`subiendo el video (${mb(vid.size)})…`,'ok'); fila.media_path = await subirArchivo(await limpiarUbicacion(vid), ext); }
+      msg('#post-msg',`subiendo el video (${mb(vid.size)})…`,'ok'); fila.media_path = await subirArchivo(await indiceAdelante(await limpiarUbicacion(vid)), ext); }
     const {data, error} = await sb.from('posteos').insert(fila).select(); if (error) throw error;
     const r = data[0]; if (r.media_path) await firmar([r.media_path]);
     feed.push({id:r.id, de:yo.id, tipo:r.tipo, texto:r.texto || '', media_path:r.media_path || '', img: r.tipo === 'imagen' && r.media_path ? r.media_path : '',
       video: r.tipo === 'video' && r.media_path ? r.media_path : '', url:r.video_url || '', cuando:Date.parse(r.creado) || Date.now(), likes:[], comentarios:[]});
   } catch (er){ console.error(er); btn.disabled = false; return msg('#post-msg','No se pudo publicar. Revisá tu conexión y probá de nuevo.'); }
-  if (ac) ac.close().catch(() => {}); btn.disabled = false; pVidConvertir = false; cerrarPost(); pintarFeed(); window.scrollTo({top:0, behavior:'smooth'}); };
+  if (ac) ac.close().catch(() => {}); btn.disabled = false; pVidConvertir = false; pVidAchicar = false; cerrarPost(); pintarFeed(); window.scrollTo({top:0, behavior:'smooth'}); };
 
 /* ---------- Top perfiles ---------- */
 let tFiltro = 'todos';
