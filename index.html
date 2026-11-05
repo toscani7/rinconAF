@@ -1035,27 +1035,35 @@ async function convertirVideo(file, ac, progreso){ const tipo = tipoGrabacion();
     return new File([blob], 'video.mp4', {type:'video/mp4'}); }
   finally { URL.revokeObjectURL(u); v.removeAttribute('src'); } }
 // Al mirar: si el video no se puede ver en este dispositivo, se avisa (en vez de quedar negro o solo con sonido)
+// Videos del inicio: se guardan para reutilizarlos al recargar, y cada uno empieza a cargar recién cuando estás por llegar a él
+const videosFeed = new Map();
+const obsVideos = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return;
+  const v = e.target; obsVideos.unobserve(v); if (!v.getAttribute('src') && v.dataset.src){ v.preload = 'metadata'; v.src = v.dataset.src; } }), {rootMargin:'300px 0px'}) : null;
+function cargarCuandoSeVea(v){ if (obsVideos) obsVideos.observe(v); else if (!v.getAttribute('src')){ v.preload = 'metadata'; v.src = v.dataset.src; } }
+// Si le das play a un video, los demás se pausan (también los del chat)
+document.addEventListener('play', e => { if (e.target.tagName !== 'VIDEO') return; document.querySelectorAll('video').forEach(o => { if (o !== e.target && !o.paused) o.pause(); }); }, true);
 function vigilarVideo(v){ const aviso = () => { if (v.dataset.avisado) return; v.dataset.avisado = '1';
     const p = document.createElement('p'); p.className = 'muted chico aviso-video'; p.style.margin = '4px 0 0';
     p.textContent = 'este video no se puede ver en este dispositivo (seguramente está en formato HEVC). '; const a = document.createElement('a');
     a.href = v.currentSrc || v.src; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'probar abrirlo aparte'; p.appendChild(a); v.after(p); };
-  v.addEventListener('error', aviso); v.addEventListener('loadedmetadata', () => { if (!v.videoWidth) aviso(); }); }
+  v._aviso = aviso; v.addEventListener('error', () => { if (v.getAttribute('src')) aviso(); }); v.addEventListener('loadedmetadata', () => { if (!v.videoWidth) aviso(); }); }
 const urlPublica = path => sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
 /* Links temporales de "media": el bucket es privado. Lo guardado (link de perfil o ruta de posteo) solo identifica el archivo;
    para mostrarlo se pide un link temporal, si la regla del servidor deja ver ese archivo. */
-const VIGENCIA = 3600, firmadas = new Map();                  // ruta -> link temporal
+const VIGENCIA = 3600, firmadas = new Map(), venceFirma = new Map();   // ruta -> link temporal / cuándo vence
 const rutaMedia = v => { if (typeof v !== 'string' || !v) return '';
   const pre = String(CFG.supabaseUrl || '').replace(/\/+$/, '') + '/storage/v1/object/public/' + BUCKET + '/';
   const r = v.startsWith(pre) ? v.slice(pre.length) : v; return /^[0-9a-f-]{36}\/[A-Za-z0-9._-]+$/.test(r) ? r : ''; };
 const ver = v => { const r = rutaMedia(v); return r ? (firmadas.get(r) || urlPublica(r)) : ''; };   // sin link temporal: el público (sirve mientras el bucket sea público)
-async function firmar(lista){ const rutas = [...new Set(lista.map(rutaMedia).filter(Boolean))];
+// Solo se pide link nuevo para lo que no tiene o le quedan menos de 15 minutos: mismo link = el navegador no vuelve a bajar todo
+async function firmar(lista){ const rutas = [...new Set(lista.map(rutaMedia).filter(Boolean))].filter(r => !(venceFirma.get(r) > Date.now() + 15 * 60 * 1000));
   for (let i = 0; i < rutas.length; i += 100){
     let data, error; try { ({data, error} = await sb.storage.from(BUCKET).createSignedUrls(rutas.slice(i, i + 100), VIGENCIA)); } catch (er){ error = er; }
     if (error){ console.error('links temporales', error); continue; }               // si falla, la página sigue andando (usa el link público)
-    (data || []).forEach(d => { if (d && !d.error && d.signedUrl && d.path) firmadas.set(d.path, d.signedUrl); }); } }
+    (data || []).forEach(d => { if (d && !d.error && d.signedUrl && d.path){ firmadas.set(d.path, d.signedUrl); venceFirma.set(d.path, Date.now() + VIGENCIA * 1000); } }); } }
 const rutasDePerfil = p => [p.avatar, p.fondoImg, ...p.fotos.map(f => f.img)];
 // Se renuevan antes de vencer (lo que ya está en pantalla sigue visible)
-setInterval(() => { if (sesion && firmadas.size) firmar([...firmadas.keys()]); }, 45 * 60 * 1000);
+setInterval(() => { if (sesion && firmadas.size) firmar([...firmadas.keys()]); }, 10 * 60 * 1000);   // renueva solo los que están por vencer
 async function subirArchivo(blob, ext){
   const path = `${sesion}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
   const {error} = await sb.storage.from(BUCKET).upload(path, blob, {contentType: blob.type || undefined, upsert:false});
@@ -2190,7 +2198,7 @@ function posteoEl(x, yo){
       ${a.id === yo.id ? `<button class="borrar" type="button" data-pacc="borrar">borrar</button>` : ''}</div>
     ${x.texto ? `<p class="posteo-texto">${esc(x.texto)}</p>` : ''}
     ${x.img ? `<img class="compartida" src="${esc(ver(x.img))}" alt="${esc(x.texto || 'imagen de ' + a.apodo)}" loading="lazy">` : ''}
-    ${x.video ? `<video class="compartida" src="${esc(ver(x.video))}" controls playsinline preload="metadata" aria-label="video de ${esc(a.apodo)}" style="display:block;max-width:100%;max-height:560px;margin-top:10px;border:1px solid var(--line);background:#000"></video>` : ''}
+    ${x.video ? `<video class="compartida" data-path="${esc(x.video)}" data-src="${esc(ver(x.video))}" controls playsinline preload="none" aria-label="video de ${esc(a.apodo)}" style="display:block;max-width:100%;max-height:560px;margin-top:10px;border:1px solid var(--line);background:#000"></video>` : ''}
     ${u ? `<a class="media-link" href="${esc(u)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true">►</span><span><b>ver video</b><span class="sitio">${esc(sitioDe(u))}</span></span></a>` : ''}
     <div class="acciones-post">
       <button type="button" data-pacc="like" aria-pressed="${yaLike}" aria-label="${yaLike ? 'Sacar like' : 'Dar like'} (${x.likes.length})">${yaLike ? '♥' : '♡'} ${x.likes.length}</button>
@@ -2205,7 +2213,10 @@ function posteoEl(x, yo){
     const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, au);
     const t = document.createElement('div'); t.innerHTML = `<a href="${linkPerfil(au)}"><b>${esc(au.apodo)}</b></a> <span class="muted chico">${hace(c.cuando)}</span><p>${esc(c.texto)}</p>`;
     e.append(av, t); cs.appendChild(e); });
-  d.querySelectorAll('video').forEach(vigilarVideo);
+  d.querySelectorAll('video[data-path]').forEach(v => { const viejo = videosFeed.get(v.dataset.path);
+    if (viejo && viejo !== v){ v.replaceWith(viejo); if (viejo._aviso && viejo.dataset.avisado){ delete viejo.dataset.avisado; viejo._aviso(); }   // el mismo video ya cargado
+      const nuevo = ver(v.dataset.path); viejo.dataset.src = nuevo; if (viejo.readyState === 0 && viejo.getAttribute('src') && viejo.getAttribute('src') !== nuevo) viejo.src = nuevo; }
+    else { videosFeed.set(v.dataset.path, v); vigilarVideo(v); cargarCuandoSeVea(v); } });
   return d;
 }
 $('#feed').addEventListener('click', e => { const b = e.target.closest('button[data-pacc]'); if (!b) return; const art = b.closest('.posteo'), id = +art.id.slice(5), x = feed.find(q => q.id === id), yo = perfil(); if (!x) return;
