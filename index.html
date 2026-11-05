@@ -61,6 +61,16 @@ h1,h2,h3{font-family:var(--ft);color:var(--title);margin:0;line-height:1.25}
 .cabeza{flex-wrap:wrap}
 .cabeza > div:first-of-type{flex:1 1 200px !important}
 .nick{font-size:26px;word-break:break-word}
+/* Insignias (FUNDADOR dorada, BETA-TESTER plateada): las da el admin desde Supabase */
+.nick-fila{display:flex;align-items:center;gap:6px 10px;flex-wrap:wrap}
+.insignias{display:inline-flex;gap:6px;flex-wrap:wrap}
+.insignias:empty{display:none}
+.insignia{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;font-family:Verdana, sans-serif;font-size:10px;font-weight:bold;letter-spacing:1.3px;text-transform:uppercase;line-height:1.3;white-space:nowrap;cursor:default;user-select:none}
+.insignia.fundador{color:#3A2400;text-shadow:0 1px 0 rgba(255,245,200,.6);background:linear-gradient(135deg,#FFF6C2 0%,#FFD54A 22%,#E2A417 48%,#FFE899 70%,#B9830A 100%);border:1px solid #FFEFAE;box-shadow:0 0 0 1px #7A4E00, 0 0 12px rgba(255,196,40,.55)}
+.insignia.beta{color:#1C2127;text-shadow:0 1px 0 rgba(255,255,255,.6);background:linear-gradient(135deg,#FFFFFF 0%,#DCE1E6 25%,#A6AEB6 52%,#F0F3F5 75%,#8B949C 100%);border:1px solid #F5F7F9;box-shadow:0 0 0 1px #59616A, 0 0 8px rgba(205,215,225,.45)}
+.insignia::after{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.8),transparent);transform:skewX(-20deg);animation:destelloInsignia 3.6s ease-in-out infinite}
+.insignia.beta::after{animation-delay:1.2s}
+@keyframes destelloInsignia{0%,62%{left:-70%}100%{left:140%}}
 .cols{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;grid-template-areas:"centro" "der" "izq"}
 .col-izq{grid-area:izq}.col-centro{grid-area:centro}.col-der{grid-area:der}
 @media (min-width:900px){
@@ -236,9 +246,11 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
 @media (max-width:899px){.inicio-cols .feed{display:contents}                 /* celu: título, "escuchando ahora" y después los posteos */
   .feed-top{order:0}.inicio-cols .feed > p{order:1}.escuchando-b{order:2;padding:10px}.inicio-cols #hay-nuevos,.inicio-cols #feed{order:3}}
 @media (min-width:900px){.inicio-cols{display:grid;grid-template-columns:minmax(0,620px) 230px;justify-content:center;align-items:start;gap:28px}
-  .escuchando-b{position:sticky;top:12px}}
+  .escuchando-b{position:sticky;top:12px;display:flex;flex-direction:column;max-height:calc(100dvh - 24px)}   /* nunca más alto que la pantalla */
+  .escuchando-b .esc-lista{flex:1 1 auto;min-height:60px;max-height:none}
+  .escuchando-b .titulo-col,.escuchando-b .esc-form{flex:none}}
 .escuchando-b{border:1px solid var(--line);background:var(--box);padding:12px}
-.esc-lista{list-style:none;margin:0 0 10px;padding:0;display:flex;flex-direction:column;gap:10px}
+.esc-lista{list-style:none;margin:0 0 10px;padding:0 4px 0 0;display:flex;flex-direction:column;gap:10px;overflow-y:auto;max-height:340px;overscroll-behavior:contain}   /* si son muchos, la lista se desplaza sola */
 .esc-lista li{display:flex;gap:8px;align-items:flex-start;min-width:0}
 .esc-lista .avatar{width:30px;height:30px;font-size:10px;flex:none}
 .esc-lista > li > a{text-decoration:none;flex:none}
@@ -352,6 +364,15 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
 .ef-arcoiris .nick{background:linear-gradient(90deg,#FF4FD8,#FFB84D,#B6FF3B,#3DE0FF,#8C7BFF);-webkit-background-clip:text;background-clip:text;color:transparent}
 /* Efectos con movimiento */
 .nick .letra{display:inline-block;white-space:pre}
+/* Efectos "de color": usan el color que cada uno elige (--efc) */
+.ef-brillocolor .nick{background:linear-gradient(100deg, var(--title) 15%, var(--efc) 35%, #FFF 45%, var(--efc) 55%, var(--title) 75%);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:brillo 2.6s linear infinite}
+.ef-neoncolor .nick{color:#FFF;animation:respira 2.4s ease-in-out infinite}
+@keyframes respira{0%,100%{text-shadow:0 0 3px #FFF, 0 0 8px var(--efc), 0 0 16px var(--efc)}50%{text-shadow:0 0 5px #FFF, 0 0 16px var(--efc), 0 0 32px var(--efc), 0 0 48px var(--efc)}}
+.ef-olamicolor .nick .letra{animation:olamicolor 2s ease-in-out infinite;animation-delay:calc(var(--i) * .12s)}
+@keyframes olamicolor{0%,100%{color:var(--title);text-shadow:none}50%{color:var(--efc);text-shadow:0 0 8px var(--efc)}}
+.ef-destellos .nick .letra{animation:destello 2.8s ease-in-out infinite;animation-delay:calc(var(--i) * -.37s)}
+@keyframes destello{0%,70%,100%{color:var(--title);text-shadow:none;transform:none}78%{color:#FFF;text-shadow:0 0 6px #FFF, 0 0 14px var(--efc), 0 0 24px var(--efc);transform:scale(1.15)}86%{color:var(--efc);text-shadow:0 0 6px var(--efc)}}
+.ef-degradecolor .nick{background:linear-gradient(90deg, var(--title), var(--efc), var(--link), var(--efc), var(--title));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:arcoirismov 4s linear infinite}
 .ef-ola .nick .letra{animation:ola 1.4s ease-in-out infinite;animation-delay:calc(var(--i) * .08s)}
 @keyframes ola{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-.28em)}}
 .ef-olacolor .nick .letra{animation:olacolor 2.4s linear infinite;animation-delay:calc(var(--i) * -.14s)}
@@ -546,7 +567,7 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
     <div class="cabeza">
       <span class="avatar" id="p-avatar"></span>
       <div style="min-width:0;flex:1">
-        <h1 class="nick" id="p-nick"></h1>
+        <div class="nick-fila"><h1 class="nick" id="p-nick"></h1><span class="insignias" id="p-insignias"></span></div>
         <div class="muted chico" id="p-meta"></div>
       </div>
       <button class="btn" type="button" id="abrir-editor">editar mi perfil</button>
@@ -847,7 +868,7 @@ function base(){ return {
   apodo:'', frase:'', bio:'', ciudad:'', cumple:'', escuchando:'', musica:'', favoritos:'',
   avatar:'', avatarForma:'cuadrado', fondoImg:'', fondoModo:'mosaico',
   tema:'clasico', ...pick(TEMAS.clasico, [...COLS,'patron','fuenteTitulo','fuenteTexto']),
-  tamano:14, efectoTitulo:'ninguno', cajas:'simple', marco:1, stickers:[],
+  tamano:14, efectoTitulo:'ninguno', colorEfecto:'#FF3DCB', cajas:'simple', marco:1, stickers:[],
   marquesina:false, estela:false, anteriores:true, sobre:true, ff_ver:true, favs:true, contador:true,
   visitas:0, creado:Date.now(), nuevo:true, fotos:[], ff:[], id:0, recibidas:[], notis:[], leidos:{}, fans:[]
 }; }
@@ -858,7 +879,7 @@ function pick(o, ks){ const r = {}; ks.forEach(k => r[k] = o[k]); return r; }
    solo se aceptan claves conocidas con valores válidos; lo demás vuelve al valor por defecto. */
 const OPC = {tema:[...Object.keys(TEMAS),'propio'], patron:['liso','puntos','cuadrille','rayas','grilla','estrellas','corazones','estatica'],
   fuenteTitulo:Object.keys(FUENTES_T), fuenteTexto:Object.keys(FUENTES_B),
-  efectoTitulo:['ninguno','sombra','glitch','brillo','arcoiris','ola','olacolor','arcoirismov','neon','latido','flotar','temblor','interferencia'], cajas:['simple','punteada','sin','win98'], avatarForma:['cuadrado','circulo'], fondoModo:['mosaico','cubrir']};
+  efectoTitulo:['ninguno','sombra','glitch','brillo','arcoiris','ola','olacolor','arcoirismov','neon','latido','flotar','temblor','interferencia','brillocolor','neoncolor','olamicolor','destellos','degradecolor'], cajas:['simple','punteada','sin','win98'], avatarForma:['cuadrado','circulo'], fondoModo:['mosaico','cubrir']};
 const LARGOS = {frase:90, bio:400, ciudad:40, escuchando:100, musica:300, favoritos:400};
 const BOOLS = ['anteriores','sobre','ff_ver','favs','contador','marquesina','estela','nuevo'];
 const esColor = v => typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v);
@@ -875,6 +896,7 @@ function sanearPerfil(d, uid){ const b = base(), r = {}; d = d && typeof d === '
   if (r.favoritos.trim() === 'flor\ntomi\ncaro') r.favoritos = '';                       // los de ejemplo que venían de fábrica
   r.escuchandoUrl = typeof d.escuchandoUrl === 'string' && d.escuchandoUrl.length <= 300 && /^https?:\/\/\S+$/i.test(d.escuchandoUrl) ? d.escuchandoUrl : '';
   r.escuchandoCuando = Number.isFinite(d.escuchandoCuando) && d.escuchandoCuando > 0 ? d.escuchandoCuando : 0;
+  r.colorEfecto = esColor(d.colorEfecto) ? d.colorEfecto : b.colorEfecto;
   r.escuchandoArtista = typeof d.escuchandoArtista === 'string' ? d.escuchandoArtista.slice(0, 80) : '';
   r.escuchandoTipo = ['tema','artista','álbum','playlist','podcast'].includes(d.escuchandoTipo) ? d.escuchandoTipo : 'tema';
   r.escuchandoImg = typeof d.escuchandoImg === 'string' && TAPA_OK.test(d.escuchandoImg) ? d.escuchandoImg : '';   // portada: solo de Spotify, YouTube o SoundCloud
@@ -893,7 +915,7 @@ function leidosLocales(uid, viejo){ let loc = {}; try { loc = JSON.parse(localSt
   try { localStorage.setItem(llaveLeidos(uid), JSON.stringify(loc)); } catch {} return loc; }
 function guardarLeidos(){ const p = perfil(); if (p) try { localStorage.setItem(llaveLeidos(p.uid), JSON.stringify(p.leidos)); } catch {} }
 const armarPerfil = x => { const d = sanearPerfil(x.datos, x.id); return {...base(), ...d, uid:x.id, id:x.numero, apodo:String(x.apodo ?? '').slice(0, 24), visitas:x.visitas, creado:Date.parse(x.creado),
-  fotos:d.fotos.map(f => ({...f, firmas:[], likes:[]})), ff:[], recibidas:[], notis:[], fans:[], leidos: x.id === sesion ? leidosLocales(x.id, x.datos?.leidos) : {}}; };
+  fotos:d.fotos.map(f => ({...f, firmas:[], likes:[]})), insignias:[], ff:[], recibidas:[], notis:[], fans:[], leidos: x.id === sesion ? leidosLocales(x.id, x.datos?.leidos) : {}}; };
 
 /* ---------- Supabase ----------
    Cuentas, perfiles, amistades, posteos, likes, comentarios, firmas, notificaciones y archivos
@@ -1092,7 +1114,8 @@ async function subirImagen(file, max){ const blob = await achicarBlob(file, max,
 // Trae todo lo que el usuario puede ver (la seguridad del servidor ya filtra lo ajeno)
 async function cargarTodo(){
   const t = n => sb.from(n).select('*');
-  const lfP = Promise.resolve(t('likes_foto')).catch(error => ({error}));    // likes a fotos: si la tabla todavía no existe, el resto anda igual
+  const lfP = Promise.resolve(t('likes_foto')).catch(error => ({error}));
+  const insP = Promise.resolve(t('insignias')).catch(error => ({error}));      // insignias: si la tabla todavía no existe, no pasa nada    // likes a fotos: si la tabla todavía no existe, el resto anda igual
   const r = await Promise.all([t('profiles'), t('amistades'), t('solicitudes'), sb.from('notificaciones').select('*').eq('para', sesion),
     t('likes_perfil'), t('firmas'), t('posteos'), t('likes'), t('comentarios')]);
   const err = r.find(x => x.error); if (err) throw err.error;
@@ -1109,6 +1132,7 @@ async function cargarTodo(){
   fi.forEach(x => { const p = P(x.perfil), a = P(x.autor), f = p && p.fotos.find(q => q.cuando === Number(x.foto));
     if (f && a) f.firmas.push({deId:a.id, de:a.apodo, texto:x.texto, cuando:Date.parse(x.creado)}); });
   usuarios && Object.values(usuarios).forEach(u => u.perfil.fotos.forEach(f => f.firmas.sort((a,b) => a.cuando - b.cuando)));
+  const ins = await insP; if (!ins.error) (ins.data || []).forEach(x => { const q = P(x.perfil); if (q && ['fundador','beta'].includes(x.tipo) && !q.insignias.includes(x.tipo)) q.insignias.push(x.tipo); });
   const lf = await lfP; if (lf.error) console.warn('likes de fotos', lf.error);
   else (lf.data || []).forEach(x => { const p = P(x.perfil), u = P(x.usuario), f = p && p.fotos.find(q => q.cuando === Number(x.foto)); if (f && u && !f.likes.includes(u.id)) f.likes.push(u.id); });
   const yo = perfil();
@@ -1181,6 +1205,7 @@ function aplicar(p){
     r.setProperty('--patrep', p.fondoModo === 'cubrir' ? 'no-repeat' : 'repeat'); r.setProperty('--patpos','center'); }
   else { const [i,s,po] = patron(p.patron, p.bg2); r.setProperty('--patimg', i); r.setProperty('--patsize', s); r.setProperty('--patpos', po); r.setProperty('--patrep','repeat'); }
   r.setProperty('--ft', FUENTES_T[p.fuenteTitulo][0]); r.setProperty('--fb', FUENTES_B[p.fuenteTexto][0]);
+  r.setProperty('--efc', esColor(p.colorEfecto) ? p.colorEfecto : '#FF3DCB');
   r.setProperty('--fs', p.tamano + 'px'); r.setProperty('--marco', p.marco + 'px');
   document.body.dataset.cajas = p.cajas;
   document.body.classList.remove(...[...document.body.classList].filter(c => c.startsWith('ef-')));
@@ -1202,7 +1227,7 @@ function ponerAvatar(el, p){ el.textContent = ''; el.style.backgroundImage = p.a
 const POS = [[4,4,28],[86,6,22],[8,80,20],[82,76,30],[46,4,18],[90,42,20],[28,44,16],[64,30,14]];
 
 // Nick: algunos efectos animan letra por letra (cada letra es un <span>; se lee igual con lector de pantalla)
-function ponerNick(el, p){ if (['ola','olacolor'].includes(p.efectoTitulo)){ el.setAttribute('aria-label', p.apodo);
+function ponerNick(el, p){ if (['ola','olacolor','olamicolor','destellos'].includes(p.efectoTitulo)){ el.setAttribute('aria-label', p.apodo);
     el.innerHTML = [...p.apodo].map((ch, i) => `<span class="letra" aria-hidden="true" style="--i:${i}">${esc(ch)}</span>`).join(''); }
   else { el.removeAttribute('aria-label'); el.textContent = p.apodo; } }
 // Tocar la foto de perfil: se ve más grande; tocando cualquier parte (o Escape) se cierra
@@ -1223,6 +1248,8 @@ function pintar(){
   const pa = $('#p-avatar'), agranda = !!p.avatar; pa.classList.toggle('se-agranda', agranda);
   if (agranda){ pa.setAttribute('role','button'); pa.tabIndex = 0; pa.setAttribute('aria-label', 'ver la foto de perfil de ' + p.apodo + ' más grande'); } else pa.removeAttribute('tabindex');
   ponerNick($('#p-nick'), p);
+  $('#p-insignias').innerHTML = ['fundador','beta'].filter(t => (p.insignias || []).includes(t)).map(t => t === 'fundador'
+    ? '<span class="insignia fundador" title="fundador de rinconAF">♛ fundador</span>' : '<span class="insignia beta" title="probó rinconAF desde el principio">✦ beta-tester</span>').join('');
   const lb = $('#like-perfil'), dio = p.fans.includes(yo.id);
   const nl = p.fans.length; $('#like-cuenta').textContent = `${nl} ${nl === 1 ? 'like' : 'likes'} este perfil`;
   lb.hidden = mio;   // en tu propio perfil solo se ve la cantidad
@@ -1421,8 +1448,12 @@ function pintarEd(){
     h += ops('fuenteTexto','letra del texto', Object.entries(FUENTES_B).map(([k,[f,n]]) => [k,n,`font-family:${f.replace(/"/g,"'")}`]));
     h += `<div class="ed-grupo"><label class="lbl" for="ed-tam">tamaño del texto: <span id="tam-v">${p.tamano}</span> px</label><input class="rango" id="ed-tam" type="range" min="12" max="19" value="${p.tamano}" data-num="tamano"></div>`;
     h += ops('efectoTitulo','efecto en el nick',[['ninguno','ninguno'],['sombra','sombra'],['glitch','glitch'],['brillo','brillo'],['arcoiris','arcoíris'],
-      ['ola','ola ~'],['olacolor','ola de color ~'],['arcoirismov','arcoíris que corre ~'],['neon','neón ~'],['latido','latido ~'],['flotar','flotar ~'],['temblor','temblor ~'],['interferencia','interferencia ~']]);
-    h += '<p class="muted" style="font-size:11px;margin:-4px 0 0">~ = con movimiento</p>';
+      ['ola','ola ~'],['olacolor','ola de color ~'],['arcoirismov','arcoíris que corre ~'],['neon','neón ~'],['latido','latido ~'],['flotar','flotar ~'],['temblor','temblor ~'],['interferencia','interferencia ~'],
+      ['brillocolor','brillo de mi color ~ ●'],['neoncolor','neón de mi color ~ ●'],['olamicolor','ola de mi color ~ ●'],['destellos','destellos ~ ●'],['degradecolor','degradé de mis colores ~ ●']]);
+    h += '<p class="muted" style="font-size:11px;margin:-4px 0 0">~ = con movimiento · ● = usa el color que elegís acá abajo</p>';
+    h += `<div class="ed-grupo"><label class="lbl" for="ed-colorEfecto">color del efecto ●</label><div style="display:flex;align-items:center;gap:10px">
+      <input type="color" id="ed-colorEfecto" data-key="colorEfecto" value="${esc(p.colorEfecto)}" style="width:56px;height:40px;padding:0;border:1px solid #999;background:none;cursor:pointer">
+      <span class="muted" style="font-size:11px">elegí el color y fijate cómo queda en tu nick</span></div></div>`;
   }
   if (pest === 'partes'){
     h += ops('cajas','estilo de las cajas',[['simple','simple'],['punteada','punteada'],['sin','sin cajas'],['win98','windows 98']]);
