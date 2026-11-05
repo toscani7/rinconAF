@@ -698,12 +698,27 @@ async function guardarYa(){ clearTimeout(tGuardar); const p = perfil(); if (!p) 
   falla('guardar tu perfil', error); }
 
 const urlPublica = path => sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+/* Links temporales de "media": el bucket es privado. Lo guardado (link de perfil o ruta de posteo) solo identifica el archivo;
+   para mostrarlo se pide un link temporal, si la regla del servidor deja ver ese archivo. */
+const VIGENCIA = 3600, firmadas = new Map();                  // ruta -> link temporal
+const rutaMedia = v => { if (typeof v !== 'string' || !v) return '';
+  const pre = String(CFG.supabaseUrl || '').replace(/\/+$/, '') + '/storage/v1/object/public/' + BUCKET + '/';
+  const r = v.startsWith(pre) ? v.slice(pre.length) : v; return /^[0-9a-f-]{36}\/[A-Za-z0-9._-]+$/.test(r) ? r : ''; };
+const ver = v => { const r = rutaMedia(v); return r ? (firmadas.get(r) || urlPublica(r)) : ''; };   // sin link temporal: el público (sirve mientras el bucket sea público)
+async function firmar(lista){ const rutas = [...new Set(lista.map(rutaMedia).filter(Boolean))];
+  for (let i = 0; i < rutas.length; i += 100){
+    let data, error; try { ({data, error} = await sb.storage.from(BUCKET).createSignedUrls(rutas.slice(i, i + 100), VIGENCIA)); } catch (er){ error = er; }
+    if (error){ console.error('links temporales', error); continue; }               // si falla, la página sigue andando (usa el link público)
+    (data || []).forEach(d => { if (d && !d.error && d.signedUrl && d.path) firmadas.set(d.path, d.signedUrl); }); } }
+const rutasDePerfil = p => [p.avatar, p.fondoImg, ...p.fotos.map(f => f.img)];
+// Se renuevan antes de vencer (lo que ya está en pantalla sigue visible)
+setInterval(() => { if (sesion && firmadas.size) firmar([...firmadas.keys()]); }, 45 * 60 * 1000);
 async function subirArchivo(blob, ext){
   const path = `${sesion}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
   const {error} = await sb.storage.from(BUCKET).upload(path, blob, {contentType: blob.type || undefined, upsert:false});
   if (error) throw error; return path; }
 // Fotos: se achican en el celu antes de subir (JPEG, lado máximo según el uso)
-async function subirImagen(file, max){ const blob = await achicarBlob(file, max, .82); return urlPublica(await subirArchivo(blob, 'jpg')); }
+async function subirImagen(file, max){ const blob = await achicarBlob(file, max, .82); const path = await subirArchivo(blob, 'jpg'); await firmar([path]); return urlPublica(path); }
 
 // Trae todo lo que el usuario puede ver (la seguridad del servidor ya filtra lo ajeno)
 async function cargarTodo(){
@@ -728,12 +743,13 @@ async function cargarTodo(){
       return {nid:x.id, tipo:x.tipo, de:P(x.de)?.id, cuando:Date.parse(x.creado), leida:x.leida, post:d.post, grupo:d.grupo, nombre:d.nombre, resumen:d.resumen, texto:d.texto}; })
     .filter(n => n.de).sort((a,b) => a.cuando - b.cuando);
   feed = po.map(x => ({id:x.id, de:P(x.autor)?.id, tipo:x.tipo, texto:x.texto || '', media_path:x.media_path || '',
-      img: x.tipo === 'imagen' && x.media_path ? urlPublica(x.media_path) : '', video: x.tipo === 'video' && x.media_path ? urlPublica(x.media_path) : '',
+      img: x.tipo === 'imagen' && x.media_path ? x.media_path : '', video: x.tipo === 'video' && x.media_path ? x.media_path : '',
       url: x.video_url || '', cuando:Date.parse(x.creado), likes:[], comentarios:[]})).filter(x => x.de);
   lk.forEach(x => { const q = feed.find(f => f.id === x.posteo), u = P(x.usuario); if (q && u) q.likes.push(u.id); });
   co.forEach(x => { const q = feed.find(f => f.id === x.posteo), u = P(x.autor); if (q && u) q.comentarios.push({id:x.id, de:u.id, texto:x.texto, cuando:Date.parse(x.creado)}); });
   feed.forEach(q => q.comentarios.sort((a,b) => a.cuando - b.cuando));
   privadas.forEach(c => c.otro = porUid(c.otro.uid) || c.otro);
+  await firmar([...Object.values(usuarios).flatMap(u => rutasDePerfil(u.perfil)), ...feed.map(x => x.media_path)]);
 }
 
 /* ---------- Perfiles de todos ---------- */
@@ -767,7 +783,7 @@ function noLeidos(yo, a){ const t = yo.leidos[a.id] || 0; return (chats[claveCha
 
 function tile(x, extra){ const a = document.createElement('a'); a.href = linkPerfil(x);
   const s = document.createElement('span'); s.className = 'avatar'; s.setAttribute('aria-hidden','true');
-  const m = miniatura(x); if (m) s.style.backgroundImage = `url("${m}")`; else s.textContent = ini(x.apodo);
+  const m = ver(miniatura(x)); if (m) s.style.backgroundImage = `url("${m}")`; else s.textContent = ini(x.apodo);
   a.append(s, document.createTextNode(x.apodo + (extra || ''))); return a; }
 
 /* ---------- Colores ---------- */
@@ -792,7 +808,7 @@ function aplicar(p){
   const r = document.documentElement.style;
   COLS.forEach(k => r.setProperty('--' + k, p[k]));
   r.setProperty('--logofilt', lum(p.box) < .3 ? 'invert(1)' : 'none');
-  if (p.fondoImg){ r.setProperty('--patimg', `url("${p.fondoImg}")`); r.setProperty('--patsize', p.fondoModo === 'cubrir' ? 'cover' : 'auto');
+  if (p.fondoImg){ r.setProperty('--patimg', `url("${ver(p.fondoImg)}")`); r.setProperty('--patsize', p.fondoModo === 'cubrir' ? 'cover' : 'auto');
     r.setProperty('--patrep', p.fondoModo === 'cubrir' ? 'no-repeat' : 'repeat'); r.setProperty('--patpos','center'); }
   else { const [i,s,po] = patron(p.patron, p.bg2); r.setProperty('--patimg', i); r.setProperty('--patsize', s); r.setProperty('--patpos', po); r.setProperty('--patrep','repeat'); }
   r.setProperty('--ft', FUENTES_T[p.fuenteTitulo][0]); r.setProperty('--fb', FUENTES_B[p.fuenteTexto][0]);
@@ -811,7 +827,7 @@ const hora = t => { const d = new Date(t); return `${dos(d.getHours())}:${dos(d.
 const mismoDia = (a,b) => new Date(a).toDateString() === new Date(b).toDateString();
 const ini = t => (t || '?').replace(/[^\p{L}\p{N}]/gu,'').slice(0,2).toLowerCase() || '?';
 const esc = t => String(t ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function ponerAvatar(el, p){ el.textContent = ''; el.style.backgroundImage = p.avatar ? `url("${p.avatar}")` : 'none';
+function ponerAvatar(el, p){ el.textContent = ''; el.style.backgroundImage = p.avatar ? `url("${ver(p.avatar)}")` : 'none';
   if (!p.avatar){ el.textContent = ini(p.apodo); el.style.backgroundColor = '#555'; }
   el.classList.toggle('redondo', p.avatarForma === 'circulo'); el.setAttribute('role','img'); el.setAttribute('aria-label','avatar de ' + p.apodo); }
 const POS = [[4,4,28],[86,6,22],[8,80,20],[82,76,30],[46,4,18],[90,42,20],[28,44,16],[64,30,14]];
@@ -842,7 +858,7 @@ function pintar(){
   // Foto que se está viendo
   const idx = verFoto ?? p.fotos.length - 1, f = p.fotos[idx];
   const caja = $('#p-foto'); caja.innerHTML = '';
-  if (f){ const im = new Image(); im.className = 'foto'; im.src = f.img; im.alt = f.titulo || 'foto del ' + fechaLarga(f.cuando); caja.appendChild(im); }
+  if (f){ const im = new Image(); im.className = 'foto'; im.src = ver(f.img); im.alt = f.titulo || 'foto del ' + fechaLarga(f.cuando); caja.appendChild(im); }
   else caja.innerHTML = `<div class="foto-vacia"><i aria-hidden="true"></i><span>${mio ? 'todavía no subiste ninguna foto.<br>la primera va arriba ↑' : esc(p.apodo) + ' todavía no subió ninguna foto.'}</span></div>`;
   p.stickers.forEach((st,i) => { const [x,y,t] = POS[i % POS.length]; const e = document.createElement('span'); e.className = 'sticker'; e.textContent = st; e.setAttribute('aria-hidden','true');
     e.style.left = x + '%'; e.style.top = y + '%'; e.style.fontSize = t + 'px'; caja.appendChild(e); });
@@ -865,7 +881,7 @@ function pintar(){
   const th = $('#p-anteriores'); th.innerHTML = '';
   if (!p.fotos.length) th.innerHTML = '<p class="muted chico" style="margin:0;grid-column:1/-1">todavía no hay fotos.</p>';
   p.fotos.map((x,i) => [x,i]).reverse().slice(0,10).forEach(([x,i]) => { const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'thumb';
-    bt.style.backgroundImage = `url("${x.img}")`; bt.setAttribute('aria-label', `ver foto del ${fechaLarga(x.cuando)}`); bt.setAttribute('aria-current', i === idx);
+    bt.style.backgroundImage = `url("${ver(x.img)}")`; bt.setAttribute('aria-label', `ver foto del ${fechaLarga(x.cuando)}`); bt.setAttribute('aria-current', i === idx);
     bt.onclick = () => { verFoto = i; pintar(); $('#p-foto').scrollIntoView({behavior:'smooth', block:'start'}); }; th.appendChild(bt); });
   // Sobre mí
   $('#p-sobre-b').hidden = !p.sobre;
@@ -927,7 +943,7 @@ const campo = (k, l, o = {}) => { const p = perfil(), tag = o.area ? 'textarea' 
   return `<div class="ed-grupo"><label class="lbl" for="ed-${k}">${l}</label><${tag} class="field" id="ed-${k}" data-key="${k}" ${o.tipo ? `type="${o.tipo}"` : ''} maxlength="${o.max || 80}" placeholder="${o.ph || ''}" ${o.area ? '' : `value="${esc(p[k])}"`}>${o.area ? esc(p[k]) : ''}</${tag}>${o.area ? `<div class="contador" id="cont-${k}">${p[k].length}/${o.max}</div>` : ''}</div>`; };
 const ops = (k, t, lista, grande) => `<div class="ed-grupo"><h3 id="h-${k}">${t}</h3><div class="ops" role="group" aria-labelledby="h-${k}">${lista.map(([v,n,st]) =>
   `<button type="button" class="op${grande ? ' grande' : ''}" data-op="${k}" data-val="${v}" aria-pressed="${String(perfil()[k]) === String(v)}" ${st ? `style="${st}"` : ''}>${n}</button>`).join('')}</div></div>`;
-const img = (k, t, max) => { const p = perfil(); return `<div class="ed-grupo"><h3>${t}</h3><div class="img-ed"><div class="img-prev" style="${p[k] ? `background-image:url('${esc(p[k])}')` : ''}">${p[k] ? '' : 'nada'}</div>
+const img = (k, t, max) => { const p = perfil(); return `<div class="ed-grupo"><h3>${t}</h3><div class="img-ed"><div class="img-prev" style="${p[k] ? `background-image:url('${esc(ver(p[k]))}')` : ''}">${p[k] ? '' : 'nada'}</div>
   <div style="display:flex;flex-direction:column;gap:6px"><label class="ed-btn file-btn">subir<input type="file" accept="image/*" data-img="${k}" data-max="${max}" aria-label="Subir ${t}"></label>${p[k] ? `<button type="button" class="ed-btn" data-quitar="${k}">quitar</button>` : ''}</div></div></div>`; };
 const sw = (k, l) => `<label class="switch"><span>${l}</span><input type="checkbox" data-bool="${k}" ${perfil()[k] ? 'checked' : ''}></label>`;
 
@@ -1046,7 +1062,8 @@ const noLeidosC = (yo, c) => { if (!c.g) return c.conv.noLeidos || 0;
   const t = yo.leidos[llaveLeido(c)] || 0; return (chats[clave(yo, c)] || []).filter(m => m.de !== yo.id && m.tipo !== 'sistema' && m.cuando > t).length; };
 async function asegurarPerfiles(uids){ const faltan = [...new Set(uids)].filter(u => u && !usuarios[u]); if (!faltan.length) return;
   const r = await Promise.all(faltan.map(u => sb.from('profiles').select('*').eq('id', u)));
-  r.forEach(({data}) => (data || []).forEach(x => usuarios[x.id] = {perfil: armarPerfil(x)})); }
+  r.forEach(({data}) => (data || []).forEach(x => usuarios[x.id] = {perfil: armarPerfil(x)}));
+  await firmar(faltan.flatMap(u => usuarios[u] ? rutasDePerfil(usuarios[u].perfil) : [])); }
 const deFila = r => ({id:r.id, otro:porUid(r.otro), actualizado:Date.parse(r.actualizado),
   ultimo: r.ultimo_tipo ? {texto:r.ultimo_texto || '', tipo:r.ultimo_tipo, autor:r.ultimo_autor} : null, noLeidos:Number(r.no_leidos) || 0});
 
@@ -1230,7 +1247,8 @@ document.addEventListener('visibilitychange', () => { if (document.hidden || !se
 
 // Nueva conversación: cualquier usuario registrado
 async function refrescarPerfiles(){ const {data, error} = await sb.from('profiles').select('*'); if (error){ console.error('profiles', error); return false; }
-  data.forEach(x => { if (!usuarios[x.id]) usuarios[x.id] = {perfil: armarPerfil(x)}; }); return true; }   // suma a quienes se registraron después
+  const nuevos = data.filter(x => !usuarios[x.id]); nuevos.forEach(x => { usuarios[x.id] = {perfil: armarPerfil(x)}; });
+  await firmar(nuevos.flatMap(x => rutasDePerfil(usuarios[x.id].perfil))); return true; }   // suma a quienes se registraron después
 let buscandoGente = false;
 async function abrirNuevaConv(){ $('#nueva-conv-txt').value = ''; buscandoGente = true; pintarNuevaConv(); $('#modal-nueva-conv').hidden = false; $('#nueva-conv-txt').focus();
   const ok = await refrescarPerfiles(); buscandoGente = false; pintarNuevaConv(ok ? '' : 'no se pudo actualizar la lista de usuarios.'); }
@@ -1484,8 +1502,8 @@ function posteoEl(x, yo){
   d.innerHTML = `<div class="posteo-cab"><span class="avatar"></span><div style="flex:1;min-width:0"><a href="${linkPerfil(a)}"><b>${esc(a.apodo)}</b></a><br><span class="muted chico">${hace(x.cuando)}</span></div>
       ${a.id === yo.id ? `<button class="borrar" type="button" data-pacc="borrar">borrar</button>` : ''}</div>
     ${x.texto ? `<p class="posteo-texto">${esc(x.texto)}</p>` : ''}
-    ${x.img ? `<img class="compartida" src="${esc(x.img)}" alt="${esc(x.texto || 'imagen de ' + a.apodo)}" loading="lazy">` : ''}
-    ${x.video ? `<video class="compartida" src="${esc(x.video)}" controls playsinline preload="metadata" aria-label="video de ${esc(a.apodo)}" style="display:block;max-width:100%;max-height:560px;margin-top:10px;border:1px solid var(--line);background:#000"></video>` : ''}
+    ${x.img ? `<img class="compartida" src="${esc(ver(x.img))}" alt="${esc(x.texto || 'imagen de ' + a.apodo)}" loading="lazy">` : ''}
+    ${x.video ? `<video class="compartida" src="${esc(ver(x.video))}" controls playsinline preload="metadata" aria-label="video de ${esc(a.apodo)}" style="display:block;max-width:100%;max-height:560px;margin-top:10px;border:1px solid var(--line);background:#000"></video>` : ''}
     ${u ? `<a class="media-link" href="${esc(u)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true">►</span><span><b>ver video</b><span class="sitio">${esc(sitioDe(u))}</span></span></a>` : ''}
     <div class="acciones-post">
       <button type="button" data-pacc="like" aria-pressed="${yaLike}" aria-label="${yaLike ? 'Sacar like' : 'Dar like'} (${x.likes.length})">${yaLike ? '♥' : '♡'} ${x.likes.length}</button>
@@ -1542,9 +1560,9 @@ $('#post-form').onsubmit = async e => { e.preventDefault(); const yo = perfil(),
     if (pTipo === 'imagen'){ msg('#post-msg','subiendo la imagen…','ok'); fila.media_path = await subirArchivo(await achicarBlob(pImg, 1280, .82), 'jpg'); }
     if (pTipo === 'video' && pVid){ msg('#post-msg',`subiendo el video (${mb(pVid.size)})…`,'ok'); fila.media_path = await subirArchivo(pVid, (pVid.name.split('.').pop() || 'mp4').toLowerCase()); }
     const {data, error} = await sb.from('posteos').insert(fila).select(); if (error) throw error;
-    const r = data[0];
-    feed.push({id:r.id, de:yo.id, tipo:r.tipo, texto:r.texto || '', media_path:r.media_path || '', img: r.tipo === 'imagen' && r.media_path ? urlPublica(r.media_path) : '',
-      video: r.tipo === 'video' && r.media_path ? urlPublica(r.media_path) : '', url:r.video_url || '', cuando:Date.parse(r.creado) || Date.now(), likes:[], comentarios:[]});
+    const r = data[0]; if (r.media_path) await firmar([r.media_path]);
+    feed.push({id:r.id, de:yo.id, tipo:r.tipo, texto:r.texto || '', media_path:r.media_path || '', img: r.tipo === 'imagen' && r.media_path ? r.media_path : '',
+      video: r.tipo === 'video' && r.media_path ? r.media_path : '', url:r.video_url || '', cuando:Date.parse(r.creado) || Date.now(), likes:[], comentarios:[]});
   } catch (er){ console.error(er); btn.disabled = false; return msg('#post-msg','No se pudo publicar. Revisá tu conexión y probá de nuevo.'); }
   btn.disabled = false; cerrarPost(); pintarFeed(); window.scrollTo({top:0, behavior:'smooth'}); };
 
@@ -1556,7 +1574,7 @@ function pintarTop(){
   const gente = (tFiltro === 'amigos' ? [yo, ...amigosDe(yo)] : miembros()).slice().sort((a,b) => b.fans.length - a.fans.length || a.creado - b.creado);
   const l = $('#t-lista'); l.innerHTML = '';
   gente.forEach((x,i) => { const a = document.createElement('a'); a.className = 'top-fila' + (i < 3 && x.fans.length ? ' podio' : ''); a.href = linkPerfil(x);
-    const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, x); const m = miniatura(x); if (m){ av.style.backgroundImage = `url("${m}")`; av.textContent = ''; }
+    const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, x); const m = ver(miniatura(x)); if (m){ av.style.backgroundImage = `url("${m}")`; av.textContent = ''; }
     a.innerHTML = `<span class="pos">${i + 1}</span>`; a.appendChild(av);
     const t = document.createElement('span'); t.innerHTML = `<b>${esc(x.apodo)}</b>${x.id === yo.id ? ' <span class="muted chico">(vos)</span>' : ''}`;
     const c = document.createElement('span'); c.className = 'cuantos'; c.textContent = '♥ ' + x.fans.length; c.setAttribute('aria-label', x.fans.length + ' corazones');
@@ -1623,7 +1641,7 @@ async function entrar(session){
   conectarRealtime(); cargarPrivadas();
   if (perfil().nuevo) setTimeout(() => { if (esMio()) abrirEd(); }, 300);   // la primera vez se abre el editor
   if (location.hash === '#perfil') mostrar(); else location.hash = '#perfil'; }
-async function salir(){ await guardarYa(); cerrarChat(); if (sb) await sb.auth.signOut(); sesion = null; viendo = null; usuarios = {}; feed = []; document.documentElement.removeAttribute('style'); document.body.className = ''; document.body.dataset.cajas = 'simple';
+async function salir(){ await guardarYa(); cerrarChat(); firmadas.clear(); if (sb) await sb.auth.signOut(); sesion = null; viendo = null; usuarios = {}; feed = []; document.documentElement.removeAttribute('style'); document.body.className = ''; document.body.dataset.cajas = 'simple';
   cerrarEd(); tab('entrar'); $$('#entrada input').forEach(i => { if (i.type === 'checkbox') i.checked = false; else i.value = ''; }); $$('#entrada .msg').forEach(m => m.className = 'msg'); location.hash = '#entrada'; }
 
 /* ---------- Barra del sitio y navegación ---------- */
