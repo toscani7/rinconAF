@@ -692,7 +692,8 @@ async function cargarTodo(){
     if (f && a) f.firmas.push({deId:a.id, de:a.apodo, texto:x.texto, cuando:Date.parse(x.creado)}); });
   usuarios && Object.values(usuarios).forEach(u => u.perfil.fotos.forEach(f => f.firmas.sort((a,b) => a.cuando - b.cuando)));
   const yo = perfil();
-  if (yo) yo.notis = no.map(x => ({...(x.datos || {}), nid:x.id, tipo:x.tipo, de:P(x.de)?.id, cuando:Date.parse(x.creado), leida:x.leida}))
+  if (yo) yo.notis = no.map(x => { const d = x.datos && typeof x.datos === 'object' && !Array.isArray(x.datos) ? x.datos : {};   // solo los campos conocidos
+      return {nid:x.id, tipo:x.tipo, de:P(x.de)?.id, cuando:Date.parse(x.creado), leida:x.leida, post:d.post, grupo:d.grupo, nombre:d.nombre, resumen:d.resumen, texto:d.texto}; })
     .filter(n => n.de).sort((a,b) => a.cuando - b.cuando);
   feed = po.map(x => ({id:x.id, de:P(x.autor)?.id, tipo:x.tipo, texto:x.texto || '', media_path:x.media_path || '',
       img: x.tipo === 'imagen' && x.media_path ? urlPublica(x.media_path) : '', video: x.tipo === 'video' && x.media_path ? urlPublica(x.media_path) : '',
@@ -878,7 +879,7 @@ $('#firmar-form').onsubmit = e => { e.preventDefault(); const yo = perfil(), p =
   sb.from('firmas').insert({perfil:p.uid, foto:f.cuando, texto:t}).then(({error}) => falla('firmar', error)); };
 $('#like-perfil').onclick = () => { const yo = perfil(), p = viendo; if (!p || esMio()) return;
   if (p.fans.includes(yo.id)){ p.fans = p.fans.filter(i => i !== yo.id); sb.from('likes_perfil').delete().match({perfil:p.uid, usuario:yo.uid}).then(({error}) => falla('sacar el like', error)); }
-  else { p.fans.push(yo.id); sb.from('likes_perfil').insert({perfil:p.uid}).then(({error}) => falla('dar like', error)); notificar(p.id, {tipo:'like-perfil'}); }
+  else { p.fans.push(yo.id); sb.from('likes_perfil').insert({perfil:p.uid}).then(({error}) => falla('dar like', error)); }   // el aviso lo crea la base de datos
   pintar(); };
 $('#p-amistad').onclick = e => { const b = e.target.closest('[data-amistad]'); const p = viendo; if (!b || !p || esMio()) return;
   const a = b.dataset.amistad;
@@ -1336,18 +1337,27 @@ $('#solicitudes').addEventListener('click', e => { const b = e.target.closest('[
   if (b.dataset.sol === 'aceptar') aceptar(id); if (b.dataset.sol === 'rechazar') rechazar(id); if (b.dataset.sol === 'cancelar' && x) cancelarSolicitud(x);
   pintarSolicitudes(); actualizarMenu(); });
 
-/* ---------- Notificaciones (por ahora: solicitudes aceptadas) ---------- */
+/* ---------- Notificaciones ---------- */
+// Lo que viene en una notificación lo escribió otra persona: se valida todo antes de mostrarlo
+const TIPOS_NOTI = ['aceptada', 'like', 'comentario', 'like-perfil', 'grupo', 'admin'];
+const idSeguro = v => { const n = typeof v === 'number' ? v : (typeof v === 'string' && /^\d{1,16}$/.test(v) ? Number(v) : NaN);
+  return Number.isSafeInteger(n) && n > 0 ? n : null; };                         // solo enteros positivos; lo demás no arma link
+const txtSeguro = (v, max) => typeof v === 'string' ? v.slice(0, max) : '';
+const enlace = (href, html) => href ? `<a href="${esc(href)}">${html}</a>` : html;
+const entreComillas = t => !t ? '' : t.startsWith('«') ? t : '«' + t + '»';      // los avisos viejos ya traen «»
 function pintarNotis(){
   const yo = perfil(); if (!yo) return; const l = $('#n-lista'); l.innerHTML = '';
   if (!yo.notis.length) l.innerHTML = '<p class="muted chico" style="margin:0">no tenés notificaciones.</p>';
-  yo.notis.slice().reverse().forEach(n => { const x = porId(n.de); if (!x) return; const d = document.createElement('div'); d.className = 'noti' + (n.leida ? '' : ' nueva');
-    const cuando = `<span class="muted chico">· ${fecha(n.cuando)} ${hora(n.cuando)}</span>`, quien = `<a href="${linkPerfil(x)}">${esc(x.apodo)}</a>`;
-    if (n.tipo === 'aceptada') d.innerHTML = `${quien} aceptó tu solicitud de amistad. ya pueden <a href="#chat/${x.id}">chatear</a>. ${cuando}`;
+  yo.notis.slice().reverse().forEach(n => { const x = porId(n.de); if (!x || !TIPOS_NOTI.includes(n.tipo)) return; const d = document.createElement('div'); d.className = 'noti' + (n.leida ? '' : ' nueva');
+    const cuando = `<span class="muted chico">· ${fecha(n.cuando)} ${hora(n.cuando)}</span>`, quien = enlace(linkPerfil(x), esc(x.apodo));
+    const post = idSeguro(n.post), grupo = idSeguro(n.grupo), xid = idSeguro(x.id);
+    const lPost = enlace(post && '#inicio/' + post, 'posteo'), lGrupo = enlace(grupo && '#chat/g' + grupo, '«' + esc(txtSeguro(n.nombre, 40)) + '»');
+    if (n.tipo === 'aceptada') d.innerHTML = `${quien} aceptó tu solicitud de amistad. ya pueden ${enlace(xid && '#chat/' + xid, 'chatear')}. ${cuando}`;
     if (n.tipo === 'like-perfil') d.innerHTML = `${quien} le dio ♥ a <a href="#perfil">tu perfil</a>. ${cuando}`;
-    if (n.tipo === 'admin') d.innerHTML = `${quien} salió de <a href="#chat/g${n.grupo}">«${esc(n.nombre)}»</a> y ahora sos admin del grupo. ${cuando}`;
-    if (n.tipo === 'grupo') d.innerHTML = `${quien} te sumó al grupo <a href="#chat/g${n.grupo}">«${esc(n.nombre)}»</a>. ${cuando}`;
-    if (n.tipo === 'like') d.innerHTML = `${quien} le dio ♥ a tu <a href="#inicio/${n.post}">posteo</a> ${esc(n.resumen || '')} ${cuando}`;
-    if (n.tipo === 'comentario') d.innerHTML = `${quien} comentó tu <a href="#inicio/${n.post}">posteo</a>: «${esc(n.texto)}» ${cuando}`;
+    if (n.tipo === 'admin') d.innerHTML = `${quien} salió de ${lGrupo} y ahora sos admin del grupo. ${cuando}`;
+    if (n.tipo === 'grupo') d.innerHTML = `${quien} te sumó al grupo ${lGrupo}. ${cuando}`;
+    if (n.tipo === 'like') d.innerHTML = `${quien} le dio ♥ a tu ${lPost} ${esc(entreComillas(txtSeguro(n.resumen, 45)))} ${cuando}`;
+    if (n.tipo === 'comentario') d.innerHTML = `${quien} comentó tu ${lPost}: «${esc(txtSeguro(n.texto, 80))}» ${cuando}`;
     l.appendChild(d); });
   if (yo.notis.some(n => !n.leida)) sb.from('notificaciones').update({leida:true}).eq('para', yo.uid).eq('leida', false).then(({error}) => falla('marcar las notificaciones', error));
   yo.notis.forEach(n => n.leida = true); actualizarMenu();
@@ -1427,9 +1437,10 @@ let feed = [], pTipo = 'texto', pImg = null, pVid = null, vistos = 0, resaltar =
 const hace = t => { const m = Math.floor((Date.now() - t) / 60000); if (m < 1) return 'recién'; if (m < 60) return `hace ${m} min`; const h = Math.floor(m / 60);
   if (h < 24) return `hace ${h} h`; return `el ${fecha(t)} a las ${hora(t)}`; };
 const visiblesFeed = yo => feed.filter(x => { const a = porId(x.de); return a && (a.id === yo.id || sonAmigos(yo, a)); }).sort((a,b) => b.cuando - a.cuando);
-const resumen = t => t ? '«' + (t.length > 40 ? t.slice(0,40) + '…' : t) + '»' : '';
-function notificar(paraId, n){ const para = porId(paraId), yo = perfil(); if (!para || para.id === yo.id) return; const {tipo, ...datos} = n;
-  sb.from('notificaciones').insert({para:para.uid, tipo, datos}).then(({error}) => { if (error) console.error('notificar', error); }); }
+// Avisos de grupos (los de likes, comentarios y solicitudes los crea la base de datos)
+function notificar(paraId, n){ const para = porId(paraId), yo = perfil(); if (!para || !yo || para.id === yo.id) return;
+  const grupo = idSeguro(n.grupo), nombre = txtSeguro(n.nombre, 40).trim(); if (!['grupo','admin'].includes(n.tipo) || !grupo || !nombre) return;
+  sb.from('notificaciones').insert({para:para.uid, tipo:n.tipo, datos:{grupo, nombre}}).then(({error}) => { if (error) console.error('notificar', error); }); }
 function pintarFeed(){
   const yo = perfil(); if (!yo) return; const lista = visiblesFeed(yo), cont = $('#feed'); cont.innerHTML = '';
   vistos = lista.length ? lista[0].cuando : 0; $('#hay-nuevos').hidden = true;
@@ -1464,7 +1475,7 @@ function posteoEl(x, yo){
 $('#feed').addEventListener('click', e => { const b = e.target.closest('button[data-pacc]'); if (!b) return; const art = b.closest('.posteo'), id = +art.id.slice(5), x = feed.find(q => q.id === id), yo = perfil(); if (!x) return;
   if (b.dataset.pacc === 'like'){
     if (x.likes.includes(yo.id)){ x.likes = x.likes.filter(i => i !== yo.id); sb.from('likes').delete().match({posteo:x.id, usuario:yo.uid}).then(({error}) => falla('sacar el like', error)); }
-    else { x.likes.push(yo.id); sb.from('likes').insert({posteo:x.id}).then(({error}) => falla('dar like', error)); notificar(x.de, {tipo:'like', post:x.id, resumen:resumen(x.texto)}); }
+    else { x.likes.push(yo.id); sb.from('likes').insert({posteo:x.id}).then(({error}) => falla('dar like', error)); }   // el aviso lo crea la base de datos
     art.replaceWith(posteoEl(x, yo)); }
   if (b.dataset.pacc === 'comentar') art.querySelector('.form-com input').focus();
   if (b.dataset.pacc === 'borrar' && confirm('¿Borrar este posteo?')){ feed = feed.filter(q => q.id !== id); pintarFeed();
@@ -1472,8 +1483,7 @@ $('#feed').addEventListener('click', e => { const b = e.target.closest('button[d
 $('#feed').addEventListener('submit', e => { e.preventDefault(); const f = e.target, art = f.closest('.posteo'), id = +art.id.slice(5), x = feed.find(q => q.id === id), yo = perfil();
   const t = f.querySelector('input').value.trim(); if (!t || !x) return;
   x.comentarios.push({id:Date.now(), de:yo.id, texto:t, cuando:Date.now()});
-  sb.from('comentarios').insert({posteo:x.id, texto:t}).then(({error}) => falla('comentar', error));
-  notificar(x.de, {tipo:'comentario', post:x.id, texto:t.slice(0,60)});
+  sb.from('comentarios').insert({posteo:x.id, texto:t}).then(({error}) => falla('comentar', error));   // el aviso lo crea la base de datos
   const nuevo = posteoEl(x, yo); art.replaceWith(nuevo); nuevo.querySelector('.form-com input').focus(); });
 // Recargar: trae lo nuevo de Supabase; lo nuevo queda arriba
 async function recargar(){ const b = $('#recargar'); b.disabled = true; b.textContent = 'recargando…';
