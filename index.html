@@ -1166,7 +1166,7 @@ function sanearPerfil(d, uid){ const b = base(), r = {}; d = d && typeof d === '
   r.puestas = Array.isArray(d.puestas) ? [...new Set(d.puestas.filter(x => typeof x === 'string' && /^(mod:(fundador|beta)|ins:[a-z0-9-]{2,40}|fut:\d{1,10})$/.test(x)))].slice(0, MAX_PUESTAS) : null;
   r.equipos = (Array.isArray(d.equipos) ? d.equipos : []).filter(e => e && typeof e === 'object' && typeof e.id === 'string' && /^\d{1,10}$/.test(e.id) && typeof e.escudo === 'string' && ESCUDO_OK.test(e.escudo))
     .map(e => ({id:e.id, nombre:typeof e.nombre === 'string' ? e.nombre.slice(0, 40) : '', escudo:e.escudo})).filter((e, i, a) => a.findIndex(q => q.id === e.id) === i).slice(0, 2);
-  r.cumple = typeof d.cumple === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d.cumple) ? d.cumple : '';
+  r.cumple = typeof d.cumple === 'string' ? (/^\d{2}-\d{2}$/.test(d.cumple) ? d.cumple : /^\d{4}-\d{2}-\d{2}$/.test(d.cumple) ? d.cumple.slice(5) : '') : '';   // solo día y mes: nunca el año
   r.tamano = Number.isInteger(d.tamano) && d.tamano >= 12 && d.tamano <= 19 ? d.tamano : b.tamano;
   r.marco = [0,1,4,10].includes(d.marco) ? d.marco : b.marco;
   r.stickers = Array.isArray(d.stickers) ? [...new Set(d.stickers.filter(x => STICKERS.includes(x)))].slice(0, 8) : [];
@@ -1615,7 +1615,7 @@ function pintar(){
   // Sobre mí
   $('#p-sobre-b').hidden = !p.sobre;
   const datos = [p.bio && `<p style="white-space:pre-line">${esc(p.bio)}</p>`, p.ciudad && `<p>de ${esc(p.ciudad)}</p>`,
-    p.cumple && `<p>cumple el ${p.cumple.slice(8,10)}/${p.cumple.slice(5,7)}</p>`, p.escuchando && `<p>♪ escuchando: ${esc(p.escuchando)}</p>`,
+    p.cumple && `<p>cumple el ${p.cumple.slice(3,5)}/${p.cumple.slice(0,2)}</p>`, p.escuchando && `<p>♪ escuchando: ${esc(p.escuchando)}</p>`,
     p.musica && `<p><a href="${esc(/^https?:\/\//.test(p.musica) ? p.musica : 'https://' + p.musica)}" target="_blank" rel="noopener">► el tema de ${mio ? 'mi' : 'su'} perfil</a></p>`].filter(Boolean).join('');
   $('#p-datos').innerHTML = datos || `<p class="muted">${mio ? 'todavía no escribiste nada. tocá «editar mi perfil».' : 'todavía no escribió nada.'}</p>`;
   // F/F del dueño del perfil (miniatura = su última foto) y favoritos
@@ -1801,6 +1801,12 @@ const PEST = [['info','datos'],['colores','colores'],['fondo','fondo e imágenes
 let pest = 'info';
 const campo = (k, l, o = {}) => { const p = perfil(), tag = o.area ? 'textarea' : 'input';
   return `<div class="ed-grupo"><label class="lbl" for="ed-${k}">${l}</label><${tag} class="field" id="ed-${k}" data-key="${k}" ${o.tipo ? `type="${o.tipo}"` : ''} maxlength="${o.max || 80}" placeholder="${o.ph || ''}" ${o.area ? '' : `value="${esc(p[k])}"`}>${o.area ? esc(p[k]) : ''}</${tag}>${o.area ? `<div class="contador" id="cont-${k}">${p[k].length}/${o.max}</div>` : ''}</div>`; };
+// Cumpleaños: solo día y mes (el año no se pide ni se guarda)
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const campoCumple = () => { const c = perfil().cumple || '', m = c.slice(0, 2), d = c.slice(3, 5);
+  return `<div class="ed-grupo"><span class="lbl" id="lbl-cumple">cumpleaños <span class="muted chico">(solo día y mes)</span></span><div style="display:flex;gap:8px" role="group" aria-labelledby="lbl-cumple">
+    <select class="field" data-cumple="d" aria-label="día" style="flex:1"><option value="">día</option>${Array.from({length:31}, (_, i) => { const v = String(i + 1).padStart(2, '0'); return `<option value="${v}" ${v === d ? 'selected' : ''}>${i + 1}</option>`; }).join('')}</select>
+    <select class="field" data-cumple="m" aria-label="mes" style="flex:2"><option value="">mes</option>${MESES.map((n, i) => { const v = String(i + 1).padStart(2, '0'); return `<option value="${v}" ${v === m ? 'selected' : ''}>${n}</option>`; }).join('')}</select></div></div>`; };
 const ops = (k, t, lista, grande) => `<div class="ed-grupo"><h3 id="h-${k}">${t}</h3><div class="ops" role="group" aria-labelledby="h-${k}">${lista.map(([v,n,st]) =>
   `<button type="button" class="op${grande ? ' grande' : ''}" data-op="${k}" data-val="${v}" aria-pressed="${String(perfil()[k]) === String(v)}" ${st ? `style="${st}"` : ''}>${n}</button>`).join('')}</div></div>`;
 const img = (k, t, max, acepta = 'image/*') => { const p = perfil(), vid = esVideoFondo(p[k]); return `<div class="ed-grupo"><h3>${t}</h3><div class="img-ed"><div class="img-prev" style="${p[k] && !vid ? `background-image:url('${esc(ver(p[k]))}')` : ''}">${vid ? '🎬 video' : p[k] ? '' : 'nada'}</div>
@@ -1813,7 +1819,7 @@ function pintarEd(){
   let h = '';
   if (pest === 'info'){
     h += campo('apodo','nick',{max:24}) + campo('frase','frase debajo de tu nick',{max:90});
-    h += campo('bio','sobre mí',{area:true, max:400}) + campo('ciudad','de dónde sos',{max:40}) + campo('cumple','cumpleaños',{tipo:'date'});
+    h += campo('bio','sobre mí',{area:true, max:400}) + campo('ciudad','de dónde sos',{max:40}) + campoCumple();
     h += campo('escuchando','escuchando ahora',{max:100, ph:'artista – tema'}) + campo('musica','tema de tu perfil (link)',{tipo:'url', max:300, ph:'https://…'});
     h += campo('favoritos','favoritos (nicks de gente de RincónAF o links, uno por renglón)',{area:true, max:400});
   }
@@ -1886,6 +1892,7 @@ ed.addEventListener('input', e => { const t = e.target;
     if (a && a.dataset.nick){ a.hidden = true; delete a.dataset.nick; }
     if (v !== perfil().apodo) cambiar('apodo', v); return; }
   if (t.dataset.key === 'escuchando'){ const p = perfil(); p.escuchandoUrl = ''; p.escuchandoArtista = ''; p.escuchandoImg = ''; p.escuchandoTipo = 'tema'; p.escuchandoCuando = t.value.trim() ? Date.now() : 0; }   // escrito a mano: sin link
+  if (t.dataset.cumple){ const g = t.closest('[role=group]'), d = g.querySelector('[data-cumple=d]').value, m = g.querySelector('[data-cumple=m]').value; cambiar('cumple', d && m ? m + '-' + d : ''); }
   if (t.dataset.key){ cambiar(t.dataset.key, t.value); const c = $('#cont-' + t.dataset.key); if (c) c.textContent = t.value.length + '/' + t.maxLength; }
   if (t.dataset.color){ perfil().tema = 'propio'; cambiar(t.dataset.color, t.value); }
   if (t.dataset.num){ cambiar(t.dataset.num, +t.value); $('#tam-v').textContent = t.value; } });
