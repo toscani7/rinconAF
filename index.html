@@ -382,9 +382,10 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
 .etq-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--link);color:var(--link);padding:2px 4px 2px 8px;font-size:12px;font-weight:bold}
 .etq-chip button{background:none;border:0;color:inherit;font:inherit;min-width:28px;min-height:28px;cursor:pointer}
 .etq-sug{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--box);max-height:200px;overflow:auto;margin-top:4px}
-.posteo-texto a.mencion{font-weight:bold;color:var(--link);background:color-mix(in srgb, var(--link) 14%, transparent);padding:0 3px;text-decoration:none}
-.posteo-texto a.mencion:hover{text-decoration:underline}
+.posteo-texto a.mencion,.com-texto a.mencion{font-weight:bold;color:var(--link);background:color-mix(in srgb, var(--link) 14%, transparent);padding:0 3px;text-decoration:none}
+.posteo-texto a.mencion:hover,.com-texto a.mencion:hover{text-decoration:underline}
 .etq-sug:empty{display:none}
+.com-sug{margin:2px 0 0}
 .etq-sug button{display:flex;align-items:center;gap:8px;background:none;border:0;border-bottom:1px solid var(--line);color:var(--ink);font:inherit;padding:6px 8px;text-align:left;cursor:pointer;min-height:40px}
 .etq-sug button[aria-selected="true"],.etq-sug button:hover,.etq-sug button:focus-visible{background:color-mix(in srgb, var(--link) 14%, transparent);outline:none}
 .etq-sug .avatar{width:26px;height:26px;font-size:9px}
@@ -1378,13 +1379,13 @@ async function cargarTodo(){
   else (lf.data || []).forEach(x => { const p = P(x.perfil), u = P(x.usuario), f = p && p.fotos.find(q => q.cuando === Number(x.foto)); if (f && u && !f.likes.includes(u.id)) f.likes.push(u.id); });
   const yo = perfil();
   if (yo) yo.notis = no.map(x => { const d = x.datos && typeof x.datos === 'object' && !Array.isArray(x.datos) ? x.datos : {};   // solo los campos conocidos
-      return {nid:x.id, tipo:x.tipo, de:P(x.de)?.id, cuando:Date.parse(x.creado), leida:x.leida, post:d.post, grupo:d.grupo, conv:d.conv, nombre:d.nombre, resumen:d.resumen, texto:d.texto}; })
+      return {nid:x.id, tipo:x.tipo, de:P(x.de)?.id, cuando:Date.parse(x.creado), leida:x.leida, post:d.post, grupo:d.grupo, conv:d.conv, nombre:d.nombre, resumen:d.resumen, texto:d.texto, enCom:d.comentario === true}; })
     .filter(n => n.de).sort((a,b) => a.cuando - b.cuando);
   feed = po.map(x => ({id:x.id, de:P(x.autor)?.id, tipo:x.tipo, texto:x.texto || '', media_path:x.media_path || '',
       img: x.tipo === 'imagen' && x.media_path ? x.media_path : '', video: x.tipo === 'video' && x.media_path ? x.media_path : '',
       url: x.video_url || '', cuando:Date.parse(x.creado), likes:[], comentarios:[], etiq:(Array.isArray(x.etiquetados) ? x.etiquetados : []).map(u => P(u)?.id).filter(i => i != null)})).filter(x => x.de);
   lk.forEach(x => { const q = feed.find(f => f.id === x.posteo), u = P(x.usuario); if (q && u) q.likes.push(u.id); });
-  co.forEach(x => { const q = feed.find(f => f.id === x.posteo), u = P(x.autor); if (q && u) q.comentarios.push({id:x.id, de:u.id, texto:x.texto || '', cuando:Date.parse(x.creado), resp:x.respuesta_a || null, sticker:x.sticker || null}); });
+  co.forEach(x => { const q = feed.find(f => f.id === x.posteo), u = P(x.autor); if (q && u) q.comentarios.push({id:x.id, de:u.id, texto:x.texto || '', cuando:Date.parse(x.creado), resp:x.respuesta_a || null, sticker:x.sticker || null, etiq:(Array.isArray(x.etiquetados) ? x.etiquetados : []).map(u => P(u)?.id).filter(i => i != null)}); });
   feed.forEach(q => q.comentarios.sort((a,b) => a.cuando - b.cuando));
   privadas.forEach(c => c.otro = porUid(c.otro.uid) || c.otro);
   await firmar([...Object.values(usuarios).flatMap(u => rutasDePerfil(u.perfil)), ...feed.map(x => x.media_path)]);
@@ -2480,7 +2481,7 @@ function pintarNotis(){
     if (n.tipo === 'grupo'){ txt = `${quien} te sumó al grupo ${grupo}.`; ir = conv && '#chat/g' + conv; }
     if (n.tipo === 'like'){ txt = `${quien} ${otros.length ? 'le dieron' : 'le dio'} ♥ a tu posteo.`; cita = txtSeguro(n.resumen, 90).replace(/^«|»$/g, ''); ir = post && '#inicio/' + post; }
     if (n.tipo === 'comentario'){ txt = `${quien} comentó tu posteo:`; cita = txtSeguro(n.texto, 160); ir = post && '#inicio/' + post; }
-    if (n.tipo === 'etiqueta'){ txt = `${quien} te etiquetó en un posteo.`; ir = post && '#inicio/' + post; }
+    if (n.tipo === 'etiqueta'){ if (n.enCom){ txt = `${quien} te etiquetó en un comentario:`; cita = txtSeguro(n.texto, 160); } else txt = `${quien} te etiquetó en un posteo.`; ir = post && '#inicio/' + post; }
     if (n.tipo === 'respuesta'){ txt = `${quien} respondió tu comentario:`; cita = txtSeguro(n.texto, 160); ir = post && '#inicio/' + post; }
     const d = document.createElement(ir || xid ? 'a' : 'div'); d.className = 'noti' + (n.leida ? '' : ' nueva');
     if (d.tagName === 'A') d.href = ir || linkPerfil(x);                                  // toda la tarjeta lleva a lo que se avisa
@@ -2567,7 +2568,7 @@ $('#aj-tonos').addEventListener('change', async e => { const t = e.target;
 $('#aj-tonos').addEventListener('click', e => { const b = e.target.closest('[data-probar]'); if (b) reproducir(b.dataset.probar, tonoDe(b.dataset.probar)); });
 // Notificaciones nuevas (likes, comentarios, amistades aceptadas, grupos): se revisa cada 30 segundos
 const armarNoti = x => { const d = x.datos && typeof x.datos === 'object' && !Array.isArray(x.datos) ? x.datos : {};   // solo los campos conocidos
-  return {nid:x.id, tipo:x.tipo, de:porUid(x.de)?.id, cuando:Date.parse(x.creado), leida:x.leida, post:d.post, grupo:d.grupo, conv:d.conv, nombre:d.nombre, resumen:d.resumen, texto:d.texto}; };
+  return {nid:x.id, tipo:x.tipo, de:porUid(x.de)?.id, cuando:Date.parse(x.creado), leida:x.leida, post:d.post, grupo:d.grupo, conv:d.conv, nombre:d.nombre, resumen:d.resumen, texto:d.texto, enCom:d.comentario === true}; };
 async function buscarNotisNuevas(){ const yo = perfil(); if (!yo || !sb) return;
   const {data, error} = await sb.from('notificaciones').select('*').eq('para', sesion).order('id', {ascending:false}).limit(30); if (error || !perfil()) return;
   const ya = new Set(yo.notis.map(n => n.nid)), nuevas = (data || []).filter(x => !ya.has(x.id)).map(armarNoti).filter(n => n.de != null);
@@ -2857,8 +2858,9 @@ function posteoEl(x, yo){
     <div class="comentarios"></div>
     ${respondiendo && respondiendo.post === x.id ? `<div class="resp-chip">↪ respondiendo a <b>${esc(porId(x.comentarios.find(c => c.id === respondiendo.com)?.de)?.apodo || 'un comentario')}</b><button type="button" data-pacc="no-responder">cancelar</button></div>` : ''}
     <form class="form-com" data-pacc="enviar-com"><label class="sr" for="com-${x.id}">Comentar el posteo de ${esc(a.apodo)}</label>
-      <input class="field" id="com-${x.id}" maxlength="300" placeholder="${respondiendo && respondiendo.post === x.id ? 'escribí tu respuesta…' : 'comentá…'}" style="flex:1;min-width:0">
-      <button class="btn" type="button" data-pacc="stk-com" title="responder con un sticker" aria-label="Comentar con un sticker" style="font-size:16px;padding:0 10px">🎭</button><button class="btn" type="submit">enviar</button></form>`;
+      <input class="field" id="com-${x.id}" data-post="${x.id}" autocomplete="off" aria-autocomplete="list" aria-controls="com-sug-${x.id}" maxlength="300" placeholder="${respondiendo && respondiendo.post === x.id ? 'escribí tu respuesta…' : 'comentá…'}" style="flex:1;min-width:0">
+      <button class="btn" type="button" data-pacc="stk-com" title="responder con un sticker" aria-label="Comentar con un sticker" style="font-size:16px;padding:0 10px">🎭</button><button class="btn" type="submit">enviar</button></form>
+    <div class="etq-sug com-sug" id="com-sug-${x.id}" role="listbox" aria-label="amigos para etiquetar"></div>`;
   ponerAvatar(d.querySelector('.posteo-cab .avatar'), a);
   const cs = d.querySelector('.comentarios');
   // Comentarios con sus respuestas abajo (un solo nivel; si respondés a una respuesta, se indica a quién)
@@ -2868,7 +2870,7 @@ function posteoEl(x, yo){
     const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, au);
     const aQuien = esResp && c.resp && porIdC.get(c.resp) && raiz(c).id !== c.resp ? porId(porIdC.get(c.resp).de) : null;
     const t = document.createElement('div'); t.innerHTML = `<a href="${linkPerfil(au)}"><b>${esc(au.apodo)}</b></a>${miniInsignias(au)} <span class="muted chico">${hace(c.cuando)}</span>${aQuien ? ` <span class="a-quien">↪ a ${esc(aQuien.apodo)}</span>` : ''}
-      ${c.sticker ? `<span class="sticker-msg" data-sticker="${Number(c.sticker)}" data-alt="sticker de ${esc(au.apodo)}"><span class="muted chico">cargando sticker…</span></span>` : `<p>${esc(c.texto)}</p>`}
+      ${c.sticker ? `<span class="sticker-msg" data-sticker="${Number(c.sticker)}" data-alt="sticker de ${esc(au.apodo)}"><span class="muted chico">cargando sticker…</span></span>` : `<p class="com-texto">${textoConMenciones(c)}</p>`}
       ${typeof c.id === 'number' && c.id < 1e12 ? `<button type="button" class="com-acc" data-pacc="responder" data-com="${c.id}">responder</button>` : ''}`;
     e.append(av, t); return e; };
   x.comentarios.filter(c => raiz(c) === c).forEach(c => { const e = comEl(c, false); if (!e) return; cs.appendChild(e);
@@ -2904,39 +2906,54 @@ function textoConMenciones(x){ const us = (x.etiq || []).map(porId).filter(Boole
     h += esc(x.texto.slice(i, m.index)) + `<a class="mencion" href="${linkPerfil(u)}">@${esc(u.apodo)}</a>`; i = m.index + m[0].length; }
   return h + esc(x.texto.slice(i)); }
 // amigos mencionados con @ en un texto (los que coinciden con un nick de tus amigos)
-function mencionados(t){ const low = t.toLowerCase();
-  return misAmigos().filter(p => { const k = '@' + p.apodo.toLowerCase(); let j = low.indexOf(k);
+function mencionados(t, lista){ const low = t.toLowerCase();
+  return (lista || misAmigos()).filter(p => { const k = '@' + p.apodo.toLowerCase(); let j = low.indexOf(k);
     while (j >= 0){ const sig = t[j + k.length]; if (!sig || !/[A-Za-z0-9_.-]/.test(sig)) return true; j = low.indexOf(k, j + 1); } return false; }).slice(0, MAX_ETQ); }
 let postEtq = [];   // ids de perfil de los amigos etiquetados en el posteo que estás armando
 const MAX_ETQ = 10;
 function misAmigos(){ const yo = perfil(); return yo ? Object.values(usuarios).map(u => u.perfil).filter(p => p && p.uid !== yo.uid && sonAmigos(yo, p)) : []; }
 // Autocompletar: escribís @ y aparecen tus amigos según lo que vas escribiendo
 let etqSel = 0;
-function arrobaActual(){ const ta = $('#post-texto'), antes = ta.value.slice(0, ta.selectionStart); const m = antes.match(/(^|\s)@([^\s@]{0,24})$/); return m ? {q:m[2], desde:antes.length - m[2].length - 1} : null; }
-function pintarEtq(){ const sug = $('#post-etq-sug'), a = arrobaActual();
+function arrobaActual(ta){ const antes = ta.value.slice(0, ta.selectionStart); const m = antes.match(/(^|\s)@([^\s@]{0,24})$/); return m ? {q:m[2], desde:antes.length - m[2].length - 1} : null; }
+// en un comentario solo se puede etiquetar a quien puede ver ese posteo (el autor o sus amigos)
+function candidatosEtq(ta){ const pid = ta.dataset.post; if (!pid) return misAmigos();
+  const x = feed.find(q => q.id === +pid), au = x && porId(x.de); return au ? misAmigos().filter(p => p.id === au.id || sonAmigos(au, p)) : []; }
+function pintarEtq(ta, sug){ const a = arrobaActual(ta);
   if (!a){ sug.innerHTML = ''; return; }
-  const q = a.q.toLowerCase(), l = misAmigos().filter(p => p.apodo.toLowerCase().includes(q))
+  const q = a.q.toLowerCase(), l = candidatosEtq(ta).filter(p => p.apodo.toLowerCase().includes(q))
     .sort((x, y) => (y.apodo.toLowerCase().startsWith(q) - x.apodo.toLowerCase().startsWith(q)) || x.apodo.localeCompare(y.apodo)).slice(0, 6);
   if (!l.length){ sug.innerHTML = q ? '<span class="chico muted" style="padding:6px 8px">ningún amigo con ese nick.</span>' : ''; return; }
   etqSel = Math.min(etqSel, l.length - 1);
   sug.innerHTML = l.map((p, i) => `<button type="button" role="option" aria-selected="${i === etqSel}" data-etq="${p.id}"><span class="avatar"></span>${esc(p.apodo)}</button>`).join('');
   sug.querySelectorAll('[data-etq]').forEach(b => ponerAvatar(b.querySelector('.avatar'), porId(+b.dataset.etq))); }
-function elegirEtq(id){ const u = porId(+id), a = arrobaActual(), ta = $('#post-texto'); if (!u || !a) return;
+function elegirEtq(ta, sug, id){ const u = porId(+id), a = arrobaActual(ta); if (!u || !a) return;
   const fin = ta.selectionStart, nuevo = ta.value.slice(0, a.desde) + '@' + u.apodo + ' ' + ta.value.slice(fin);
-  if (nuevo.length > ta.maxLength) return; ta.value = nuevo; const pos = a.desde + u.apodo.length + 2; ta.setSelectionRange(pos, pos); ta.focus(); etqSel = 0; pintarEtq(); }
-$('#post-texto').addEventListener('input', () => { etqSel = 0; pintarEtq(); });
-$('#post-texto').addEventListener('click', pintarEtq);
-$('#post-texto').addEventListener('keydown', e => { const op = $$('#post-etq-sug [data-etq]'); if (!op.length) return;
-  if (e.key === 'ArrowDown' || e.key === 'ArrowUp'){ e.preventDefault(); etqSel = (etqSel + (e.key === 'ArrowDown' ? 1 : -1) + op.length) % op.length; pintarEtq(); }
-  else if (e.key === 'Enter' || e.key === 'Tab'){ e.preventDefault(); elegirEtq(op[etqSel].dataset.etq); }
-  else if (e.key === 'Escape'){ e.stopPropagation(); $('#post-etq-sug').innerHTML = ''; } });
-$('#post-etq-sug').addEventListener('mousedown', e => e.preventDefault());   // que no se pierda el cursor del texto
-$('#post-etq-sug').addEventListener('click', e => { const b = e.target.closest('[data-etq]'); if (b) elegirEtq(b.dataset.etq); });
+  if (nuevo.length > ta.maxLength) return; ta.value = nuevo; const pos = a.desde + u.apodo.length + 2; ta.setSelectionRange(pos, pos); ta.focus(); etqSel = 0; pintarEtq(ta, sug); }
+// teclas: flechas para moverse, Enter/Tab para elegir, Escape para cerrar; devuelve true si la usó
+function teclaEtq(e, ta, sug){ const op = [...sug.querySelectorAll('[data-etq]')]; if (!op.length) return false;
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp'){ e.preventDefault(); etqSel = (etqSel + (e.key === 'ArrowDown' ? 1 : -1) + op.length) % op.length; pintarEtq(ta, sug); return true; }
+  if (e.key === 'Enter' || e.key === 'Tab'){ e.preventDefault(); elegirEtq(ta, sug, op[etqSel].dataset.etq); return true; }
+  if (e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); sug.innerHTML = ''; return true; } return false; }
+const postTa = $('#post-texto'), postSug = $('#post-etq-sug');
+postTa.addEventListener('input', () => { etqSel = 0; pintarEtq(postTa, postSug); });
+postTa.addEventListener('click', () => pintarEtq(postTa, postSug));
+postTa.addEventListener('keydown', e => teclaEtq(e, postTa, postSug));
+postSug.addEventListener('mousedown', e => e.preventDefault());   // que no se pierda el cursor del texto
+postSug.addEventListener('click', e => { const b = e.target.closest('[data-etq]'); if (b) elegirEtq(postTa, postSug, b.dataset.etq); });
+// Lo mismo en los comentarios de cada posteo
+const sugDeCom = inp => inp.closest('.posteo')?.querySelector('.com-sug');
+['#feed', '#p-posts'].forEach(c => { const el = $(c);
+  el.addEventListener('input', e => { const inp = e.target.closest('.form-com input'), sug = inp && sugDeCom(inp); if (sug){ etqSel = 0; pintarEtq(inp, sug); } });
+  el.addEventListener('keydown', e => { const inp = e.target.closest('.form-com input'), sug = inp && sugDeCom(inp); if (sug) teclaEtq(e, inp, sug); });
+  el.addEventListener('mousedown', e => { if (e.target.closest('.com-sug')) e.preventDefault(); });
+  el.addEventListener('click', e => { const b = e.target.closest('.com-sug [data-etq]'); if (!b) return; const art = b.closest('.posteo'), inp = art.querySelector('.form-com input'); elegirEtq(inp, b.closest('.com-sug'), b.dataset.etq); });
+  el.addEventListener('focusout', e => { const inp = e.target.closest('.form-com input'), sug = inp && sugDeCom(inp); if (sug) setTimeout(() => { if (document.activeElement !== inp) sug.innerHTML = ''; }, 150); }); });
 let respondiendo = null;   // {post, com}: a qué comentario estás respondiendo
 // Comentar (texto o sticker); si estás respondiendo, le llega un aviso a quien escribió ese comentario (lo crea la base de datos)
 function nuevoComentario(x, datos){ const yo = perfil(), resp = respondiendo && respondiendo.post === x.id ? respondiendo.com : null; respondiendo = null;
-  const tmp = {id:Date.now(), de:yo.id, texto:datos.texto || '', cuando:Date.now(), resp, sticker:datos.sticker || null}; x.comentarios.push(tmp);
-  const fila = {posteo:x.id, texto:datos.texto || ''}; if (resp) fila.respuesta_a = resp; if (datos.sticker) fila.sticker = datos.sticker;
+  const au = porId(x.de), etq = datos.texto ? mencionados(datos.texto, misAmigos().filter(p => au && (p.id === au.id || sonAmigos(au, p)))) : [];
+  const tmp = {id:Date.now(), de:yo.id, texto:datos.texto || '', cuando:Date.now(), resp, sticker:datos.sticker || null, etiq:etq.map(p => p.id)}; x.comentarios.push(tmp);
+  const fila = {posteo:x.id, texto:datos.texto || ''}; if (resp) fila.respuesta_a = resp; if (datos.sticker) fila.sticker = datos.sticker; if (etq.length) fila.etiquetados = etq.map(p => p.uid);
   sb.from('comentarios').insert(fila).select().then(({data, error}) => { if (falla('comentar', error)){ x.comentarios = x.comentarios.filter(c => c !== tmp); }
     else if (data && data[0]) tmp.id = data[0].id;                                  // con su número real ya se le puede responder
     const art = document.getElementById('post-' + x.id); if (art) art.replaceWith(posteoEl(x, yo)); }); }
