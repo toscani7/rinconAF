@@ -369,6 +369,14 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
 .comentario{display:flex;gap:8px;padding:6px 0;font-size:.93em}
 .comentario .avatar{width:28px;height:28px;font-size:10px}
 .comentario p{margin:0;word-break:break-word}
+.comentario > div{flex:1;min-width:0}
+.comentario.respuesta{margin-left:36px;padding-left:10px;border-left:2px solid var(--line)}
+.comentario .com-acc{background:none;border:0;padding:4px 0;color:var(--muted);font:inherit;font-size:11px;cursor:pointer}
+.comentario .com-acc:hover{color:var(--link)}
+.comentario .a-quien{font-size:11px;color:var(--muted)}
+.comentario .sticker-msg img{width:96px;height:96px}
+.resp-chip{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin:6px 0 -2px}
+.resp-chip button{background:none;border:1px solid var(--line);color:var(--muted);font:inherit;font-size:11px;min-height:28px;padding:0 8px;cursor:pointer}
 .form-com{display:flex;gap:8px;margin-top:8px}
 .nuevos{display:block;width:100%;margin-top:12px}
 .nuevos[hidden]{display:none}
@@ -1361,7 +1369,7 @@ async function cargarTodo(){
       img: x.tipo === 'imagen' && x.media_path ? x.media_path : '', video: x.tipo === 'video' && x.media_path ? x.media_path : '',
       url: x.video_url || '', cuando:Date.parse(x.creado), likes:[], comentarios:[]})).filter(x => x.de);
   lk.forEach(x => { const q = feed.find(f => f.id === x.posteo), u = P(x.usuario); if (q && u) q.likes.push(u.id); });
-  co.forEach(x => { const q = feed.find(f => f.id === x.posteo), u = P(x.autor); if (q && u) q.comentarios.push({id:x.id, de:u.id, texto:x.texto, cuando:Date.parse(x.creado)}); });
+  co.forEach(x => { const q = feed.find(f => f.id === x.posteo), u = P(x.autor); if (q && u) q.comentarios.push({id:x.id, de:u.id, texto:x.texto || '', cuando:Date.parse(x.creado), resp:x.respuesta_a || null, sticker:x.sticker || null}); });
   feed.forEach(q => q.comentarios.sort((a,b) => a.cuando - b.cuando));
   privadas.forEach(c => c.otro = porUid(c.otro.uid) || c.otro);
   await firmar([...Object.values(usuarios).flatMap(u => rutasDePerfil(u.perfil)), ...feed.map(x => x.media_path)]);
@@ -2135,7 +2143,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal
 $('#stkv-guardar').onclick = async () => { const b = $('#stkv-guardar'); if (stkViendo == null) return; b.disabled = true; b.textContent = 'guardando…';
   if (await guardarSticker(stkViendo)){ b.textContent = '✓ guardado en tus stickers'; msg('#stkv-msg', 'ya lo podés mandar desde 🎭', 'ok'); }
   else { b.disabled = false; b.textContent = 'guardar'; msg('#stkv-msg', 'no se pudo guardar. probá de nuevo.'); } };
-async function abrirStickers(c){ STK.conv = c; STK.editar = false; $('#stk-editar').setAttribute('aria-pressed', 'false'); $('#stk-editar').textContent = 'quitar';
+async function abrirStickers(c, post){ STK.conv = c; STK.post = post || null; STK.editar = false; $('#stk-editar').setAttribute('aria-pressed', 'false'); $('#stk-editar').textContent = 'quitar';
   $('#stk-msg').className = 'msg'; $('#stk-msg').textContent = ''; $('#modal-stickers').hidden = false;
   if (!STK.cargados){ $('#stk-grilla').innerHTML = '<p class="muted chico stk-vacio">cargando…</p>'; await cargarMisStickers(); }
   pintarPanelStickers(); }
@@ -2150,6 +2158,7 @@ $('#stk-editar').onclick = () => { STK.editar = !STK.editar; $('#stk-editar').se
 $('#stk-grilla').addEventListener('click', async e => { const b = e.target.closest('[data-stk]'); if (!b) return; const id = Number(b.dataset.stk);
   if (STK.editar){ const {error} = await sb.from('stickers_guardados').delete().eq('usuario', sesion).eq('sticker', id);
     if (error){ msg('#stk-msg', 'no se pudo quitar. probá de nuevo.'); return; } STK.mios = STK.mios.filter(x => x !== id); pintarPanelStickers(); return; }
+  if (STK.post){ cerrarStickers(); nuevoComentario(STK.post, {sticker:id}); const art = document.getElementById('post-' + STK.post.id); if (art) art.replaceWith(posteoEl(STK.post, perfil())); return; }
   if (!STK.conv) return; cerrarStickers(); enviarPrivado(STK.conv, {tipo:'sticker', texto:'🎭 sticker', sticker:id}); });
 async function crearSticker(blob, animado){ const ext = animado ? 'gif' : blob.type === 'image/webp' ? 'webp' : 'png';
   const path = await subirArchivo(blob, ext);
@@ -2163,8 +2172,8 @@ $('#stk-nuevo').onchange = async e => { const f = e.target.files[0]; e.target.va
     try { await crearSticker(f, true); msg('#stk-msg', '¡sticker creado!', 'ok'); pintarPanelStickers(); }
     catch (er){ console.error(er); msg('#stk-msg', 'no se pudo crear el sticker. probá de nuevo.'); } return; }
   cerrarStickers();
-  abrirRecorte(f, {sticker:true, titulo:'armá tu sticker', subiendo:'creando el sticker…', error: t => { abrirStickers(STK.conv); msg('#stk-msg', t); },
-    listo: async blob => { await crearSticker(blob, false); abrirStickers(STK.conv); msg('#stk-msg', '¡sticker creado! tocalo para mandarlo.', 'ok'); } }); };
+  abrirRecorte(f, {sticker:true, titulo:'armá tu sticker', subiendo:'creando el sticker…', error: t => { abrirStickers(STK.conv, STK.post); msg('#stk-msg', t); },
+    listo: async blob => { await crearSticker(blob, false); abrirStickers(STK.conv, STK.post); msg('#stk-msg', '¡sticker creado! tocalo para mandarlo.', 'ok'); } }); };
 // Zumbido: uno solo hasta que alguien más responda en esa conversación (la base también lo controla)
 function zumbidoBloqueado(c){ const yo = perfil(), box = msgsPriv[c.id]; if (!yo || !box || box.cargando) return false;
   const l = box.lista.filter(m => !m.error && m.tipo !== 'sistema');
@@ -2423,7 +2432,7 @@ $('#solicitudes').addEventListener('click', e => { const b = e.target.closest('[
 
 /* ---------- Notificaciones ---------- */
 // Lo que viene en una notificación lo escribió otra persona: se valida todo antes de mostrarlo
-const TIPOS_NOTI = ['aceptada', 'like', 'comentario', 'like-perfil', 'grupo', 'admin'];
+const TIPOS_NOTI = ['aceptada', 'like', 'comentario', 'like-perfil', 'grupo', 'admin', 'respuesta'];
 const idSeguro = v => { const n = typeof v === 'number' ? v : (typeof v === 'string' && /^\d{1,16}$/.test(v) ? Number(v) : NaN);
   return Number.isSafeInteger(n) && n > 0 ? n : null; };                         // solo enteros positivos; lo demás no arma link
 const txtSeguro = (v, max) => typeof v === 'string' ? v.slice(0, max) : '';
@@ -2434,7 +2443,7 @@ function cuandoNoti(t){ const d = new Date(t), m = Math.round((Date.now() - d) /
   if (m < 1) return 'recién'; if (m < 60) return `hace ${m} min`; if (m < 24 * 60 && new Date().getDate() === d.getDate()) return `hace ${Math.round(m / 60)} h`;
   const ay = new Date(); ay.setDate(ay.getDate() - 1); if (ay.toDateString() === d.toDateString()) return `ayer ${hora(t)}`;
   return `${fecha(t)} ${hora(t)}`; }
-const ICONO_NOTI = {aceptada:'🤝', like:'❤️', 'like-perfil':'💖', comentario:'💬', grupo:'👥', admin:'⭐'};
+const ICONO_NOTI = {respuesta:'↩️', aceptada:'🤝', like:'❤️', 'like-perfil':'💖', comentario:'💬', grupo:'👥', admin:'⭐'};
 function pintarNotis(){
   const yo = perfil(); if (!yo) return; const l = $('#n-lista'); l.innerHTML = '';
   // los ♥ al mismo posteo se juntan en un solo aviso ("fulano y 3 más")
@@ -2456,6 +2465,7 @@ function pintarNotis(){
     if (n.tipo === 'grupo'){ txt = `${quien} te sumó al grupo ${grupo}.`; ir = conv && '#chat/g' + conv; }
     if (n.tipo === 'like'){ txt = `${quien} ${otros.length ? 'le dieron' : 'le dio'} ♥ a tu posteo.`; cita = txtSeguro(n.resumen, 90).replace(/^«|»$/g, ''); ir = post && '#inicio/' + post; }
     if (n.tipo === 'comentario'){ txt = `${quien} comentó tu posteo:`; cita = txtSeguro(n.texto, 160); ir = post && '#inicio/' + post; }
+    if (n.tipo === 'respuesta'){ txt = `${quien} respondió tu comentario:`; cita = txtSeguro(n.texto, 160); ir = post && '#inicio/' + post; }
     const d = document.createElement(ir || xid ? 'a' : 'div'); d.className = 'noti' + (n.leida ? '' : ' nueva');
     if (d.tagName === 'A') d.href = ir || linkPerfil(x);                                  // toda la tarjeta lleva a lo que se avisa
     d.innerHTML = `<span class="n-av"><span class="avatar"></span><span class="n-ico" aria-hidden="true">${ICONO_NOTI[n.tipo]}</span></span>
@@ -2828,14 +2838,25 @@ function posteoEl(x, yo){
       <button type="button" data-pacc="comentar">comentar (${x.comentarios.length})</button>
     </div>
     <div class="comentarios"></div>
+    ${respondiendo && respondiendo.post === x.id ? `<div class="resp-chip">↪ respondiendo a <b>${esc(porId(x.comentarios.find(c => c.id === respondiendo.com)?.de)?.apodo || 'un comentario')}</b><button type="button" data-pacc="no-responder">cancelar</button></div>` : ''}
     <form class="form-com" data-pacc="enviar-com"><label class="sr" for="com-${x.id}">Comentar el posteo de ${esc(a.apodo)}</label>
-      <input class="field" id="com-${x.id}" maxlength="300" placeholder="comentá…" style="flex:1;min-width:0"><button class="btn" type="submit">enviar</button></form>`;
+      <input class="field" id="com-${x.id}" maxlength="300" placeholder="${respondiendo && respondiendo.post === x.id ? 'escribí tu respuesta…' : 'comentá…'}" style="flex:1;min-width:0">
+      <button class="btn" type="button" data-pacc="stk-com" title="responder con un sticker" aria-label="Comentar con un sticker" style="font-size:16px;padding:0 10px">🎭</button><button class="btn" type="submit">enviar</button></form>`;
   ponerAvatar(d.querySelector('.posteo-cab .avatar'), a);
   const cs = d.querySelector('.comentarios');
-  x.comentarios.forEach(c => { const au = porId(c.de); if (!au) return; const e = document.createElement('div'); e.className = 'comentario';
+  // Comentarios con sus respuestas abajo (un solo nivel; si respondés a una respuesta, se indica a quién)
+  const porIdC = new Map(x.comentarios.map(c => [c.id, c])), raiz = c => { let r = c, n = 0; while (r.resp && porIdC.has(r.resp) && n++ < 50) r = porIdC.get(r.resp); return r; };
+  const hilos = new Map(); x.comentarios.forEach(c => { const r = raiz(c); if (!hilos.has(r.id)) hilos.set(r.id, []); if (r !== c) hilos.get(r.id).push(c); });
+  const comEl = (c, esResp) => { const au = porId(c.de); if (!au) return null; const e = document.createElement('div'); e.className = 'comentario' + (esResp ? ' respuesta' : '');
     const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, au);
-    const t = document.createElement('div'); t.innerHTML = `<a href="${linkPerfil(au)}"><b>${esc(au.apodo)}</b></a>${miniInsignias(au)} <span class="muted chico">${hace(c.cuando)}</span><p>${esc(c.texto)}</p>`;
-    e.append(av, t); cs.appendChild(e); });
+    const aQuien = esResp && c.resp && porIdC.get(c.resp) && raiz(c).id !== c.resp ? porId(porIdC.get(c.resp).de) : null;
+    const t = document.createElement('div'); t.innerHTML = `<a href="${linkPerfil(au)}"><b>${esc(au.apodo)}</b></a>${miniInsignias(au)} <span class="muted chico">${hace(c.cuando)}</span>${aQuien ? ` <span class="a-quien">↪ a ${esc(aQuien.apodo)}</span>` : ''}
+      ${c.sticker ? `<span class="sticker-msg" data-sticker="${Number(c.sticker)}" data-alt="sticker de ${esc(au.apodo)}"><span class="muted chico">cargando sticker…</span></span>` : `<p>${esc(c.texto)}</p>`}
+      ${typeof c.id === 'number' && c.id < 1e12 ? `<button type="button" class="com-acc" data-pacc="responder" data-com="${c.id}">responder</button>` : ''}`;
+    e.append(av, t); return e; };
+  x.comentarios.filter(c => raiz(c) === c).forEach(c => { const e = comEl(c, false); if (!e) return; cs.appendChild(e);
+    (hilos.get(c.id) || []).sort((p, q) => p.cuando - q.cuando).forEach(r => { const er = comEl(r, true); if (er) cs.appendChild(er); }); });
+  if (x.comentarios.some(c => c.sticker)) pintarStickersMsg(cs);
   d.querySelectorAll('video[data-path]').forEach(v => { const viejo = videosFeed.get(v.dataset.path);
     if (viejo && viejo !== v){ v.replaceWith(viejo); if (viejo._aviso && viejo.dataset.avisado){ delete viejo.dataset.avisado; viejo._aviso(); }   // el mismo video ya cargado
       const nuevo = ver(v.dataset.path); viejo.dataset.src = nuevo; if (viejo.readyState === 0 && viejo.getAttribute('src') && viejo.getAttribute('src') !== nuevo) viejo.src = nuevo; }
@@ -2848,12 +2869,22 @@ function accionPosteo(e){ const b = e.target.closest('button[data-pacc]'); if (!
     else { x.likes.push(yo.id); sb.from('likes').insert({posteo:x.id}).then(({error}) => falla('dar like', error)); }   // el aviso lo crea la base de datos
     art.replaceWith(posteoEl(x, yo)); }
   if (b.dataset.pacc === 'comentar') art.querySelector('.form-com input').focus();
+  if (b.dataset.pacc === 'responder'){ respondiendo = {post:x.id, com:+b.dataset.com}; const n = posteoEl(x, yo); art.replaceWith(n); n.querySelector('.form-com input').focus(); }
+  if (b.dataset.pacc === 'no-responder'){ respondiendo = null; const n = posteoEl(x, yo); art.replaceWith(n); }
+  if (b.dataset.pacc === 'stk-com') abrirStickers(null, x);
   if (b.dataset.pacc === 'borrar' && confirm('¿Borrar este posteo?')){ feed = feed.filter(q => q.id !== id); pintarFeed(); if (viendo) pintar();
     sb.from('posteos').delete().eq('id', id).then(({error}) => { if (!falla('borrar el posteo', error) && x.media_path) sb.storage.from(BUCKET).remove([x.media_path]); }); } }
+let respondiendo = null;   // {post, com}: a qué comentario estás respondiendo
+// Comentar (texto o sticker); si estás respondiendo, le llega un aviso a quien escribió ese comentario (lo crea la base de datos)
+function nuevoComentario(x, datos){ const yo = perfil(), resp = respondiendo && respondiendo.post === x.id ? respondiendo.com : null; respondiendo = null;
+  const tmp = {id:Date.now(), de:yo.id, texto:datos.texto || '', cuando:Date.now(), resp, sticker:datos.sticker || null}; x.comentarios.push(tmp);
+  const fila = {posteo:x.id, texto:datos.texto || ''}; if (resp) fila.respuesta_a = resp; if (datos.sticker) fila.sticker = datos.sticker;
+  sb.from('comentarios').insert(fila).select().then(({data, error}) => { if (falla('comentar', error)){ x.comentarios = x.comentarios.filter(c => c !== tmp); }
+    else if (data && data[0]) tmp.id = data[0].id;                                  // con su número real ya se le puede responder
+    const art = document.getElementById('post-' + x.id); if (art) art.replaceWith(posteoEl(x, yo)); }); }
 function comentarPosteo(e){ e.preventDefault(); const f = e.target, art = f.closest('.posteo'), id = +art.id.slice(5), x = feed.find(q => q.id === id), yo = perfil();
   const t = f.querySelector('input').value.trim(); if (!t || !x) return;
-  x.comentarios.push({id:Date.now(), de:yo.id, texto:t, cuando:Date.now()});
-  sb.from('comentarios').insert({posteo:x.id, texto:t}).then(({error}) => falla('comentar', error));   // el aviso lo crea la base de datos
+  nuevoComentario(x, {texto:t});
   const nuevo = posteoEl(x, yo); art.replaceWith(nuevo); nuevo.querySelector('.form-com input').focus(); }
 ['#feed', '#p-posts'].forEach(c => { $(c).addEventListener('click', accionPosteo); $(c).addEventListener('submit', comentarPosteo); });
 // Recargar: trae lo nuevo de Supabase; lo nuevo queda arriba
