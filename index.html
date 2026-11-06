@@ -80,7 +80,7 @@ h1,h2,h3{font-family:var(--ft);color:var(--title);margin:0;line-height:1.25}
   background:linear-gradient(100deg,#FFFFFF 0%,#FFFFFF 12%,#9E9E9E 26%,#454545 40%,#9E9E9E 54%,#FFFFFF 68%,#FFFFFF 80%,#9E9E9E 90%,#FFFFFF 100%) 0 0/200% 100% repeat-x;
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
   filter:drop-shadow(0 0 .6px rgba(0,0,0,.95)) drop-shadow(0 1px 0 rgba(0,0,0,.45));
-  animation:ola-rincon 4.5s linear infinite}
+  animation:ola-rincon 3s linear infinite;will-change:background-position}
 @keyframes ola-rincon{to{background-position:-200% 0}}
 .recargar-top{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;flex:none;border:0;background:none;font-size:22px;line-height:1;cursor:pointer;padding:0}
 .recargar-top:hover,.recargar-top:focus-visible{opacity:.75}
@@ -620,7 +620,7 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
   body.editando{padding-right:380px}
 }
 /* "Reducir movimiento" del celu: se frena todo, menos el efecto del nick (lo elige cada uno para su perfil) */
-@media (prefers-reduced-motion: reduce){ *:not(.nick):not(.letra):not(#fondo-capa){animation:none !important} .frase-marq span{padding-left:0} }
+@media (prefers-reduced-motion: reduce){ *:not(.nick):not(.letra):not(#fondo-capa):not(.nombre-rincon){animation:none !important} .frase-marq span{padding-left:0} }
 </style>
 </head>
 <body data-cajas="simple">
