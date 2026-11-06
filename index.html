@@ -277,7 +277,7 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
 .conv-cab .avatar{width:36px;height:36px}
 .chat-conv .lineas{flex:1;max-height:58dvh;overflow-y:auto;justify-content:flex-start}
 .chat-conv .composer{position:static}
-@media (max-width:600px){.chat-conv .composer{flex-wrap:wrap}.chat-conv .composer .field{flex:1 1 100% !important}.chat-conv .composer .btn{flex:1}}
+@media (max-width:600px){.chat-conv .composer{flex-wrap:wrap}.chat-conv .composer .field{flex:1 1 100% !important}.chat-conv .composer .btn{flex:1;white-space:nowrap;padding-left:8px;padding-right:8px}.chat-conv .composer #ch-stickers{flex:0 0 52px}}
 @media (min-width:760px){.conv-cab .volver{display:none}}
 .persona{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
 .persona .avatar{width:44px;height:44px}
@@ -399,10 +399,9 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
 .rec-formas button[aria-pressed="true"]{background:var(--link);color:var(--box);border-color:var(--link)}
 /* Stickers en el chat */
 .linea.con-sticker{display:block}
-.sticker-msg{display:block;margin-top:4px}
-.sticker-msg img{display:block;width:140px;height:140px;object-fit:contain;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
-.linea.yo .sticker-msg img{margin-left:auto}
-.sticker-msg .guardar-stk{margin-top:2px;font-size:11px}
+.sticker-msg{display:flex;flex-direction:column;align-items:flex-start;gap:2px;margin:4px 0 2px}
+.sticker-msg img{display:block;width:120px;height:120px;object-fit:contain}
+.sticker-msg .guardar-stk{font-size:11px;margin:0}
 .stk-grilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;max-height:min(50vh,360px);overflow:auto;padding:2px}
 .stk-item{position:relative;aspect-ratio:1;background:none;border:1px solid transparent;padding:4px;cursor:pointer}
 .stk-item:hover,.stk-item:focus-visible{border-color:var(--link);outline:none}
