@@ -1255,7 +1255,7 @@ function vigilarVideo(v){
 const urlPublica = path => sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
 /* Links temporales de "media": el bucket es privado. Lo guardado (link de perfil o ruta de posteo) solo identifica el archivo;
    para mostrarlo se pide un link temporal, si la regla del servidor deja ver ese archivo. */
-const VIGENCIA = 3600, firmadas = new Map(), venceFirma = new Map();   // ruta -> link temporal / cuándo vence
+const VIGENCIA = 3600, firmadas = new Map(), venceFirma = new Map(), pedidasAnt = new Set();   // ruta -> link temporal / cuándo vence
 const rutaMedia = v => { if (typeof v !== 'string' || !v) return '';
   const pre = String(CFG.supabaseUrl || '').replace(/\/+$/, '') + '/storage/v1/object/public/' + BUCKET + '/';
   const r = v.startsWith(pre) ? v.slice(pre.length) : v; return /^[0-9a-f-]{36}\/[A-Za-z0-9._-]+$/.test(r) ? r : ''; };
@@ -1268,7 +1268,9 @@ async function firmar(lista){ const rutas = [...new Set(lista.map(rutaMedia).fil
     (data || []).forEach(d => { if (d && !d.error && d.signedUrl && d.path){ firmadas.set(d.path, d.signedUrl); venceFirma.set(d.path, Date.now() + VIGENCIA * 1000); } }); } }
 async function firmarDeNuevo(v){ const r = rutaMedia(v); if (!r) return ''; venceFirma.delete(r); await firmar([r]); return ver(r); }
 const esVideoFondo = u => typeof u === 'string' && /\.(mp4|webm|mov|m4v)$/i.test(u);
-const rutasDePerfil = p => [p.avatar, p.fondoImg, ...p.fotos.map(f => f.img)];
+// links de las fotos: a quien no es tu amigo solo se le piden su foto de perfil, su fondo y su foto actual (las anteriores son solo para amigos)
+const rutasDePerfil = p => { const yo = perfil(), todas = !yo || p.uid === yo.uid || sonAmigos(yo, p);
+  return [p.avatar, p.fondoImg, ...(todas ? p.fotos : p.fotos.slice(-1)).map(f => f.img)]; };
 // Se renuevan antes de vencer (lo que ya está en pantalla sigue visible)
 setInterval(() => { if (sesion && firmadas.size) firmar([...firmadas.keys()]); }, 10 * 60 * 1000);   // renueva solo los que están por vencer
 async function subirArchivo(blob, ext){
@@ -1488,7 +1490,8 @@ function pintar(){
     const lleno = f.firmas.length >= MAX_FIRMAS; $('#firmar-form').hidden = lleno; $('#p-lleno').hidden = !lleno; }
   // Secciones: perfil / fotos anteriores (todas menos la última)
   const ant = anteriores(p); if (!p.anteriores) seccionPerfil = 'perfil';
-  const bf = $('#psec-fotos'); bf.hidden = !p.anteriores; bf.textContent = `fotos anteriores (${ant.length})`;
+  const verAnt = mio || sonAmigos(yo, p);                   // fotos anteriores: solo vos y tus amigos
+  const bf = $('#psec-fotos'); bf.hidden = !p.anteriores; bf.textContent = verAnt ? `fotos anteriores (${ant.length})` : 'fotos anteriores';
   $$('.p-secs [data-psec]').forEach(b => b.setAttribute('aria-current', b.dataset.psec === seccionPerfil));
   $('#p-cols').hidden = seccionPerfil !== 'perfil'; $('#p-galeria-sec').hidden = seccionPerfil !== 'fotos'; $('#p-posts-sec').hidden = seccionPerfil !== 'posts'; $('#p-insignias-sec').hidden = seccionPerfil !== 'insignias';
   if (seccionPerfil === 'insignias') pintarInsignias(p, mio);
@@ -1500,8 +1503,11 @@ function pintar(){
     else if (!pubs.length) c.innerHTML = `<p class="muted chico" style="margin:0">${mio ? 'todavía no publicaste nada en el inicio. tocá el + para publicar.' : esc(p.apodo) + ' todavía no publicó nada en el inicio.'}</p>`;
     else pubs.forEach(x => c.appendChild(posteoEl(x, yo))); }
   const g = $('#p-galeria'); g.innerHTML = '';
-  if (!ant.length) g.innerHTML = `<p class="muted chico" style="margin:0;grid-column:1/-1">${mio ? 'todavía no tenés fotos anteriores. cuando subas la foto de mañana, la de hoy pasa acá.' : esc(p.apodo) + ' todavía no tiene fotos anteriores.'}</p>`;
-  ant.forEach(x => { const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'g-item'; bt.dataset.foto = x.cuando;
+  if (!verAnt) g.innerHTML = `<p class="muted chico" style="margin:0;grid-column:1/-1">solo los amigos de ${esc(p.apodo)} ven sus fotos anteriores. mandale una solicitud.</p>`;
+  else { const sinFirma = ant.map(x => rutaMedia(x.img)).filter(r => r && !firmadas.has(r) && !pedidasAnt.has(r)); sinFirma.forEach(r => pedidasAnt.add(r));   // se hicieron amigos hace poco: se piden los links que faltan
+    if (sinFirma.length && !g.dataset.firmando){ g.dataset.firmando = '1'; firmar(sinFirma).finally(() => { delete g.dataset.firmando; pintar(); }); } }
+  if (verAnt && !ant.length) g.innerHTML = `<p class="muted chico" style="margin:0;grid-column:1/-1">${mio ? 'todavía no tenés fotos anteriores. cuando subas la foto de mañana, la de hoy pasa acá.' : esc(p.apodo) + ' todavía no tiene fotos anteriores.'}</p>`;
+  if (verAnt) ant.forEach(x => { const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'g-item'; bt.dataset.foto = x.cuando;
     bt.setAttribute('aria-label', `abrir foto del ${fechaLarga(x.cuando)}${x.titulo ? ': ' + x.titulo : ''}, ${x.likes.length} likes, ${x.firmas.length} firmas`);
     bt.innerHTML = `<span class="g-img" style="background-image:url(&quot;${esc(ver(x.img))}&quot;)"></span><span class="g-dato">${fecha(x.cuando)} · ♥ ${x.likes.length} · ✎ ${x.firmas.length}</span>`;
     g.appendChild(bt); });
@@ -1627,7 +1633,7 @@ function firmarFoto(p, f, t){ const yo = perfil(); if (!t || !p || !f || f.firma
   f.firmas.push({deId:yo.id, de:yo.apodo, texto:t, cuando:Date.now()});
   sb.from('firmas').insert({perfil:p.uid, foto:f.cuando, texto:t}).then(({error}) => falla('firmar', error)); return true; }
 // Foto anterior abierta
-function abrirFoto(p, cuando){ mf = {p, cuando}; $('#mf-txt').value = ''; $('#modal-foto').hidden = false; pintarModalFoto(); $('#modal-foto .modal').scrollTop = 0; $('#mf-cerrar').focus({preventScroll:true}); }
+function abrirFoto(p, cuando){ const yo = perfil(); if (!yo || (p.uid !== yo.uid && !sonAmigos(yo, p) && cuando !== p.fotos.at(-1)?.cuando)) return; mf = {p, cuando}; $('#mf-txt').value = ''; $('#modal-foto').hidden = false; pintarModalFoto(); $('#modal-foto .modal').scrollTop = 0; $('#mf-cerrar').focus({preventScroll:true}); }
 function cerrarFoto(){ $('#modal-foto').hidden = true; mf = null; }
 function pintarModalFoto(){ if (!mf) return; mf.p = porId(mf.p.id) || mf.p; const p = mf.p, lista = anteriores(p), i = lista.findIndex(x => x.cuando === mf.cuando), f = lista[i];
   if (!f) return cerrarFoto(); const mio = !!(perfil() && p.uid === perfil().uid);
@@ -2766,7 +2772,8 @@ function pintarTop(){
   const gente = (tFiltro === 'amigos' ? [yo, ...amigosDe(yo)] : miembros()).filter(x => x.fans.length >= MIN_TOP).sort((a,b) => b.fans.length - a.fans.length || a.creado - b.creado);
   const l = $('#t-lista'); l.innerHTML = '';
   gente.forEach((x,i) => { const a = document.createElement('a'); a.className = 'top-fila' + (i < 3 && x.fans.length ? ' podio' : ''); a.href = linkPerfil(x);
-    const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, x); const m = ver(miniatura(x)); if (m){ av.style.backgroundImage = `url("${m}")`; av.textContent = ''; }
+    const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, x);
+    if (!x.avatar){ const m = ver(miniatura(x)); if (m){ av.style.backgroundImage = `url("${m}")`; av.textContent = ''; } }   // su foto de perfil; si no tiene, su última foto
     a.innerHTML = `<span class="pos">${i + 1}</span>`; a.appendChild(av);
     const t = document.createElement('span'); t.innerHTML = `<b>${esc(x.apodo)}</b>${miniInsignias(x)}${x.id === yo.id ? ' <span class="muted chico">(vos)</span>' : ''}`;
     const c = document.createElement('span'); c.className = 'cuantos'; c.textContent = '♥ ' + x.fans.length; c.setAttribute('aria-label', x.fans.length + ' corazones');
