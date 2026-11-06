@@ -375,6 +375,19 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
 .comentario .com-acc:hover{color:var(--link)}
 .comentario .a-quien{font-size:11px;color:var(--muted)}
 .comentario .sticker-msg img{width:96px;height:96px}
+.etiquetas{margin:6px 0 0;font-size:.93em;color:var(--muted)}
+.etiquetas a{font-weight:bold;color:var(--link);background:color-mix(in srgb, var(--link) 14%, transparent);padding:0 4px;text-decoration:none}
+.etiquetas a:hover{text-decoration:underline}
+.etq-chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.etq-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--link);color:var(--link);padding:2px 4px 2px 8px;font-size:12px;font-weight:bold}
+.etq-chip button{background:none;border:0;color:inherit;font:inherit;min-width:28px;min-height:28px;cursor:pointer}
+.etq-sug{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--box);max-height:200px;overflow:auto;margin-top:4px}
+.posteo-texto a.mencion{font-weight:bold;color:var(--link);background:color-mix(in srgb, var(--link) 14%, transparent);padding:0 3px;text-decoration:none}
+.posteo-texto a.mencion:hover{text-decoration:underline}
+.etq-sug:empty{display:none}
+.etq-sug button{display:flex;align-items:center;gap:8px;background:none;border:0;border-bottom:1px solid var(--line);color:var(--ink);font:inherit;padding:6px 8px;text-align:left;cursor:pointer;min-height:40px}
+.etq-sug button[aria-selected="true"],.etq-sug button:hover,.etq-sug button:focus-visible{background:color-mix(in srgb, var(--link) 14%, transparent);outline:none}
+.etq-sug .avatar{width:26px;height:26px;font-size:9px}
 .resp-chip{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin:6px 0 -2px}
 .resp-chip button{background:none;border:1px solid var(--line);color:var(--muted);font:inherit;font-size:11px;min-height:28px;padding:0 8px;cursor:pointer}
 .form-com{display:flex;gap:8px;margin-top:8px}
@@ -691,7 +704,9 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
       <button type="button" data-ptipo="imagen" aria-pressed="false">imagen</button>
       <button type="button" data-ptipo="video" aria-pressed="false">video</button>
     </div>
-    <div><label class="lbl" for="post-texto" id="post-texto-lbl">¿qué estás pensando?</label><textarea class="field" id="post-texto" maxlength="1000"></textarea></div>
+    <div style="position:relative"><label class="lbl" for="post-texto" id="post-texto-lbl">¿qué estás pensando?</label><textarea class="field" id="post-texto" maxlength="1000" aria-describedby="post-etq-ayuda" aria-autocomplete="list" aria-controls="post-etq-sug"></textarea>
+      <div class="etq-sug" id="post-etq-sug" role="listbox" aria-label="amigos para etiquetar"></div>
+      <span class="chico muted" id="post-etq-ayuda">escribí @ y el nick de un amigo para etiquetarlo (le llega un aviso).</span></div>
     <div id="post-img-b" hidden><label class="btn file-btn" style="display:flex;justify-content:center">elegir imagen<input type="file" accept="image/*" id="post-img" aria-label="Elegir imagen"></label>
       <span class="chico muted" id="post-img-nombre">ninguna imagen elegida</span></div>
     <div id="post-url-b" hidden><label class="btn file-btn" style="display:flex;justify-content:center">subir video (hasta 25 MB)<input type="file" accept="video/*" id="post-vid" aria-label="Elegir video"></label>
@@ -1367,7 +1382,7 @@ async function cargarTodo(){
     .filter(n => n.de).sort((a,b) => a.cuando - b.cuando);
   feed = po.map(x => ({id:x.id, de:P(x.autor)?.id, tipo:x.tipo, texto:x.texto || '', media_path:x.media_path || '',
       img: x.tipo === 'imagen' && x.media_path ? x.media_path : '', video: x.tipo === 'video' && x.media_path ? x.media_path : '',
-      url: x.video_url || '', cuando:Date.parse(x.creado), likes:[], comentarios:[]})).filter(x => x.de);
+      url: x.video_url || '', cuando:Date.parse(x.creado), likes:[], comentarios:[], etiq:(Array.isArray(x.etiquetados) ? x.etiquetados : []).map(u => P(u)?.id).filter(i => i != null)})).filter(x => x.de);
   lk.forEach(x => { const q = feed.find(f => f.id === x.posteo), u = P(x.usuario); if (q && u) q.likes.push(u.id); });
   co.forEach(x => { const q = feed.find(f => f.id === x.posteo), u = P(x.autor); if (q && u) q.comentarios.push({id:x.id, de:u.id, texto:x.texto || '', cuando:Date.parse(x.creado), resp:x.respuesta_a || null, sticker:x.sticker || null}); });
   feed.forEach(q => q.comentarios.sort((a,b) => a.cuando - b.cuando));
@@ -2432,7 +2447,7 @@ $('#solicitudes').addEventListener('click', e => { const b = e.target.closest('[
 
 /* ---------- Notificaciones ---------- */
 // Lo que viene en una notificación lo escribió otra persona: se valida todo antes de mostrarlo
-const TIPOS_NOTI = ['aceptada', 'like', 'comentario', 'like-perfil', 'grupo', 'admin', 'respuesta'];
+const TIPOS_NOTI = ['aceptada', 'like', 'comentario', 'like-perfil', 'grupo', 'admin', 'respuesta', 'etiqueta'];
 const idSeguro = v => { const n = typeof v === 'number' ? v : (typeof v === 'string' && /^\d{1,16}$/.test(v) ? Number(v) : NaN);
   return Number.isSafeInteger(n) && n > 0 ? n : null; };                         // solo enteros positivos; lo demás no arma link
 const txtSeguro = (v, max) => typeof v === 'string' ? v.slice(0, max) : '';
@@ -2443,7 +2458,7 @@ function cuandoNoti(t){ const d = new Date(t), m = Math.round((Date.now() - d) /
   if (m < 1) return 'recién'; if (m < 60) return `hace ${m} min`; if (m < 24 * 60 && new Date().getDate() === d.getDate()) return `hace ${Math.round(m / 60)} h`;
   const ay = new Date(); ay.setDate(ay.getDate() - 1); if (ay.toDateString() === d.toDateString()) return `ayer ${hora(t)}`;
   return `${fecha(t)} ${hora(t)}`; }
-const ICONO_NOTI = {respuesta:'↩️', aceptada:'🤝', like:'❤️', 'like-perfil':'💖', comentario:'💬', grupo:'👥', admin:'⭐'};
+const ICONO_NOTI = {etiqueta:'🏷️', respuesta:'↩️', aceptada:'🤝', like:'❤️', 'like-perfil':'💖', comentario:'💬', grupo:'👥', admin:'⭐'};
 function pintarNotis(){
   const yo = perfil(); if (!yo) return; const l = $('#n-lista'); l.innerHTML = '';
   // los ♥ al mismo posteo se juntan en un solo aviso ("fulano y 3 más")
@@ -2465,6 +2480,7 @@ function pintarNotis(){
     if (n.tipo === 'grupo'){ txt = `${quien} te sumó al grupo ${grupo}.`; ir = conv && '#chat/g' + conv; }
     if (n.tipo === 'like'){ txt = `${quien} ${otros.length ? 'le dieron' : 'le dio'} ♥ a tu posteo.`; cita = txtSeguro(n.resumen, 90).replace(/^«|»$/g, ''); ir = post && '#inicio/' + post; }
     if (n.tipo === 'comentario'){ txt = `${quien} comentó tu posteo:`; cita = txtSeguro(n.texto, 160); ir = post && '#inicio/' + post; }
+    if (n.tipo === 'etiqueta'){ txt = `${quien} te etiquetó en un posteo.`; ir = post && '#inicio/' + post; }
     if (n.tipo === 'respuesta'){ txt = `${quien} respondió tu comentario:`; cita = txtSeguro(n.texto, 160); ir = post && '#inicio/' + post; }
     const d = document.createElement(ir || xid ? 'a' : 'div'); d.className = 'noti' + (n.leida ? '' : ' nueva');
     if (d.tagName === 'A') d.href = ir || linkPerfil(x);                                  // toda la tarjeta lleva a lo que se avisa
@@ -2829,7 +2845,8 @@ function posteoEl(x, yo){
   const yaLike = x.likes.includes(yo.id), u = x.url && (/^https?:\/\//.test(x.url) ? x.url : 'https://' + x.url);
   d.innerHTML = `<div class="posteo-cab"><span class="avatar"></span><div style="flex:1;min-width:0"><a href="${linkPerfil(a)}"><b>${esc(a.apodo)}</b></a>${miniInsignias(a)}<br><span class="muted chico">${hace(x.cuando)}</span></div>
       ${a.id === yo.id ? `<button class="borrar" type="button" data-pacc="borrar">borrar</button>` : ''}</div>
-    ${x.texto ? `<p class="posteo-texto">${esc(x.texto)}</p>` : ''}
+    ${x.texto ? `<p class="posteo-texto">${textoConMenciones(x)}</p>` : ''}
+    ${x.texto && x.etiq?.length ? '' : etiquetasHTML(x)}
     ${x.img ? `<img class="compartida" src="${esc(ver(x.img))}" alt="${esc(x.texto || 'imagen de ' + a.apodo)}" loading="lazy">` : ''}
     ${x.video ? `<video class="compartida" data-path="${esc(x.video)}" data-src="${esc(ver(x.video))}" controls playsinline preload="none" aria-label="video de ${esc(a.apodo)}" style="display:block;max-width:100%;max-height:560px;margin-top:10px;border:1px solid var(--line);background:#000"></video>` : ''}
     ${u ? `<a class="media-link" href="${esc(u)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true">►</span><span><b>ver video</b><span class="sitio">${esc(sitioDe(u))}</span></span></a>` : ''}
@@ -2874,6 +2891,47 @@ function accionPosteo(e){ const b = e.target.closest('button[data-pacc]'); if (!
   if (b.dataset.pacc === 'stk-com') abrirStickers(null, x);
   if (b.dataset.pacc === 'borrar' && confirm('¿Borrar este posteo?')){ feed = feed.filter(q => q.id !== id); pintarFeed(); if (viendo) pintar();
     sb.from('posteos').delete().eq('id', id).then(({error}) => { if (!falla('borrar el posteo', error) && x.media_path) sb.storage.from(BUCKET).remove([x.media_path]); }); } }
+// Etiquetas: "con X y Y", resaltados y con link a sus perfiles
+function etiquetasHTML(x){ const l = (x.etiq || []).map(porId).filter(Boolean); if (!l.length) return '';
+  const links = l.map(u => `<a href="${linkPerfil(u)}">${esc(u.apodo)}</a>`);
+  return `<p class="etiquetas">con ${links.length > 1 ? links.slice(0, -1).join(', ') + ' y ' + links.at(-1) : links[0]}</p>`; }
+// "@nick" en el texto del posteo: si es alguien etiquetado, queda resaltado y con link a su perfil
+const escRe = t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function textoConMenciones(x){ const us = (x.etiq || []).map(porId).filter(Boolean).sort((a, b) => b.apodo.length - a.apodo.length);
+  if (!us.length) return esc(x.texto);
+  const re = new RegExp('@(' + us.map(u => escRe(u.apodo)).join('|') + ')(?![A-Za-z0-9_.-])', 'gi'); let h = '', i = 0, m;
+  while ((m = re.exec(x.texto))){ const u = us.find(v => v.apodo.toLowerCase() === m[1].toLowerCase());
+    h += esc(x.texto.slice(i, m.index)) + `<a class="mencion" href="${linkPerfil(u)}">@${esc(u.apodo)}</a>`; i = m.index + m[0].length; }
+  return h + esc(x.texto.slice(i)); }
+// amigos mencionados con @ en un texto (los que coinciden con un nick de tus amigos)
+function mencionados(t){ const low = t.toLowerCase();
+  return misAmigos().filter(p => { const k = '@' + p.apodo.toLowerCase(); let j = low.indexOf(k);
+    while (j >= 0){ const sig = t[j + k.length]; if (!sig || !/[A-Za-z0-9_.-]/.test(sig)) return true; j = low.indexOf(k, j + 1); } return false; }).slice(0, MAX_ETQ); }
+let postEtq = [];   // ids de perfil de los amigos etiquetados en el posteo que estás armando
+const MAX_ETQ = 10;
+function misAmigos(){ const yo = perfil(); return yo ? Object.values(usuarios).map(u => u.perfil).filter(p => p && p.uid !== yo.uid && sonAmigos(yo, p)) : []; }
+// Autocompletar: escribís @ y aparecen tus amigos según lo que vas escribiendo
+let etqSel = 0;
+function arrobaActual(){ const ta = $('#post-texto'), antes = ta.value.slice(0, ta.selectionStart); const m = antes.match(/(^|\s)@([^\s@]{0,24})$/); return m ? {q:m[2], desde:antes.length - m[2].length - 1} : null; }
+function pintarEtq(){ const sug = $('#post-etq-sug'), a = arrobaActual();
+  if (!a){ sug.innerHTML = ''; return; }
+  const q = a.q.toLowerCase(), l = misAmigos().filter(p => p.apodo.toLowerCase().includes(q))
+    .sort((x, y) => (y.apodo.toLowerCase().startsWith(q) - x.apodo.toLowerCase().startsWith(q)) || x.apodo.localeCompare(y.apodo)).slice(0, 6);
+  if (!l.length){ sug.innerHTML = q ? '<span class="chico muted" style="padding:6px 8px">ningún amigo con ese nick.</span>' : ''; return; }
+  etqSel = Math.min(etqSel, l.length - 1);
+  sug.innerHTML = l.map((p, i) => `<button type="button" role="option" aria-selected="${i === etqSel}" data-etq="${p.id}"><span class="avatar"></span>${esc(p.apodo)}</button>`).join('');
+  sug.querySelectorAll('[data-etq]').forEach(b => ponerAvatar(b.querySelector('.avatar'), porId(+b.dataset.etq))); }
+function elegirEtq(id){ const u = porId(+id), a = arrobaActual(), ta = $('#post-texto'); if (!u || !a) return;
+  const fin = ta.selectionStart, nuevo = ta.value.slice(0, a.desde) + '@' + u.apodo + ' ' + ta.value.slice(fin);
+  if (nuevo.length > ta.maxLength) return; ta.value = nuevo; const pos = a.desde + u.apodo.length + 2; ta.setSelectionRange(pos, pos); ta.focus(); etqSel = 0; pintarEtq(); }
+$('#post-texto').addEventListener('input', () => { etqSel = 0; pintarEtq(); });
+$('#post-texto').addEventListener('click', pintarEtq);
+$('#post-texto').addEventListener('keydown', e => { const op = $$('#post-etq-sug [data-etq]'); if (!op.length) return;
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp'){ e.preventDefault(); etqSel = (etqSel + (e.key === 'ArrowDown' ? 1 : -1) + op.length) % op.length; pintarEtq(); }
+  else if (e.key === 'Enter' || e.key === 'Tab'){ e.preventDefault(); elegirEtq(op[etqSel].dataset.etq); }
+  else if (e.key === 'Escape'){ e.stopPropagation(); $('#post-etq-sug').innerHTML = ''; } });
+$('#post-etq-sug').addEventListener('mousedown', e => e.preventDefault());   // que no se pierda el cursor del texto
+$('#post-etq-sug').addEventListener('click', e => { const b = e.target.closest('[data-etq]'); if (b) elegirEtq(b.dataset.etq); });
 let respondiendo = null;   // {post, com}: a qué comentario estás respondiendo
 // Comentar (texto o sticker); si estás respondiendo, le llega un aviso a quien escribió ese comentario (lo crea la base de datos)
 function nuevoComentario(x, datos){ const yo = perfil(), resp = respondiendo && respondiendo.post === x.id ? respondiendo.com : null; respondiendo = null;
@@ -2896,7 +2954,7 @@ $('#recargar').onclick = recargar; $('#hay-nuevos').onclick = recargar;
 function pTipoSet(t){ pTipo = t; $$('[data-ptipo]').forEach(b => b.setAttribute('aria-pressed', b.dataset.ptipo === t));
   $('#post-img-b').hidden = t !== 'imagen'; $('#post-url-b').hidden = t !== 'video'; $('#post-texto-lbl').textContent = t === 'texto' ? '¿qué estás pensando?' : 'texto (opcional)'; }
 $('#fab').onclick = () => { pTipoSet('texto'); $('#modal-post').hidden = false; $('#post-texto').focus(); };
-const cerrarPost = () => { $('#modal-post').hidden = true; $('#post-form').reset(); pImg = null; pVid = null; pVidConvertir = false; pVidAchicar = false; $('#post-vid-nombre').textContent = 'ningún video elegido'; $('#post-img-nombre').textContent = 'ninguna imagen elegida'; $('#post-msg').className = 'msg'; $('#fab').focus(); };
+const cerrarPost = () => { $('#modal-post').hidden = true; $('#post-form').reset(); postEtq = []; $('#post-etq-sug').innerHTML = ''; pImg = null; pVid = null; pVidConvertir = false; pVidAchicar = false; $('#post-vid-nombre').textContent = 'ningún video elegido'; $('#post-img-nombre').textContent = 'ninguna imagen elegida'; $('#post-msg').className = 'msg'; $('#fab').focus(); };
 $('#post-cerrar').onclick = cerrarPost;
 $('#modal-post').addEventListener('click', e => { if (e.target.id === 'modal-post') cerrarPost(); const b = e.target.closest('[data-ptipo]'); if (b) pTipoSet(b.dataset.ptipo); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal-post').hidden) cerrarPost(); });
@@ -2911,6 +2969,7 @@ $('#post-vid').onchange = async e => { const f = e.target.files[0]; if (!f) retu
   else if (r.convertir) msg('#post-msg', 'Este video está en HEVC, un formato que muchos celulares no pueden mostrar. Al publicarlo lo convertimos para que lo vean todos: tarda lo mismo que dura el video (no cierres la página).', 'ok'); };
 $('#post-form').onsubmit = async e => { e.preventDefault(); const yo = perfil(), texto = $('#post-texto').value.trim(), ac = pTipo === 'video' && pVid && pVidConvertir ? nuevoAudio() : null;
   const fila = {tipo:pTipo, texto: texto || null, media_path:null, video_url:null};
+  postEtq = mencionados(texto).map(p => p.id); const etq = postEtq.map(porId).filter(Boolean).map(u => u.uid); if (etq.length) fila.etiquetados = etq;
   if (pTipo === 'texto' && !texto) return msg('#post-msg','Escribí algo primero.');
   if (pTipo === 'imagen' && !pImg) return msg('#post-msg','Elegí una imagen.');
   if (pTipo === 'video' && !pVid){ const u = $('#post-url').value.trim(); if (!/^(https?:\/\/)?[^\s.]+\.[^\s]+$/.test(u)) return msg('#post-msg','Subí un video o pegá un link válido.'); fila.video_url = u; }
@@ -2928,7 +2987,7 @@ $('#post-form').onsubmit = async e => { e.preventDefault(); const yo = perfil(),
     const {data, error} = await sb.from('posteos').insert(fila).select(); if (error) throw error;
     const r = data[0]; if (r.media_path) await firmar([r.media_path]);
     feed.push({id:r.id, de:yo.id, tipo:r.tipo, texto:r.texto || '', media_path:r.media_path || '', img: r.tipo === 'imagen' && r.media_path ? r.media_path : '',
-      video: r.tipo === 'video' && r.media_path ? r.media_path : '', url:r.video_url || '', cuando:Date.parse(r.creado) || Date.now(), likes:[], comentarios:[]});
+      video: r.tipo === 'video' && r.media_path ? r.media_path : '', url:r.video_url || '', cuando:Date.parse(r.creado) || Date.now(), likes:[], comentarios:[], etiq:[...postEtq]});
   } catch (er){ console.error(er); btn.disabled = false; return msg('#post-msg','No se pudo publicar. Revisá tu conexión y probá de nuevo.'); }
   if (ac) ac.close().catch(() => {}); btn.disabled = false; pVidConvertir = false; pVidAchicar = false; cerrarPost(); pintarFeed(); window.scrollTo({top:0, behavior:'smooth'}); };
 
