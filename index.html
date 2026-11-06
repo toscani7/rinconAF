@@ -29,7 +29,23 @@
 }
 html{background:var(--bg)}
 body{margin:0;min-height:100dvh;font-family:var(--fb);font-size:var(--fs);line-height:1.5;color:var(--ink);
-  background-color:var(--bg);background-image:var(--patimg);background-size:var(--patsize);background-position:var(--patpos);background-repeat:var(--patrep);background-attachment:fixed;-webkit-text-size-adjust:100%}
+  background-color:transparent;-webkit-text-size-adjust:100%}
+/* Fondo: capa fija del tamaño de la pantalla (así no se estira ni se corre al cambiar de sección, tampoco en iPhone) */
+#fondo-capa{position:fixed;left:0;top:0;width:100%;height:100vh;height:100lvh;z-index:-1;pointer-events:none;overflow:hidden;
+  background-color:var(--bg);background-image:var(--patimg);background-size:var(--patsize);background-position:var(--patpos);background-repeat:var(--patrep);animation:var(--patanim, none)}
+#fondo-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#fondo-video[hidden]{display:none}
+/* Fondos con movimiento */
+@keyframes fdiag56{to{background-position:56px 56px, 48px 48px}}
+@keyframes fsube56{to{background-position:0 -56px, 28px -84px}}
+@keyframes fdiag28{to{background-position:28px 28px, 56px 56px}}
+@keyframes fcorre32{to{background-position:32px 0}}
+@keyframes favanza24{to{background-position:0 24px, 0 24px}}
+@keyframes flluvia{to{background-position:0 48px, 13px 96px}}
+@keyframes fnieve{to{background-position:0 90px, 40px 140px}}
+@keyframes festatica{0%{background-position:0 0}25%{background-position:-37px 61px}50%{background-position:83px -29px}75%{background-position:-71px -97px}}
+@keyframes fdegrade{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes fburbujas{to{background-position:0 -120px, 30px -200px}}
 *{box-sizing:border-box}
 a{color:var(--link)}
 a:hover{text-decoration:none}
@@ -214,9 +230,31 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
 .persona{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
 .persona .avatar{width:44px;height:44px}
 .persona .acciones{display:flex;gap:8px;margin-left:auto}
-.noti{padding:10px 0;border-top:1px solid var(--line)}
-.noti.nueva{font-weight:bold}
-.noti.nueva::before{content:"● ";color:var(--link)}
+/* Notificaciones: única pestaña con colores fijos (fondo negro, avisos en tarjetas blancas), no cambia con el estilo de cada perfil */
+html.en-notis{background:#000}
+html.en-notis #fondo-capa{display:none}
+#notificaciones{--bg:#000000;--bg2:#1A1A1A;--ink:#CCCCCC;--link:#FF9900;--title:#FFFFFF;--line:#333333;--box:#0D0D0D;--muted:#8a8a8a;background:#000;color:#ccc}
+#notificaciones .n-titulo{color:#fff}
+#notificaciones .n-grupo{font:bold 11px/1 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a8a8a;margin:18px 2px 8px}
+#notificaciones .n-grupo:first-child{margin-top:0}
+.noti{display:flex;gap:12px;align-items:flex-start;position:relative;background:#FFFFFF;color:#1a1a1a;border-radius:10px;padding:12px 14px;margin:0 0 8px;text-decoration:none;
+  font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;transition:transform .12s, box-shadow .12s}
+@media (hover:hover){ a.noti:hover{box-shadow:0 0 0 2px #FF9900} }
+html.en-notis .pie-legal a{color:#8a8a8a}
+a.noti:active{transform:scale(.99)}
+a.noti:focus-visible{outline:3px solid #FF9900;outline-offset:2px}
+.noti .n-av{position:relative;flex:none}
+.noti .avatar{width:44px;height:44px;border-color:#e2e2e2;font-size:13px}
+.noti .n-ico{position:absolute;right:-6px;bottom:-6px;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:12px;line-height:1;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.noti .n-txt{flex:1;min-width:0;overflow-wrap:anywhere}
+.noti .n-txt b{color:#000}
+.noti .n-cita{display:block;margin-top:6px;padding:5px 9px;background:#f3f3f3;border-left:3px solid #d6d6d6;border-radius:0 6px 6px 0;color:#555;font-size:13px}
+.noti .n-cita > span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.noti .n-cuando{margin-top:4px;font-size:12px;color:#8a8a8a}
+.noti.nueva{background:#FFF8EE}
+.noti.nueva::after{content:"";position:absolute;top:14px;right:14px;width:9px;height:9px;border-radius:50%;background:#FF9900}
+.noti.nueva .n-txt{padding-right:14px}
+#notificaciones .n-vacio{color:#8a8a8a;text-align:center;padding:30px 10px;font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 
 /* Rincón: lo que comparten tus amigos */
 .r-tipos{display:flex;gap:6px;flex-wrap:wrap}
@@ -461,10 +499,11 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
   body.editando{padding-right:380px}
 }
 /* "Reducir movimiento" del celu: se frena todo, menos el efecto del nick (lo elige cada uno para su perfil) */
-@media (prefers-reduced-motion: reduce){ *:not(.nick):not(.letra){animation:none !important} .frase-marq span{padding-left:0} }
+@media (prefers-reduced-motion: reduce){ *:not(.nick):not(.letra):not(#fondo-capa){animation:none !important} .frase-marq span{padding-left:0} }
 </style>
 </head>
 <body data-cajas="simple">
+<div id="fondo-capa" aria-hidden="true"><video id="fondo-video" muted loop playsinline autoplay preload="auto" disablepictureinpicture hidden></video></div>
 
 <!-- ================= ENTRADA ================= -->
 <section id="entrada" class="screen">
@@ -812,7 +851,7 @@ textarea.field{min-height:80px;padding:8px 10px;resize:vertical}
   <div data-sitio="notificaciones"></div>
   <main class="pagina" style="max-width:640px">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px">
-      <h1 style="font-size:22px;margin:0">notificaciones</h1>
+      <h1 class="n-titulo" style="font-size:22px;margin:0">notificaciones</h1>
       <a class="chico" href="#ajustes/notificaciones">⚙ sonidos y avisos</a>
     </div>
     <div id="n-lista"></div>
@@ -940,7 +979,7 @@ function pick(o, ks){ const r = {}; ks.forEach(k => r[k] = o[k]); return r; }
 /* ---------- Validación de perfiles ----------
    Lo que llega de Supabase lo escribió cada usuario y se puede modificar a mano:
    solo se aceptan claves conocidas con valores válidos; lo demás vuelve al valor por defecto. */
-const OPC = {tema:[...Object.keys(TEMAS),'propio'], patron:['liso','puntos','cuadrille','rayas','grilla','estrellas','corazones','estatica'],
+const OPC = {tema:[...Object.keys(TEMAS),'propio'], patron:['liso','puntos','cuadrille','rayas','grilla','estrellas','corazones','estatica','diagonales','zigzag','circulos','estrellasmov','corazonesmov','puntosmov','rayasmov','grillamov','lluvia','nieve','burbujas','estaticamov','degrade'],
   fuenteTitulo:Object.keys(FUENTES_T), fuenteTexto:Object.keys(FUENTES_B),
   efectoTitulo:['ninguno','sombra','glitch','brillo','arcoiris','ola','olacolor','arcoirismov','neon','latido','flotar','temblor','interferencia','brillocolor','neoncolor','olamicolor','destellos','degradecolor'], cajas:['simple','punteada','sin','win98'], avatarForma:['cuadrado','circulo'], fondoModo:['mosaico','cubrir']};
 const LARGOS = {frase:90, bio:400, ciudad:40, escuchando:100, musica:300, favoritos:400};
@@ -1164,6 +1203,7 @@ async function firmar(lista){ const rutas = [...new Set(lista.map(rutaMedia).fil
     if (error){ console.error('links temporales', error); continue; }               // si falla, la página sigue andando (usa el link público)
     (data || []).forEach(d => { if (d && !d.error && d.signedUrl && d.path){ firmadas.set(d.path, d.signedUrl); venceFirma.set(d.path, Date.now() + VIGENCIA * 1000); } }); } }
 async function firmarDeNuevo(v){ const r = rutaMedia(v); if (!r) return ''; venceFirma.delete(r); await firmar([r]); return ver(r); }
+const esVideoFondo = u => typeof u === 'string' && /\.(mp4|webm|mov|m4v)$/i.test(u);
 const rutasDePerfil = p => [p.avatar, p.fondoImg, ...p.fotos.map(f => f.img)];
 // Se renuevan antes de vencer (lo que ya está en pantalla sigue visible)
 setInterval(() => { if (sesion && firmadas.size) firmar([...firmadas.keys()]); }, 10 * 60 * 1000);   // renueva solo los que están por vencer
@@ -1250,7 +1290,23 @@ const svg = s => `url("data:image/svg+xml,${encodeURIComponent(s)}")`;
 const rgb = h => [0,2,4].map(i => (parseInt(h.replace('#','').substr(i,2),16)/255).toFixed(3));
 const ESTRELLA = 'M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 16.9 5.9 20.4l1.5-6.8L2.2 9l6.9-.7z', CORAZON = 'M12 21s-7-4.5-9.5-9A5 5 0 0112 6a5 5 0 019.5 6c-2.5 4.5-9.5 9-9.5 9z';
 const figura = (d, c) => svg(`<svg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 48 48'><g fill='${c}'><path transform='translate(4 4) scale(.7)' d='${d}'/><path transform='translate(28 28) scale(.5)' d='${d}'/></g></svg>`);
-function patron(t, c){ switch(t){
+// Patrones: [imagen, tamaño, posición, animación (si se mueve)]
+function patron(t, c, l){ const gota = (w, h, x, y1, y2, o) => `<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}'><line x1='${x}' y1='${y1}' x2='${x}' y2='${y2}' stroke='${c}' stroke-width='1.6' stroke-linecap='round' opacity='${o}'/></svg>`;
+  const copos = (w, pts, rr) => `<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${w}'>${pts.map(([x, y], i) => `<circle cx='${x}' cy='${y}' r='${rr[i % rr.length]}' fill='${c}'/>`).join('')}</svg>`;
+  switch(t){
+  case 'diagonales': return [`repeating-linear-gradient(45deg, ${c} 0 6px, transparent 6px 18px)`,'auto','0 0'];
+  case 'zigzag': return [`linear-gradient(135deg, ${c} 25%, transparent 25%), linear-gradient(225deg, ${c} 25%, transparent 25%), linear-gradient(315deg, ${c} 25%, transparent 25%), linear-gradient(45deg, ${c} 25%, transparent 25%)`,'24px 24px','-12px 0, -12px 0, 0 0, 0 0'];
+  case 'circulos': return [`radial-gradient(circle, transparent 8px, ${c} 9px, ${c} 11px, transparent 12px)`,'32px 32px','0 0'];
+  case 'estrellasmov': return [`${figura(ESTRELLA, c)}, ${figura(ESTRELLA, c)}`,'56px 56px, 32px 32px','0 0, 16px 16px','fdiag56 7s linear infinite'];
+  case 'corazonesmov': return [`${figura(CORAZON, c)}, ${figura(CORAZON, c)}`,'56px 56px, 84px 84px','0 0, 28px 0','fsube56 4s linear infinite'];
+  case 'puntosmov': return [`radial-gradient(${c} 1.5px, transparent 2px), radial-gradient(${c} 2.5px, transparent 3px)`,'28px 28px, 42px 42px','0 0, 14px 14px','fdiag28 5s linear infinite'];
+  case 'rayasmov': return [`linear-gradient(45deg, ${c} 25%, transparent 25%, transparent 50%, ${c} 50%, ${c} 75%, transparent 75%)`,'32px 32px','0 0','fcorre32 1.6s linear infinite'];
+  case 'grillamov': return [`linear-gradient(${c} 1px, transparent 1px), linear-gradient(90deg, ${c} 1px, transparent 1px)`,'24px 24px','0 0','favanza24 1.2s linear infinite'];
+  case 'lluvia': return [`${svg(gota(24, 48, 6, 4, 20, .9))}, ${svg(gota(26, 96, 19, 30, 52, .6))}`,'24px 48px, 26px 96px','0 0, 13px 0','flluvia .9s linear infinite'];
+  case 'nieve': return [`${svg(copos(90, [[10, 20], [55, 50], [30, 75]], [2.2, 1.6, 2.6]))}, ${svg(copos(140, [[20, 30], [90, 100], [120, 60]], [1.4, 2, 1.2]))}`,'90px 90px, 140px 140px','0 0, 40px 0','fnieve 9s linear infinite'];
+  case 'burbujas': return [`${svg(copos(120, [[20, 30], [80, 90]], [6, 10]).replace(/fill='([^']+)'/g, "fill='none' stroke='$1' stroke-width='1.5'"))}, ${svg(copos(200, [[60, 40], [150, 140]], [14, 8]).replace(/fill='([^']+)'/g, "fill='none' stroke='$1' stroke-width='1.2'"))}`,'120px 120px, 200px 200px','0 0, 30px 0','fburbujas 10s linear infinite'];
+  case 'estaticamov': { const [r,g,b] = rgb(c); return [svg(`<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 ${r} 0 0 0 0 ${g} 0 0 0 0 ${b} 1.6 0 0 0 -.55'/></filter><rect width='100%' height='100%' filter='url(#n)'/></svg>`),'180px 180px','0 0','festatica .35s steps(1) infinite']; }
+  case 'degrade': return [`linear-gradient(120deg, ${c}, ${l || c}, ${c}, ${l || c})`,'400% 400%','0% 50%','fdegrade 14s ease-in-out infinite'];
   case 'puntos': return [`radial-gradient(${c} 1.5px, transparent 2px), radial-gradient(${c} 1.5px, transparent 2px)`,'28px 28px','0 0, 14px 14px'];
   case 'cuadrille': return [`linear-gradient(45deg, ${c} 25%, transparent 25%, transparent 75%, ${c} 75%), linear-gradient(45deg, ${c} 25%, transparent 25%, transparent 75%, ${c} 75%)`,'24px 24px','0 0, 12px 12px'];
   case 'rayas': return [`repeating-linear-gradient(90deg, ${c} 0 12px, transparent 12px 24px)`,'auto','0 0'];
@@ -1264,9 +1320,14 @@ function aplicar(p){
   const r = document.documentElement.style;
   COLS.forEach(k => r.setProperty('--' + k, p[k]));
   r.setProperty('--logofilt', lum(p.box) < .3 ? 'invert(1)' : 'none');
-  if (p.fondoImg){ r.setProperty('--patimg', `url("${ver(p.fondoImg)}")`); r.setProperty('--patsize', p.fondoModo === 'cubrir' ? 'cover' : 'auto');
-    r.setProperty('--patrep', p.fondoModo === 'cubrir' ? 'no-repeat' : 'repeat'); r.setProperty('--patpos','center'); }
-  else { const [i,s,po] = patron(p.patron, p.bg2); r.setProperty('--patimg', i); r.setProperty('--patsize', s); r.setProperty('--patpos', po); r.setProperty('--patrep','repeat'); }
+  const vid = $('#fondo-video'), esVid = esVideoFondo(p.fondoImg);
+  if (p.fondoImg && !esVid){ r.setProperty('--patimg', `url("${ver(p.fondoImg)}")`); r.setProperty('--patsize', p.fondoModo === 'cubrir' ? 'cover' : 'auto');   // imagen o GIF (se mueve solo)
+    r.setProperty('--patrep', p.fondoModo === 'cubrir' ? 'no-repeat' : 'repeat'); r.setProperty('--patpos','center'); r.setProperty('--patanim', 'none'); }
+  else if (esVid){ r.setProperty('--patimg', 'none'); r.setProperty('--patanim', 'none'); }
+  else { const [i,s,po,an] = patron(p.patron, p.bg2, p.link); r.setProperty('--patimg', i); r.setProperty('--patsize', s); r.setProperty('--patpos', po); r.setProperty('--patrep','repeat'); r.setProperty('--patanim', an || 'none'); }
+  // Video de fondo: en loop, siempre sin sonido
+  if (esVid){ const u = ver(p.fondoImg); if (vid.dataset.ruta !== p.fondoImg){ vid.dataset.ruta = p.fondoImg; vid.src = u; } vid.hidden = false; vid.muted = true; vid.play().catch(() => {}); }
+  else if (!vid.hidden){ vid.hidden = true; vid.pause(); vid.removeAttribute('src'); delete vid.dataset.ruta; vid.load(); }
   r.setProperty('--ft', FUENTES_T[p.fuenteTitulo][0]); r.setProperty('--fb', FUENTES_B[p.fuenteTexto][0]);
   r.setProperty('--efc', esColor(p.colorEfecto) ? p.colorEfecto : '#FF3DCB');
   r.setProperty('--fs', p.tamano + 'px'); r.setProperty('--marco', p.marco + 'px');
@@ -1480,8 +1541,8 @@ const campo = (k, l, o = {}) => { const p = perfil(), tag = o.area ? 'textarea' 
   return `<div class="ed-grupo"><label class="lbl" for="ed-${k}">${l}</label><${tag} class="field" id="ed-${k}" data-key="${k}" ${o.tipo ? `type="${o.tipo}"` : ''} maxlength="${o.max || 80}" placeholder="${o.ph || ''}" ${o.area ? '' : `value="${esc(p[k])}"`}>${o.area ? esc(p[k]) : ''}</${tag}>${o.area ? `<div class="contador" id="cont-${k}">${p[k].length}/${o.max}</div>` : ''}</div>`; };
 const ops = (k, t, lista, grande) => `<div class="ed-grupo"><h3 id="h-${k}">${t}</h3><div class="ops" role="group" aria-labelledby="h-${k}">${lista.map(([v,n,st]) =>
   `<button type="button" class="op${grande ? ' grande' : ''}" data-op="${k}" data-val="${v}" aria-pressed="${String(perfil()[k]) === String(v)}" ${st ? `style="${st}"` : ''}>${n}</button>`).join('')}</div></div>`;
-const img = (k, t, max) => { const p = perfil(); return `<div class="ed-grupo"><h3>${t}</h3><div class="img-ed"><div class="img-prev" style="${p[k] ? `background-image:url('${esc(ver(p[k]))}')` : ''}">${p[k] ? '' : 'nada'}</div>
-  <div style="display:flex;flex-direction:column;gap:6px"><label class="ed-btn file-btn">subir<input type="file" accept="image/*" data-img="${k}" data-max="${max}" aria-label="Subir ${t}"></label>${p[k] ? `<button type="button" class="ed-btn" data-quitar="${k}">quitar</button>` : ''}</div></div></div>`; };
+const img = (k, t, max, acepta = 'image/*') => { const p = perfil(), vid = esVideoFondo(p[k]); return `<div class="ed-grupo"><h3>${t}</h3><div class="img-ed"><div class="img-prev" style="${p[k] && !vid ? `background-image:url('${esc(ver(p[k]))}')` : ''}">${vid ? '🎬 video' : p[k] ? '' : 'nada'}</div>
+  <div style="display:flex;flex-direction:column;gap:6px"><label class="ed-btn file-btn">subir<input type="file" accept="${acepta}" data-img="${k}" data-max="${max}" aria-label="Subir ${t}"></label>${p[k] ? `<button type="button" class="ed-btn" data-quitar="${k}">quitar</button>` : ''}</div></div></div>`; };
 const sw = (k, l) => `<label class="switch"><span>${l}</span><input type="checkbox" data-bool="${k}" ${perfil()[k] ? 'checked' : ''}></label>`;
 
 function pintarEd(){
@@ -1505,9 +1566,14 @@ function pintarEd(){
   if (pest === 'fondo'){
     h += img('avatar','avatar (la miniatura que sale cuando firmás)', 200);
     h += ops('avatarForma','forma del avatar',[['cuadrado','cuadrado'],['circulo','redondo']]);
-    h += img('fondoImg','imagen de fondo', 1400);
-    if (p.fondoImg) h += ops('fondoModo','cómo se ve',[['mosaico','mosaico'],['cubrir','pantalla completa']]);
-    h += ops('patron','patrón de fondo (si no hay imagen)',[['liso','liso'],['puntos','puntos'],['cuadrille','cuadrillé'],['rayas','rayas'],['grilla','grilla'],['estrellas','estrellas'],['corazones','corazones'],['estatica','estática']]);
+    h += img('fondoImg','imagen de fondo (foto, GIF o video corto)', 1400, 'image/*,video/*');
+    h += `<p class="muted" style="font-size:11px;margin:-6px 0 8px">GIF: hasta ${MAX_FONDO_GIF_MB} MB · video: hasta ${MAX_FONDO_SEG} segundos, se repite y nunca tiene sonido</p>`;
+    if (p.fondoImg && !esVideoFondo(p.fondoImg)) h += ops('fondoModo','cómo se ve',[['mosaico','mosaico'],['cubrir','pantalla completa']]);
+    h += ops('patron','patrón de fondo (si no hay imagen)',[['liso','liso'],['puntos','puntos'],['cuadrille','cuadrillé'],['rayas','rayas'],['grilla','grilla'],['estrellas','estrellas'],['corazones','corazones'],['estatica','estática'],
+      ['diagonales','diagonales'],['zigzag','zigzag'],['circulos','círculos'],
+      ['estrellasmov','estrellas ~'],['corazonesmov','corazones que suben ~'],['puntosmov','puntos ~'],['rayasmov','rayas que corren ~'],['grillamov','grilla que avanza ~'],
+      ['lluvia','lluvia ~'],['nieve','nieve ~'],['burbujas','burbujas ~'],['estaticamov','estática de tele ~'],['degrade','degradé de tus colores ~']]);
+    h += '<p class="muted" style="font-size:11px;margin:-4px 0 0">~ = se mueve · usan tus colores (fondo 2 y links)</p>';
     h += ops('marco','borde de la foto',[[0,'sin borde'],[1,'fino'],[4,'grueso'],[10,'muy grueso']]);
     h += `<div class="ed-grupo"><h3 id="h-stk">stickers sobre tu foto (hasta 8)</h3><div class="ops" role="group" aria-labelledby="h-stk">${STICKERS.map(s =>
       `<button type="button" class="op grande" data-stk="${s}" aria-pressed="${p.stickers.includes(s)}">${s}</button>`).join('')}</div></div>`;
@@ -1559,7 +1625,30 @@ ed.addEventListener('change', e => { const t = e.target;
   if (t.dataset.color) pintarEd();
   if (t.dataset.bool) cambiar(t.dataset.bool, t.checked);
   if (t.dataset.img === 'avatar' && t.files[0]){ abrirRecorte(t.files[0]); t.value = ''; return; }      // el avatar se acomoda antes de subirlo
+  if (t.dataset.img === 'fondoImg' && t.files[0] && (t.files[0].type === 'image/gif' || t.files[0].type.startsWith('video/') || /\.(gif|mp4|mov|webm|m4v)$/i.test(t.files[0].name))){
+    const f = t.files[0]; t.value = ''; subirFondoAnimado(f); return; }                                  // GIF o video: se sube aparte (sin pasarlo a JPG)
   if (t.dataset.img && t.files[0]){ alertaEd('subiendo imagen…'); subirImagen(t.files[0], +t.dataset.max).then(u => cambiar(t.dataset.img, u, true)).catch(er => { console.error(er); alertaEd('No se pudo subir la imagen.'); }); } });
+// Fondos animados: GIF tal cual; video corto, se achica a 720p y se le saca el sonido
+const MAX_FONDO_GIF_MB = 6, MAX_FONDO_SEG = 15, MAX_FONDO_VIDEO_MB = 12;
+const duracionVideo = f => new Promise(ok => { const v = document.createElement('video'), u = URL.createObjectURL(f); v.preload = 'metadata'; v.muted = true;
+  const fin = d => { URL.revokeObjectURL(u); ok(d); }; v.onloadedmetadata = () => fin(v.duration); v.onerror = () => fin(NaN); setTimeout(() => fin(NaN), 8000); v.src = u; });
+async function subirFondoAnimado(f){
+  try {
+    if (f.type === 'image/gif' || /\.gif$/i.test(f.name)){
+      if (f.size > MAX_FONDO_GIF_MB * 1048576) return alertaEd(`Ese GIF pesa ${mb(f.size)}. El máximo es ${MAX_FONDO_GIF_MB} MB.`);
+      alertaEd('subiendo el GIF…'); const path = await subirArchivo(f, 'gif'); await firmar([path]); return cambiar('fondoImg', urlPublica(path), true); }
+    const dur = await duracionVideo(f);
+    if (!(dur > 0)) return alertaEd('No se pudo leer ese video. Probá con otro (mp4 anda en todos los celus).');
+    if (dur > MAX_FONDO_SEG + .5) return alertaEd(`Ese video dura ${Math.round(dur)} segundos. Para fondo, que dure ${MAX_FONDO_SEG} segundos o menos.`);
+    const r = await revisarVideo(f); if (r.bloquear) return alertaEd(AYUDA_HEVC);
+    let vid = f;
+    if (tipoGrabacion() && (r.convertir || await seVeEnEsteEquipo(f))){                   // se re-graba a 720p y SIN sonido (más liviano)
+      try { vid = await convertirVideo(f, null, n => alertaEd(`preparando el video de fondo… ${n}%`)); } catch (er){ console.warn('fondo', er); if (r.convertir) return alertaEd(AYUDA_HEVC); vid = f; } }
+    if (vid.size > MAX_FONDO_VIDEO_MB * 1048576) return alertaEd(`El video pesa ${mb(vid.size)}. Para fondo, el máximo es ${MAX_FONDO_VIDEO_MB} MB: probá con uno más corto.`);
+    alertaEd(`subiendo el video de fondo (${mb(vid.size)})…`);
+    const path = await subirArchivo(await indiceAdelante(await limpiarUbicacion(vid)), /webm/i.test(vid.type) ? 'webm' : /quicktime/i.test(vid.type) || /\.mov$/i.test(vid.name || '') ? 'mov' : 'mp4');
+    await firmar([path]); cambiar('fondoImg', urlPublica(path), true);
+  } catch (er){ console.error('fondo animado', er); alertaEd('No se pudo subir el fondo. Probá de nuevo.'); } }
 function abrirEd(){ if (!esMio()) return; pintarEd(); ed.hidden = false; document.body.classList.add('editando'); $('#ed-tabs [aria-selected="true"]').focus(); }
 function cerrarEd(){ ed.hidden = true; document.body.classList.remove('editando'); }
 $('#abrir-editor').onclick = abrirEd; $('#cerrar-editor').onclick = cerrarEd; $('#ed-listo').onclick = cerrarEd;
@@ -2034,19 +2123,38 @@ const idSeguro = v => { const n = typeof v === 'number' ? v : (typeof v === 'str
 const txtSeguro = (v, max) => typeof v === 'string' ? v.slice(0, max) : '';
 const enlace = (href, html) => href ? `<a href="${esc(href)}">${html}</a>` : html;
 const entreComillas = t => !t ? '' : t.startsWith('«') ? t : '«' + t + '»';      // los avisos viejos ya traen «»
+// "hace 5 min", "hace 3 h", "ayer 14:30" o la fecha
+function cuandoNoti(t){ const d = new Date(t), m = Math.round((Date.now() - d) / 60000); if (!isFinite(m)) return '';
+  if (m < 1) return 'recién'; if (m < 60) return `hace ${m} min`; if (m < 24 * 60 && new Date().getDate() === d.getDate()) return `hace ${Math.round(m / 60)} h`;
+  const ay = new Date(); ay.setDate(ay.getDate() - 1); if (ay.toDateString() === d.toDateString()) return `ayer ${hora(t)}`;
+  return `${fecha(t)} ${hora(t)}`; }
+const ICONO_NOTI = {aceptada:'🤝', like:'❤️', 'like-perfil':'💖', comentario:'💬', grupo:'👥', admin:'⭐'};
 function pintarNotis(){
   const yo = perfil(); if (!yo) return; const l = $('#n-lista'); l.innerHTML = '';
-  if (!yo.notis.length) l.innerHTML = '<p class="muted chico" style="margin:0">no tenés notificaciones.</p>';
-  yo.notis.slice().reverse().forEach(n => { const x = porId(n.de); if (!x || !TIPOS_NOTI.includes(n.tipo)) return; const d = document.createElement('div'); d.className = 'noti' + (n.leida ? '' : ' nueva');
-    const cuando = `<span class="muted chico">· ${fecha(n.cuando)} ${hora(n.cuando)}</span>`, quien = enlace(linkPerfil(x), esc(x.apodo));
+  // los ♥ al mismo posteo se juntan en un solo aviso ("fulano y 3 más")
+  const lista = [], porPost = {};
+  yo.notis.slice().reverse().forEach(n => { const x = porId(n.de); if (!x || !TIPOS_NOTI.includes(n.tipo)) return;
+    const post = idSeguro(n.post), k = n.tipo === 'like' && post ? post + (n.leida ? 'v' : 'n') : null;
+    if (k && porPost[k]){ if (!porPost[k].otros.includes(x)) porPost[k].otros.push(x); return; }
+    const it = {n, x, otros:[]}; if (k) porPost[k] = it; lista.push(it); });
+  if (!lista.length){ l.innerHTML = '<p class="n-vacio">no tenés notificaciones todavía.</p>'; }
+  let seccion = null;
+  lista.forEach(({n, x, otros}) => {
+    const s = n.leida ? 'anteriores' : 'nuevas'; if (s !== seccion){ seccion = s; const h = document.createElement('h2'); h.className = 'n-grupo'; h.textContent = s; l.appendChild(h); }
     const post = idSeguro(n.post), conv = typeof n.conv === 'string' && /^[0-9a-f-]{36}$/.test(n.conv) ? n.conv : null, xid = idSeguro(x.id);
-    const lPost = enlace(post && '#inicio/' + post, 'posteo'), lGrupo = enlace(conv && '#chat/g' + conv, '«' + esc(txtSeguro(n.nombre, 40)) + '»');   // los avisos de grupos viejos (locales) quedan sin link
-    if (n.tipo === 'aceptada') d.innerHTML = `${quien} aceptó tu solicitud de amistad. ya pueden ${enlace(xid && '#chat/' + xid, 'chatear')}. ${cuando}`;
-    if (n.tipo === 'like-perfil') d.innerHTML = `${quien} le dio ♥ a <a href="#perfil">tu perfil</a>. ${cuando}`;
-    if (n.tipo === 'admin') d.innerHTML = `${quien} salió de ${lGrupo} y ahora sos admin del grupo. ${cuando}`;
-    if (n.tipo === 'grupo') d.innerHTML = `${quien} te sumó al grupo ${lGrupo}. ${cuando}`;
-    if (n.tipo === 'like') d.innerHTML = `${quien} le dio ♥ a tu ${lPost} ${esc(entreComillas(txtSeguro(n.resumen, 45)))} ${cuando}`;
-    if (n.tipo === 'comentario') d.innerHTML = `${quien} comentó tu ${lPost}: «${esc(txtSeguro(n.texto, 80))}» ${cuando}`;
+    const grupo = '«' + esc(txtSeguro(n.nombre, 40)) + '»', quien = `<b>${esc(x.apodo)}</b>` + (otros.length ? ` y ${otros.length} más` : '');
+    let txt = '', cita = '', ir = null;
+    if (n.tipo === 'aceptada'){ txt = `${quien} aceptó tu solicitud de amistad. ya pueden chatear.`; ir = xid && '#chat/' + xid; }
+    if (n.tipo === 'like-perfil'){ txt = `${quien} le dio ♥ a tu perfil.`; ir = '#perfil'; }
+    if (n.tipo === 'admin'){ txt = `${quien} salió de ${grupo}. ahora sos admin del grupo.`; ir = conv && '#chat/g' + conv; }
+    if (n.tipo === 'grupo'){ txt = `${quien} te sumó al grupo ${grupo}.`; ir = conv && '#chat/g' + conv; }
+    if (n.tipo === 'like'){ txt = `${quien} ${otros.length ? 'le dieron' : 'le dio'} ♥ a tu posteo.`; cita = txtSeguro(n.resumen, 90).replace(/^«|»$/g, ''); ir = post && '#inicio/' + post; }
+    if (n.tipo === 'comentario'){ txt = `${quien} comentó tu posteo:`; cita = txtSeguro(n.texto, 160); ir = post && '#inicio/' + post; }
+    const d = document.createElement(ir || xid ? 'a' : 'div'); d.className = 'noti' + (n.leida ? '' : ' nueva');
+    if (d.tagName === 'A') d.href = ir || linkPerfil(x);                                  // toda la tarjeta lleva a lo que se avisa
+    d.innerHTML = `<span class="n-av"><span class="avatar"></span><span class="n-ico" aria-hidden="true">${ICONO_NOTI[n.tipo]}</span></span>
+      <span class="n-txt"><span>${txt}</span>${cita ? `<span class="n-cita"><span>${esc(cita)}</span></span>` : ''}<span class="n-cuando" style="display:block">${cuandoNoti(n.cuando)}</span></span>`;
+    ponerAvatar(d.querySelector('.avatar'), x);
     l.appendChild(d); });
   if (yo.notis.some(n => !n.leida)) sb.from('notificaciones').update({leida:true}).eq('para', yo.uid).eq('leida', false).then(({error}) => falla('marcar las notificaciones', error));
   yo.notis.forEach(n => n.leida = true); actualizarMenu();
@@ -2648,7 +2756,7 @@ function mostrar(){ const [h, arg] = location.hash.slice(1).split('/'); let id =
     if (id === 'ajustes') pintarAjustes(arg);
     if (id === 'notificaciones') pintarNotis(); }
   actualizarMenu();
-  $$('.screen').forEach(s => s.classList.toggle('activa', s.id === id)); if (id !== 'perfil' && !ed.hidden) cerrarEd(); if (id === 'inicio' && arg){ resaltar = +arg; pintarFeed(); } else window.scrollTo(0,0); }
+  $$('.screen').forEach(s => s.classList.toggle('activa', s.id === id)); document.documentElement.classList.toggle('en-notis', id === 'notificaciones'); if (id !== 'perfil' && !ed.hidden) cerrarEd(); if (id === 'inicio' && arg){ resaltar = +arg; pintarFeed(); } else window.scrollTo(0,0); }
 window.addEventListener('hashchange', mostrar);
 
 /* ---------- Estela del mouse ---------- */
