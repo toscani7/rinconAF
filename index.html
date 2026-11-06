@@ -96,7 +96,7 @@ h1,h2,h3{font-family:var(--ft);color:var(--title);margin:0;line-height:1.25}
 .insignia.beta{color:#1C2127;text-shadow:0 1px 0 rgba(255,255,255,.6);background:linear-gradient(135deg,#FFFFFF 0%,#DCE1E6 25%,#A6AEB6 52%,#F0F3F5 75%,#8B949C 100%);border:1px solid #F5F7F9;box-shadow:0 0 0 1px #59616A, 0 0 8px rgba(205,215,225,.45)}
 .insignia::after{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.8),transparent);transform:skewX(-20deg);animation:destelloInsignia 3.6s ease-in-out infinite}
 .insignia.beta::after{animation-delay:1.2s}
-/* Medallas: logos chiquitos al lado del nick (hasta 2); al pasar el mouse o tocarlas muestran su descripción */
+/* Medallas: logos chiquitos al lado del nick (hasta 3); al pasar el mouse o tocarlas muestran su descripción */
 .medalla{position:relative;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;flex:none;cursor:help;outline:none;vertical-align:middle}
 .medalla img{width:100%;height:100%;object-fit:contain;display:block}
 .medalla .emo{font-size:19px;line-height:1}
@@ -696,7 +696,7 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
       <button type="button" data-psec="insignias" aria-current="false" id="psec-insignias">insignias</button>
     </nav>
 
-    <!-- Insignias: todas las que tiene esta persona, separadas por valor; en tu perfil elegís hasta 2 para tu nick -->
+    <!-- Insignias: todas las que tiene esta persona, separadas por valor; en tu perfil elegís hasta 3 para tu nick -->
     <section id="p-insignias-sec" hidden aria-labelledby="psec-insignias">
       <div id="p-ins"></div>
     </section>
@@ -1046,7 +1046,7 @@ const esColor = v => typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v);
 const imagenPropia = (v, uid) => { const pre = String((window.RINCON_CONFIG || {}).supabaseUrl || '').replace(/\/+$/, '') + '/storage/v1/object/public/media/' + uid + '/';
   return typeof v === 'string' && uid && v.startsWith(pre) && /^[A-Za-z0-9._-]+$/.test(v.slice(pre.length)) ? v : ''; };
 // Portadas de canciones: solo imágenes de los servidores de Spotify, YouTube / YouTube Music y SoundCloud
-const MAX_PUESTAS = 2;
+const MAX_PUESTAS = 3;
 const ESCUDO_OK = /^https:\/\/(www\.|r2\.)?thesportsdb\.com\/images\/media\/team\/badge\/[A-Za-z0-9._-]+\.(png|jpg|jpeg|webp)$/;
 const TAPA_OK = /^https:\/\/(i\.scdn\.co|[a-z0-9-]+\.spotifycdn\.com|i\d*\.sndcdn\.com|i\d?\.ytimg\.com|lh\d\.googleusercontent\.com|yt\d\.ggpht\.com)\/[^\s"'()<>]+$/;
 function sanearPerfil(d, uid){ const b = base(), r = {}; d = d && typeof d === 'object' && !Array.isArray(d) ? d : {};
@@ -1062,7 +1062,7 @@ function sanearPerfil(d, uid){ const b = base(), r = {}; d = d && typeof d === '
   r.escuchandoArtista = typeof d.escuchandoArtista === 'string' ? d.escuchandoArtista.slice(0, 80) : '';
   r.escuchandoTipo = ['tema','artista','álbum','playlist','podcast'].includes(d.escuchandoTipo) ? d.escuchandoTipo : 'tema';
   r.escuchandoImg = typeof d.escuchandoImg === 'string' && TAPA_OK.test(d.escuchandoImg) ? d.escuchandoImg : '';   // portada: solo de Spotify, YouTube o SoundCloud
-  // Insignias que se pone al lado del nick (hasta 2) y equipos de fútbol (hasta 2, escudos de TheSportsDB)
+  // Insignias que se pone al lado del nick (hasta 3) y equipos de fútbol (hasta 2, escudos de TheSportsDB)
   r.puestas = Array.isArray(d.puestas) ? [...new Set(d.puestas.filter(x => typeof x === 'string' && /^(mod:(fundador|beta)|ins:[a-z0-9-]{2,40}|fut:\d{1,10})$/.test(x)))].slice(0, MAX_PUESTAS) : null;
   r.equipos = (Array.isArray(d.equipos) ? d.equipos : []).filter(e => e && typeof e === 'object' && typeof e.id === 'string' && /^\d{1,10}$/.test(e.id) && typeof e.escudo === 'string' && ESCUDO_OK.test(e.escudo))
     .map(e => ({id:e.id, nombre:typeof e.nombre === 'string' ? e.nombre.slice(0, 40) : '', escudo:e.escudo})).filter((e, i, a) => a.findIndex(q => q.id === e.id) === i).slice(0, 2);
