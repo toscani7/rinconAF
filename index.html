@@ -472,6 +472,10 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
 .aj-item:hover,.aj-item:focus-visible{background:var(--bg2)}
 .aj-item span[aria-hidden]{color:var(--muted);font-size:20px}
 .aj-salir{color:#FF5C5C;font-weight:bold}
+.nov-lista{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.45}
+.nov-lista b{color:var(--title)}
+#modal-novedades .modal{max-width:480px}
+.aj-version{margin:14px 0 0;text-align:center;font-size:11px;color:var(--muted)}
 #reco-texto{width:100%;resize:vertical;min-height:110px}
 .buzon-item.nueva{border-left:4px solid var(--link)}
 .reco-tipos{display:flex;flex-wrap:wrap;gap:6px}
@@ -945,6 +949,21 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
 </div>
 
 <!-- Mini ventana al tocar un sticker del chat: verlo grande y guardarlo -->
+<div class="modal-fondo" id="modal-novedades" hidden>
+  <div class="modal" role="dialog" aria-labelledby="nov-titulo" aria-modal="true">
+    <h2 id="nov-titulo" style="margin:0;font-size:18px;color:var(--title)">✨ novedades de RincónAF</h2>
+    <p class="muted chico" style="margin:-6px 0 0" id="nov-version"></p>
+    <ul class="nov-lista">
+      <li><b>⌨️ botón F5 nuevo.</b> ahora está arriba en todas las pantallas (en la compu al lado de la lupa, en el celu al lado de la tuerquita). trae lo nuevo sin moverte de donde estás. y si recargás la página, te quedás en la misma sección.</li>
+      <li><b>🎭 stickers.</b> en el chat tocá 🎭 para mandar uno. para crear el tuyo, en ese mismo panel tocá «+ crear sticker»: elegí una foto y recortala en círculo, cuadrado o corazón, o subí un GIF. si te mandan uno que te gusta, tocalo y «guardar». también se pueden mandar como comentario en los posteos.</li>
+      <li><b>🏷️ etiquetas.</b> en un posteo o comentario escribí @ y el nick de un amigo. le llega un aviso y su nombre queda resaltado con link a su perfil.</li>
+      <li><b>↩️ responder comentarios.</b> tocá «responder» abajo de un comentario. a esa persona le llega un aviso.</li>
+      <li><b>💡 recomendaciones.</b> en ajustes ⚙️ podés dejar ideas, cosas para cambiar o arreglar. las leemos para las próximas actualizaciones.</li>
+      <li><b>🔧 arreglos.</b> se corrigieron algunos errores.</li>
+    </ul>
+    <button type="button" class="btn lleno" id="nov-ok">¡dale!</button>
+  </div>
+</div>
 <div class="modal-fondo" id="modal-stk-ver" hidden>
   <div class="modal" role="dialog" aria-label="sticker" aria-modal="true">
     <div id="stkv-img"></div>
@@ -1015,6 +1034,7 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
         <a class="aj-item" href="#" data-legal="terminos"><span>📄 legal</span><span aria-hidden="true">›</span></a>
         <button class="aj-item aj-salir" type="button" data-salir><span>salir</span></button>
       </div>
+      <p class="aj-version" id="aj-version"></p>
     </div>
     <div id="aj-notis" hidden>
       <a class="chico" href="#ajustes" style="display:inline-flex;align-items:center;min-height:40px">‹ ajustes</a>
@@ -1138,7 +1158,7 @@ function base(){ return {
   tema:'clasico', ...pick(TEMAS.clasico, [...COLS,'patron','fuenteTitulo','fuenteTexto']),
   puestas:null, equipos:[], tamano:14, efectoTitulo:'ninguno', colorEfecto:'#FF3DCB', contorno:'no', colorContorno:'#000000', cajas:'simple', marco:1, stickers:[],
   marquesina:false, estela:false, anteriores:true, sobre:true, ff_ver:true, favs:true, contador:true,
-  visitas:0, creado:Date.now(), nuevo:true, fotos:[], ff:[], id:0, recibidas:[], notis:[], leidos:{}, fans:[]
+  visitas:0, creado:Date.now(), nuevo:true, novedades:'', fotos:[], ff:[], id:0, recibidas:[], notis:[], leidos:{}, fans:[]
 }; }
 function pick(o, ks){ const r = {}; ks.forEach(k => r[k] = o[k]); return r; }
 
@@ -1163,6 +1183,7 @@ function sanearPerfil(d, uid){ const b = base(), r = {}; d = d && typeof d === '
   Object.entries(OPC).forEach(([k, l]) => r[k] = l.includes(d[k]) ? d[k] : b[k]);
   Object.entries(LARGOS).forEach(([k, n]) => r[k] = typeof d[k] === 'string' ? d[k].slice(0, n) : b[k]);
   BOOLS.forEach(k => r[k] = typeof d[k] === 'boolean' ? d[k] : b[k]);
+  r.novedades = typeof d.novedades === 'string' && /^\d{1,3}\.\d{1,3}$/.test(d.novedades) ? d.novedades : '';   // última versión cuyas novedades ya vio
   if (r.favoritos.trim() === 'flor\ntomi\ncaro') r.favoritos = '';                       // los de ejemplo que venían de fábrica
   r.escuchandoUrl = typeof d.escuchandoUrl === 'string' && d.escuchandoUrl.length <= 300 && /^https?:\/\/\S+$/i.test(d.escuchandoUrl) ? d.escuchandoUrl : '';
   r.escuchandoCuando = Number.isFinite(d.escuchandoCuando) && d.escuchandoCuando > 0 ? d.escuchandoCuando : 0;
@@ -1937,7 +1958,7 @@ function abrirEd(){ if (!esMio()) return; pintarEd(); ed.hidden = false; documen
 function cerrarEd(){ ed.hidden = true; document.body.classList.remove('editando'); }
 $('#abrir-editor').onclick = abrirEd; $('#cerrar-editor').onclick = cerrarEd; $('#ed-listo').onclick = cerrarEd;
 $('#ed-reset').onclick = () => { if (!confirm('¿Volver los colores, letras y fondo a como estaban al principio? Tus fotos y firmas no se tocan.')) return;
-  const p = perfil(); const keep = pick(p, ['apodo','frase','bio','ciudad','cumple','escuchando','musica','favoritos','avatar','visitas','creado','fotos']);
+  const p = perfil(); const keep = pick(p, ['apodo','frase','bio','ciudad','cumple','escuchando','musica','favoritos','avatar','visitas','creado','fotos','novedades']);
   usuarios[sesion].perfil = {...base(), ...keep, ...pick(p, ['uid','id','ff','recibidas','notis','fans','leidos']), nuevo:false}; guardar(); viendo = perfil(); aplicar(viendo); pintar(); pintarEd(); };
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !ed.hidden) cerrarEd(); });
 
@@ -2610,6 +2631,17 @@ let recoTipo = 'otra';
 const pintarTiposReco = () => { $('#reco-tipos').innerHTML = TIPOS_RECO.map(([k, t]) => `<button type="button" data-reco-tipo="${k}" aria-pressed="${k === recoTipo}">${t}</button>`).join(''); };
 pintarTiposReco();
 $('#reco-tipos').addEventListener('click', e => { const b = e.target.closest('[data-reco-tipo]'); if (b){ recoTipo = b.dataset.recoTipo; pintarTiposReco(); } });
+// Versión de RincónAF: se sube en cada actualización (1.1, 1.2… cambios chicos; 2.0 cambios grandes)
+const VERSION_RINCON = '1.0';
+$('#aj-version').textContent = 'versión ' + VERSION_RINCON;
+// Cartel de novedades: sale una sola vez por versión y por cuenta (queda anotado en el perfil, sirve en todos los dispositivos)
+function mostrarNovedades(){ const p = perfil(); if (!p || p.novedades === VERSION_RINCON) return;
+  if (p.nuevo){ p.novedades = VERSION_RINCON; guardar(); return; }          // cuentas recién creadas: no hay nada "nuevo" que contarles
+  $('#nov-version').textContent = 'versión ' + VERSION_RINCON; $('#modal-novedades').hidden = false; setTimeout(() => $('#nov-ok').focus(), 50); }
+function cerrarNovedades(){ if ($('#modal-novedades').hidden) return; $('#modal-novedades').hidden = true; const p = perfil(); if (p){ p.novedades = VERSION_RINCON; guardar(); } }
+$('#nov-ok').onclick = cerrarNovedades;
+$('#modal-novedades').addEventListener('click', e => { if (e.target.id === 'modal-novedades') cerrarNovedades(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarNovedades(); });
 // Recomendaciones: cualquiera las manda; solo la cuenta fundadora las puede leer (lo controla la base de datos)
 $('#reco-texto').addEventListener('input', e => { $('#reco-cuenta').textContent = e.target.value.length; });
 $('#reco-form').addEventListener('submit', async e => { e.preventDefault(); const ta = $('#reco-texto'), t = ta.value.trim(), b = e.target.querySelector('[type=submit]');
@@ -3179,6 +3211,7 @@ function seguirEntrando(){
   viendo = null; verFoto = null; aplicar(perfil());
   conectarRealtime(); cargarConvs(); rposts = []; rEstado = 'nada'; pasarRinconViejo(); reafirmarPush();
   if (perfil().nuevo) setTimeout(() => { if (esMio()) abrirEd(); }, 300);   // la primera vez se abre el editor
+  setTimeout(mostrarNovedades, 600);
   const sec = location.hash.slice(1).split('/')[0];   // si recargaste la página, te quedás donde estabas
   if (!perfil().nuevo && PANT.includes(sec) && sec !== 'entrada') mostrar();
   else if (location.hash === '#perfil') mostrar(); else location.hash = '#perfil'; }
