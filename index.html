@@ -391,6 +391,24 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
 #p-avatar.se-agranda,.avatar.se-agranda{cursor:zoom-in}
 .recorte{position:relative;width:min(280px, 100%);aspect-ratio:1;margin:0 auto;overflow:hidden;background:#000;touch-action:none;cursor:grab;border:1px solid var(--line)}
 .recorte.redondo{border-radius:50%}
+/* Stickers: forma del recorte */
+.recorte.f-circulo{border-radius:50%}
+.recorte.f-cuadrado{border-radius:14%}
+.recorte.f-corazon{-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 92 C20 70 2 52 2 30 C2 14 14 3 28 3 C38 3 46 9 50 17 C54 9 62 3 72 3 C86 3 98 14 98 30 C98 52 80 70 50 92Z'/%3E%3C/svg%3E") center/100% 100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 92 C20 70 2 52 2 30 C2 14 14 3 28 3 C38 3 46 9 50 17 C54 9 62 3 72 3 C86 3 98 14 98 30 C98 52 80 70 50 92Z'/%3E%3C/svg%3E") center/100% 100% no-repeat;border:0}
+.rec-formas{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.rec-formas button[aria-pressed="true"]{background:var(--link);color:var(--box);border-color:var(--link)}
+/* Stickers en el chat */
+.linea.con-sticker{display:block}
+.sticker-msg{display:block;margin-top:4px}
+.sticker-msg img{display:block;width:140px;height:140px;object-fit:contain;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+.linea.yo .sticker-msg img{margin-left:auto}
+.sticker-msg .guardar-stk{margin-top:2px;font-size:11px}
+.stk-grilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;max-height:min(50vh,360px);overflow:auto;padding:2px}
+.stk-item{position:relative;aspect-ratio:1;background:none;border:1px solid transparent;padding:4px;cursor:pointer}
+.stk-item:hover,.stk-item:focus-visible{border-color:var(--link);outline:none}
+.stk-item img{width:100%;height:100%;object-fit:contain;display:block}
+.stk-item .stk-x{position:absolute;top:-6px;right:-6px;width:22px;height:22px;background:var(--box);border:1px solid var(--line);color:var(--muted);font:bold 11px/20px Verdana, sans-serif;text-align:center}
+.stk-vacio{grid-column:1/-1;margin:0}
 .recorte.agarrando{cursor:grabbing}
 .recorte img{position:absolute;left:0;top:0;transform-origin:0 0;max-width:none;user-select:none;pointer-events:none}
 .screen.activa:not(#entrada){min-height:calc(100dvh - 34px)}             /* así "legal" queda abajo del todo aunque la página sea corta */
@@ -860,10 +878,23 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
     <div style="display:flex;justify-content:space-between;align-items:center"><h2 id="rec-t" style="font-size:17px">acomodá tu foto</h2>
       <button type="button" class="btn" id="rec-cerrar" aria-label="Cancelar">×</button></div>
     <p class="muted chico" style="margin:0">arrastrá la foto para elegir qué parte se ve y usá la barra para acercar o alejar.</p>
+    <div class="rec-formas" id="rec-formas" hidden role="group" aria-label="forma del sticker"><button type="button" class="btn" data-forma="circulo">círculo</button><button type="button" class="btn" data-forma="cuadrado">cuadrado</button><button type="button" class="btn" data-forma="corazon">corazón</button></div>
     <div class="recorte" id="rec-area"><img id="rec-img" alt="vista previa de tu foto de perfil" draggable="false"></div>
     <div><label class="lbl" for="rec-zoom">zoom</label><input class="rango" id="rec-zoom" type="range" min="1" max="4" step="0.01" value="1"></div>
     <p class="msg" id="rec-msg" role="alert"></p>
     <button class="btn lleno" type="button" id="rec-usar">usar esta parte</button>
+  </div>
+</div>
+
+<!-- Stickers: los tuyos y los que guardaste; se crean desde una foto (recorte) o un GIF -->
+<div class="modal-fondo" id="modal-stickers" hidden>
+  <div class="modal" role="dialog" aria-labelledby="stk-t" aria-modal="true">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2 id="stk-t" style="font-size:17px">stickers</h2>
+      <span style="display:flex;gap:6px"><button type="button" class="btn" id="stk-editar" aria-pressed="false">quitar</button><button type="button" class="btn" id="stk-cerrar" aria-label="Cerrar">×</button></span></div>
+    <div class="stk-grilla" id="stk-grilla"></div>
+    <label class="btn file-btn lleno" style="display:flex;justify-content:center">+ crear sticker (foto o GIF)<input type="file" accept="image/*" id="stk-nuevo" aria-label="Crear sticker con una foto o un GIF"></label>
+    <p class="muted chico" style="margin:0">foto: la recortás en círculo, cuadrado o corazón. GIF: hasta 1,5 MB, se manda tal cual.</p>
+    <p class="msg" id="stk-msg" role="alert"></p>
   </div>
 </div>
 
@@ -1836,11 +1867,14 @@ function recZoom(z){ const L = recLado(), cx = (L / 2 - REC.x) / REC.esc, cy = (
   REC.esc = REC.base * z; REC.x = L / 2 - cx * REC.esc; REC.y = L / 2 - cy * REC.esc; recPintar(); }
 // Sirve para el avatar y para la foto de los grupos: o.redondo (vista previa redonda), o.listo(blob) (qué hacer con el recorte), o.error(texto)
 function abrirRecorte(file, o = {}){ const error = o.error || alertaEd; if (!file.type.startsWith('image/')) return error('Elegí una imagen.');
-  REC.listo = o.listo || subirAvatar; REC.textoSubiendo = o.subiendo || 'subiendo tu foto…';
+  REC.listo = o.listo || subirAvatar; REC.textoSubiendo = o.subiendo || 'subiendo tu foto…'; REC.sticker = !!o.sticker;
+  $('#rec-formas').hidden = !REC.sticker; ['f-circulo','f-cuadrado','f-corazon'].forEach(k => $('#rec-area').classList.remove(k));
+  if (REC.sticker) ponerForma(REC.forma || 'circulo');
+  $('#rec-usar').textContent = REC.sticker ? 'crear sticker' : 'usar esta parte';
   $('#rec-t').textContent = o.titulo || 'acomodá tu foto';
   if (REC.url) URL.revokeObjectURL(REC.url); REC.url = URL.createObjectURL(file);
   const im = $('#rec-img'); $('#rec-msg').className = 'msg'; $('#rec-usar').disabled = false;
-  $('#rec-area').classList.toggle('redondo', o.redondo ?? perfil()?.avatarForma === 'circulo');
+  $('#rec-area').classList.toggle('redondo', !REC.sticker && (o.redondo ?? perfil()?.avatarForma === 'circulo'));
   im.onload = () => { REC.w = im.naturalWidth; REC.h = im.naturalHeight; im.style.width = REC.w + 'px'; im.style.height = REC.h + 'px';
     $('#modal-recorte').hidden = false; const L = recLado(); REC.base = L / Math.min(REC.w, REC.h); REC.esc = REC.base;
     REC.x = (L - REC.w * REC.esc) / 2; REC.y = (L - REC.h * REC.esc) / 2; $('#rec-zoom').value = 1; recPintar(); $('#rec-usar').focus(); };
@@ -1856,10 +1890,28 @@ $('#rec-zoom').addEventListener('input', e => recZoom(+e.target.value));
 $('#rec-cerrar').onclick = cerrarRecorte;
 $('#modal-recorte').addEventListener('click', e => { if (e.target.id === 'modal-recorte') cerrarRecorte(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal-recorte').hidden) cerrarRecorte(); });
+function ponerForma(f){ REC.forma = f; ['f-circulo','f-cuadrado','f-corazon'].forEach(k => $('#rec-area').classList.toggle(k, k === 'f-' + f));
+  $$('#rec-formas [data-forma]').forEach(b => b.setAttribute('aria-pressed', b.dataset.forma === f)); }
+$('#rec-formas').addEventListener('click', e => { const b = e.target.closest('[data-forma]'); if (b) ponerForma(b.dataset.forma); });
+// Sticker: 512×512 con fondo transparente, recortado con la forma elegida y un borde blanco como los de WhatsApp
+function formaSticker(g, f, n){ g.beginPath();
+  if (f === 'cuadrado'){ const r = n * .14; g.moveTo(r, 0); g.arcTo(n, 0, n, n, r); g.arcTo(n, n, 0, n, r); g.arcTo(0, n, 0, 0, r); g.arcTo(0, 0, n, 0, r); }
+  else if (f === 'corazon'){ const k = n / 100; g.moveTo(50 * k, 92 * k); g.bezierCurveTo(20 * k, 70 * k, 2 * k, 52 * k, 2 * k, 30 * k); g.bezierCurveTo(2 * k, 14 * k, 14 * k, 3 * k, 28 * k, 3 * k);
+    g.bezierCurveTo(38 * k, 3 * k, 46 * k, 9 * k, 50 * k, 17 * k); g.bezierCurveTo(54 * k, 9 * k, 62 * k, 3 * k, 72 * k, 3 * k); g.bezierCurveTo(86 * k, 3 * k, 98 * k, 14 * k, 98 * k, 30 * k);
+    g.bezierCurveTo(98 * k, 52 * k, 80 * k, 70 * k, 50 * k, 92 * k); }
+  else g.arc(n / 2, n / 2, n / 2, 0, Math.PI * 2);
+  g.closePath(); }
+async function blobSticker(){ const L = recLado(), N = 512, m = 14, c = document.createElement('canvas'); c.width = c.height = N; const g = c.getContext('2d');
+  g.save(); g.translate(m, m); formaSticker(g, REC.forma, N - 2 * m); g.fillStyle = '#fff'; g.shadowColor = 'rgba(0,0,0,.25)'; g.shadowBlur = 8; g.fill(); g.restore();
+  g.save(); g.translate(m + 9, m + 9); formaSticker(g, REC.forma, N - 2 * m - 18); g.clip();
+  g.drawImage($('#rec-img'), -REC.x / REC.esc, -REC.y / REC.esc, L / REC.esc, L / REC.esc, 0, 0, N - 2 * m - 18, N - 2 * m - 18); g.restore();
+  const webp = await new Promise(ok => c.toBlob(ok, 'image/webp', .9));
+  if (webp && webp.type === 'image/webp') return webp;                        // algunos navegadores (Safari) no hacen webp: va en png
+  return new Promise((ok, mal) => c.toBlob(x => x ? ok(x) : mal(new Error('sin imagen')), 'image/png')); }
 $('#rec-usar').onclick = async () => { const b = $('#rec-usar'), L = recLado(), lado = 400, c = document.createElement('canvas'); c.width = c.height = lado;
-  c.getContext('2d').drawImage($('#rec-img'), -REC.x / REC.esc, -REC.y / REC.esc, L / REC.esc, L / REC.esc, 0, 0, lado, lado);
+  if (!REC.sticker) c.getContext('2d').drawImage($('#rec-img'), -REC.x / REC.esc, -REC.y / REC.esc, L / REC.esc, L / REC.esc, 0, 0, lado, lado);
   b.disabled = true; msg('#rec-msg', REC.textoSubiendo, 'ok');
-  try { const blob = await new Promise((ok, mal) => c.toBlob(x => x ? ok(x) : mal(new Error('sin imagen')), 'image/jpeg', .85));
+  try { const blob = REC.sticker ? await blobSticker() : await new Promise((ok, mal) => c.toBlob(x => x ? ok(x) : mal(new Error('sin imagen')), 'image/jpeg', .85));
     await REC.listo(blob); cerrarRecorte(); }
   catch (er){ console.error(er); b.disabled = false; msg('#rec-msg', 'No se pudo subir la foto. Probá de nuevo.'); } };
 
@@ -2031,6 +2083,65 @@ function cargarMediaPriv(el){ const path = el.dataset.adj;
   sb.storage.from(BUCKET_CHAT).createSignedUrl(path, 3600).then(({data, error}) => {
     if (error || !data?.signedUrl){ el.textContent = 'no se pudo cargar el archivo'; return; }
     urlsChat.set(path, {url:data.signedUrl, vence:Date.now() + 50 * 60000}); usar(data.signedUrl); }); }
+/* ---------- Stickers ----------
+   Tabla "stickers" (el archivo va en tu carpeta de "media") + "stickers_guardados" (tu colección). Si guardaste uno, es tuyo
+   aunque quien lo hizo lo quite de los suyos. Los mensajes de sticker llevan el número del sticker. */
+const STK = {info:new Map(), mios:[], cargados:false, editar:false, conv:null, pidiendo:new Set()};
+const MAX_GIF_STICKER = 1.5 * 1048576;
+async function infoStickers(ids){ const faltan = [...new Set(ids.map(Number))].filter(i => i > 0 && !STK.info.has(i) && !STK.pidiendo.has(i)); if (!faltan.length) return;
+  faltan.forEach(i => STK.pidiendo.add(i));
+  const {data, error} = await sb.from('stickers').select('id, path, animado').in('id', faltan); faltan.forEach(i => STK.pidiendo.delete(i));
+  if (error){ console.warn('stickers', error); return; }
+  (data || []).forEach(x => { if (rutaMedia(x.path)) STK.info.set(Number(x.id), {id:Number(x.id), path:x.path, animado:!!x.animado}); });
+  await firmar((data || []).map(x => x.path)); }
+async function cargarMisStickers(){ const {data, error} = await sb.from('stickers_guardados').select('sticker, creado').eq('usuario', sesion).order('creado', {ascending:false});
+  if (error){ console.warn('mis stickers', error); return false; }
+  STK.mios = (data || []).map(x => Number(x.sticker)); STK.cargados = true; await infoStickers(STK.mios); return true; }
+const imgSticker = (i, alt) => { const x = STK.info.get(Number(i)); return x ? `<img src="${esc(ver(x.path))}" alt="${esc(alt)}" loading="lazy" draggable="false">` : ''; };
+async function pintarStickersMsg(ln){ const els = [...ln.querySelectorAll('.sticker-msg[data-sticker]')]; if (!els.length) return;
+  if (!STK.cargados) await cargarMisStickers();
+  await infoStickers(els.map(e => e.dataset.sticker));
+  els.forEach(e => { const id = Number(e.dataset.sticker), h = imgSticker(id, e.dataset.alt);
+    if (!h){ e.innerHTML = '<span class="muted chico">sticker no disponible</span>'; return; }
+    e.innerHTML = h + (e.dataset.mio ? '' : STK.mios.includes(id) ? '<span class="muted chico guardar-stk" style="display:block">✓ en tus stickers</span>'
+      : `<button type="button" class="borrar guardar-stk" data-guardar-stk="${id}">guardar sticker</button>`); }); }
+async function guardarSticker(id, de){ id = Number(id); if (STK.mios.includes(id)) return true;
+  const {error} = await sb.from('stickers_guardados').insert({usuario:sesion, sticker:id});
+  if (error && !/duplicate|23505/.test(error.message + error.code)){ console.error('guardar sticker', error); return false; }
+  STK.mios.unshift(id); return true; }
+document.addEventListener('click', async e => { const b = e.target.closest('[data-guardar-stk]'); if (!b) return; b.disabled = true; b.textContent = 'guardando…';
+  if (await guardarSticker(b.dataset.guardarStk)) b.outerHTML = '<span class="muted chico guardar-stk" style="display:block">✓ en tus stickers</span>';
+  else { b.disabled = false; b.textContent = 'no se pudo guardar. reintentar'; } });
+async function abrirStickers(c){ STK.conv = c; STK.editar = false; $('#stk-editar').setAttribute('aria-pressed', 'false'); $('#stk-editar').textContent = 'quitar';
+  $('#stk-msg').className = 'msg'; $('#stk-msg').textContent = ''; $('#modal-stickers').hidden = false;
+  if (!STK.cargados){ $('#stk-grilla').innerHTML = '<p class="muted chico stk-vacio">cargando…</p>'; await cargarMisStickers(); }
+  pintarPanelStickers(); }
+function pintarPanelStickers(){ const g = $('#stk-grilla'), l = STK.mios.filter(i => STK.info.has(i));
+  g.innerHTML = l.length ? l.map(i => `<button type="button" class="stk-item" data-stk="${i}" aria-label="${STK.editar ? 'quitar este sticker' : 'mandar este sticker'}">${imgSticker(i, '')}${STK.editar ? '<span class="stk-x" aria-hidden="true">✕</span>' : ''}</button>`).join('')
+    : '<p class="muted chico stk-vacio">todavía no tenés stickers. creá uno con una foto o un GIF, o guardá los que te manden.</p>'; }
+const cerrarStickers = () => { $('#modal-stickers').hidden = true; };
+$('#stk-cerrar').onclick = cerrarStickers;
+$('#modal-stickers').addEventListener('click', e => { if (e.target.id === 'modal-stickers') cerrarStickers(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal-stickers').hidden) cerrarStickers(); });
+$('#stk-editar').onclick = () => { STK.editar = !STK.editar; $('#stk-editar').setAttribute('aria-pressed', STK.editar); $('#stk-editar').textContent = STK.editar ? 'listo' : 'quitar'; pintarPanelStickers(); };
+$('#stk-grilla').addEventListener('click', async e => { const b = e.target.closest('[data-stk]'); if (!b) return; const id = Number(b.dataset.stk);
+  if (STK.editar){ const {error} = await sb.from('stickers_guardados').delete().eq('usuario', sesion).eq('sticker', id);
+    if (error){ msg('#stk-msg', 'no se pudo quitar. probá de nuevo.'); return; } STK.mios = STK.mios.filter(x => x !== id); pintarPanelStickers(); return; }
+  if (!STK.conv) return; cerrarStickers(); enviarPrivado(STK.conv, {tipo:'sticker', texto:'🎭 sticker', sticker:id}); });
+async function crearSticker(blob, animado){ const ext = animado ? 'gif' : blob.type === 'image/webp' ? 'webp' : 'png';
+  const path = await subirArchivo(blob, ext);
+  const {data, error} = await sb.from('stickers').insert({creador:sesion, path, animado}).select(); if (error) throw error;
+  const id = Number(data[0].id); STK.info.set(id, {id, path, animado}); await firmar([path]);
+  if (!await guardarSticker(id)) throw new Error('no se pudo guardar'); return id; }
+$('#stk-nuevo').onchange = async e => { const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  if (!f.type.startsWith('image/')) return msg('#stk-msg', 'elegí una foto o un GIF.');
+  if (f.type === 'image/gif'){ if (f.size > MAX_GIF_STICKER) return msg('#stk-msg', `ese GIF pesa ${mb(f.size)}. el máximo para stickers es 1,5 MB.`);
+    msg('#stk-msg', 'subiendo el GIF…', 'ok');
+    try { await crearSticker(f, true); msg('#stk-msg', '¡sticker creado!', 'ok'); pintarPanelStickers(); }
+    catch (er){ console.error(er); msg('#stk-msg', 'no se pudo crear el sticker. probá de nuevo.'); } return; }
+  cerrarStickers();
+  abrirRecorte(f, {sticker:true, titulo:'armá tu sticker', subiendo:'creando el sticker…', error: t => { abrirStickers(STK.conv); msg('#stk-msg', t); },
+    listo: async blob => { await crearSticker(blob, false); abrirStickers(STK.conv); msg('#stk-msg', '¡sticker creado! tocalo para mandarlo.', 'ok'); } }); };
 // Zumbido: uno solo hasta que alguien más responda en esa conversación (la base también lo controla)
 function zumbidoBloqueado(c){ const yo = perfil(), box = msgsPriv[c.id]; if (!yo || !box || box.cargando) return false;
   const l = box.lista.filter(m => !m.error && m.tipo !== 'sistema');
@@ -2043,6 +2154,7 @@ function armarComposer(c){
   $('#chat-form').onsubmit = e => { e.preventDefault(); const i = $('#chat-txt'), t = i.value.trim(); if (!t) return;   // nunca mensajes vacíos
     i.value = ''; i.focus(); enviarPrivado(c, {tipo:'texto', texto:t}); };
   $('#zumbido').onclick = () => { if (zumbidoBloqueado(c)){ ponerBotonZumbido(c); return; } enviarPrivado(c, {tipo:'zumbido'}); sacudir(); };
+  $('#ch-stickers').onclick = () => abrirStickers(c);
   $('#chat-adj').onchange = async e => { const f = e.target.files[0]; if (!f) return; const est = $('#chat-estado'), esVideo = f.type.startsWith('video/'); e.target.value = '';
     const ac = esVideo ? nuevoAudio() : null;                                  // por si hay que convertirlo (se prepara en el toque)
     if (esVideo && f.size > MAX_VIDEO_MB * 1048576){ est.textContent = `ese video pesa ${mb(f.size)}. el máximo es ${MAX_VIDEO_MB} MB: probá con uno más corto.`; return; }
@@ -2068,9 +2180,9 @@ function armarComposer(c){
 const vistaPrevia = (c, yo) => { const m = c.ultimo;
   if (c.esGrupo){ if (!m) return `grupo · ${c.uids.length} integrantes`;
     const quien = m.autor === yo.uid ? 'vos: ' : (porUid(m.autor)?.apodo || 'alguien') + ': ';
-    return m.tipo === 'zumbido' ? '* zumbido *' : m.tipo === 'sistema' ? m.texto : m.tipo === 'imagen' ? quien + '[foto]' : m.tipo === 'video' ? quien + '[video]' : quien + m.texto; }
+    return m.tipo === 'zumbido' ? '* zumbido *' : m.tipo === 'sistema' ? m.texto : m.tipo === 'imagen' ? quien + '[foto]' : m.tipo === 'video' ? quien + '[video]' : m.tipo === 'sticker' ? quien + '[sticker]' : quien + m.texto; }
   const quien = m && m.autor === yo.uid ? 'vos: ' : '';
-  return !m ? 'todavía no hablaron' : m.tipo === 'zumbido' ? '* zumbido *' : m.tipo === 'imagen' ? quien + '[foto]' : m.tipo === 'video' ? quien + '[video]' : m.tipo === 'archivo' ? quien + '[archivo]' : quien + m.texto; };
+  return !m ? 'todavía no hablaron' : m.tipo === 'zumbido' ? '* zumbido *' : m.tipo === 'imagen' ? quien + '[foto]' : m.tipo === 'video' ? quien + '[video]' : m.tipo === 'sticker' ? quien + '[sticker]' : m.tipo === 'archivo' ? quien + '[archivo]' : quien + m.texto; };
 
 function pintarChat(){
   const yo = perfil(); if (!yo) return;
@@ -2112,7 +2224,7 @@ function pintarChat(){
       <form class="composer" id="chat-form"><label class="sr" for="chat-txt">Mensaje para ${esc(nombre)}</label>
         <input class="field" id="chat-txt" placeholder="escribile a ${esc(nombre)}…" autocomplete="off" maxlength="500" style="flex:1;min-width:0">
         <label class="btn file-btn" style="display:inline-flex;align-items:center" title="mandar foto o video">+ foto/video<input type="file" accept="image/*,video/*" id="chat-adj" aria-label="Mandar foto o video"></label>
-        <button class="btn" type="button" id="zumbido">zumbido</button><button class="btn lleno" type="submit">enviar</button></form>
+        <button class="btn" type="button" id="ch-stickers" title="stickers" aria-label="Stickers" style="font-size:18px;padding:0 10px">🎭</button><button class="btn" type="button" id="zumbido">zumbido</button><button class="btn lleno" type="submit">enviar</button></form>
       <p class="subiendo" id="chat-estado" role="status"></p><p class="subiendo" id="chat-rt" role="status"></p>`;
     ponerAvatar(conv.querySelector('.conv-cab .avatar'), c.otro);
     armarComposer(c);
@@ -2134,7 +2246,9 @@ function pintarMensajesPriv(c){
       let q; if (c.esGrupo && !mio && autor.id != null){ q = document.createElement('a'); q.className = 'quien-g'; q.href = linkPerfil(autor); q.textContent = autor.apodo + ':'; }
       else { q = document.createElement('b'); q.textContent = autor.apodo + ':'; }
       d.append(h, q);
-      if (m.adjunto_path && (m.tipo === 'imagen' || m.tipo === 'video')){
+      if (m.tipo === 'sticker' && m.sticker){ d.classList.add('con-sticker'); const st = document.createElement('span'); st.className = 'sticker-msg'; st.dataset.sticker = m.sticker;
+        st.dataset.alt = `sticker de ${autor.apodo}`; st.dataset.mio = mio ? '1' : ''; st.innerHTML = '<span class="muted chico">cargando sticker…</span>'; d.appendChild(st); }
+      else if (m.adjunto_path && (m.tipo === 'imagen' || m.tipo === 'video')){
         const adj = Object.assign(document.createElement('span'), {className:'cargando-media', textContent: m.tipo === 'video' ? 'cargando video…' : 'cargando foto…'});
         adj.dataset.adj = m.adjunto_path; adj.dataset.tipo = m.tipo; adj.dataset.alt = `${m.tipo === 'video' ? 'video' : 'foto'} de ${autor.apodo}`;
         d.appendChild(adj); if (m.texto) d.appendChild(document.createTextNode(m.texto)); }
@@ -2144,6 +2258,7 @@ function pintarMensajesPriv(c){
       r.onclick = () => enviarPrivado(c, m.fila, m); d.appendChild(r); }
     ln.appendChild(d); });
   ln.querySelectorAll('[data-adj]').forEach(cargarMediaPriv);
+  pintarStickersMsg(ln);
   const rb = ln.querySelector('[data-recargar-msgs]'); if (rb) rb.onclick = () => cargarMensajes(c);
   if (abajo || box.lista.at(-1)?.autor === yo.uid) ln.scrollTop = ln.scrollHeight;
   ponerBotonZumbido(c);
@@ -2185,7 +2300,7 @@ function pintarGrupo(yo){
       <form class="composer" id="chat-form"><label class="sr" for="chat-txt" id="g-lbl"></label>
         <input class="field" id="chat-txt" placeholder="escribile al grupo…" autocomplete="off" maxlength="500" style="flex:1;min-width:0">
         <label class="btn file-btn" style="display:inline-flex;align-items:center" title="mandar foto o video">+ foto/video<input type="file" accept="image/*,video/*" id="chat-adj" aria-label="Mandar foto o video"></label>
-        <button class="btn" type="button" id="zumbido">zumbido</button><button class="btn lleno" type="submit">enviar</button></form>
+        <button class="btn" type="button" id="ch-stickers" title="stickers" aria-label="Stickers" style="font-size:18px;padding:0 10px">🎭</button><button class="btn" type="button" id="zumbido">zumbido</button><button class="btn lleno" type="submit">enviar</button></form>
       <p class="subiendo" id="chat-estado" role="status"></p><p class="subiendo" id="chat-rt" role="status"></p>`;
     $('#info-btn').onclick = () => { infoAbierta = !infoAbierta; pintarChat(); };
     armarComposer(g);
@@ -2847,7 +2962,7 @@ function seguirEntrando(){
   conectarRealtime(); cargarConvs(); rposts = []; rEstado = 'nada'; pasarRinconViejo(); reafirmarPush();
   if (perfil().nuevo) setTimeout(() => { if (esMio()) abrirEd(); }, 300);   // la primera vez se abre el editor
   if (location.hash === '#perfil') mostrar(); else location.hash = '#perfil'; }
-async function salir(){ await guardarYa(); await soltarPush(); cerrarChat(); firmadas.clear(); borrarDatosLocalesViejos(); if (sb) await sb.auth.signOut(); sesion = null; viendo = null; usuarios = {}; feed = []; document.documentElement.removeAttribute('style'); document.body.className = ''; document.body.dataset.cajas = 'simple';
+async function salir(){ await guardarYa(); await soltarPush(); cerrarChat(); firmadas.clear(); STK.info.clear(); STK.mios = []; STK.cargados = false; borrarDatosLocalesViejos(); if (sb) await sb.auth.signOut(); sesion = null; viendo = null; usuarios = {}; feed = []; document.documentElement.removeAttribute('style'); document.body.className = ''; document.body.dataset.cajas = 'simple';
   cerrarEd(); tab('entrar'); $$('#entrada input').forEach(i => { if (i.type === 'checkbox') i.checked = false; else i.value = ''; }); $$('#entrada .msg').forEach(m => m.className = 'msg'); location.hash = '#entrada'; }
 
 /* ---------- Legal: mayoría de edad y aceptación de documentos ----------
