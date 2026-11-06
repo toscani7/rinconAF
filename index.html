@@ -98,26 +98,44 @@ h1,h2,h3{font-family:var(--ft);color:var(--title);margin:0;line-height:1.25}
 .medalla{position:relative;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;flex:none;cursor:help;outline:none;vertical-align:middle}
 .medalla img{width:100%;height:100%;object-fit:contain;display:block}
 .medalla .emo{font-size:19px;line-height:1}
-.medalla[data-desc]:hover::after,.medalla[data-desc]:focus::after{content:attr(data-desc);position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);z-index:30;
-  background:#FFFFE1;color:#000;border:1px solid #000;padding:3px 6px;font:11px/1.3 Verdana, Tahoma, sans-serif;white-space:nowrap;max-width:240px;text-shadow:none;pointer-events:none}
+.medalla[data-desc]:hover::after,.medalla[data-desc]:focus::after{content:attr(data-desc);position:absolute;left:0;bottom:calc(100% + 6px);width:max-content;max-width:min(240px,80vw);z-index:30;
+  background:#FFFFE1;color:#000;border:1px solid #000;padding:3px 6px;font:11px/1.3 Verdana, Tahoma, sans-serif;white-space:normal;text-shadow:none;pointer-events:none}
 .medalla:focus-visible{outline:1px dotted var(--link);outline-offset:2px}
+/* Insignias chiquitas al lado del nick (fuera del perfil) */
+.ins-mini{display:inline-flex;align-items:center;gap:3px;margin-left:4px;vertical-align:-3px}
+.ins-mini .medalla.mini{width:16px;height:16px;cursor:help}
+.ins-mini .medalla.mini .emo{font-size:13px}
+.verif{position:relative;display:inline-flex;width:16px;height:16px;flex:none;cursor:help}
+.verif svg{width:100%;height:100%;display:block}
+.verif.fundador svg{filter:drop-shadow(0 0 3px rgba(255,196,40,.55))}
+.verif.beta svg{filter:drop-shadow(0 0 2px rgba(205,215,225,.45))}
+.ins-mini [data-desc]:hover::after{content:attr(data-desc);position:absolute;left:0;bottom:calc(100% + 5px);z-index:30;width:max-content;max-width:min(240px,80vw);
+  background:#FFFFE1;color:#000;border:1px solid #000;padding:3px 6px;font:normal 11px/1.3 Verdana, Tahoma, sans-serif;white-space:normal;text-shadow:none;pointer-events:none;letter-spacing:0;text-transform:none}
 /* Sección "insignias" del perfil */
 .ins-grupo{margin:0 0 18px}
 .ins-grupo h3{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--title);margin:0 0 8px;padding:0 0 5px;border-bottom:1px solid var(--line)}
 .ins-grupo h3 small{font-weight:normal;letter-spacing:0;text-transform:none;color:var(--muted);margin-left:6px}
-.ins-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
-.ins-item{display:flex;gap:10px;align-items:center;border:1px solid var(--line);background:var(--box);padding:8px 10px}
-.ins-item .medalla{width:40px;height:40px;cursor:default}
-.ins-item .medalla .emo{font-size:30px}
-.ins-item .ins-txt{flex:1;min-width:0}
-.ins-item .ins-txt b{display:block;color:var(--title)}
-.ins-item .ins-txt span{display:block;font-size:11px;color:var(--muted);overflow-wrap:anywhere}
-.ins-item .borrar,.ins-item .ins-poner{white-space:nowrap}
-.ins-poner{background:none;border:1px solid var(--line);color:var(--link);font:inherit;font-size:11px;font-weight:bold;min-height:32px;padding:0 8px;cursor:pointer}
-.ins-poner[aria-pressed="true"]{background:var(--link);color:var(--box);border-color:var(--link)}
+.ins-lista{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.ins-tile{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:52px;min-height:52px;padding:4px;background:none;border:2px solid transparent;color:inherit;font:inherit;cursor:pointer}
+span.ins-tile{cursor:help}
+.ins-tile .medalla{width:44px;height:44px;cursor:inherit}
+.ins-tile .medalla .emo{font-size:34px}
+.ins-tile[aria-pressed="true"]{border-color:var(--link);background:color-mix(in srgb, var(--link) 14%, transparent)}
+.ins-tile[aria-pressed="true"]::before{content:"✓";position:absolute;top:-9px;right:-9px;width:18px;height:18px;background:var(--link);color:var(--box);font:bold 11px/18px Verdana, sans-serif;text-align:center;text-shadow:none;z-index:2}
+.ins-tile:focus-visible{outline:1px dotted var(--link);outline-offset:3px}
+.ins-tile[data-desc]:hover::after,.ins-tile[data-desc]:focus::after{content:attr(data-desc);position:absolute;left:0;bottom:calc(100% + 6px);width:max-content;max-width:min(240px,80vw);z-index:30;
+  background:#FFFFE1;color:#000;border:1px solid #000;padding:3px 6px;font:11px/1.3 Verdana, Tahoma, sans-serif;white-space:normal;text-shadow:none;pointer-events:none}
+.ins-wrap{position:relative;display:inline-flex}
+.ins-x{position:absolute;bottom:-8px;right:-8px;width:20px;height:20px;padding:0;border:1px solid var(--line);background:var(--box);color:var(--muted);font:bold 11px/1 Verdana, sans-serif;cursor:pointer;z-index:2}
 .ins-buscar{display:flex;gap:8px;margin:8px 0}
 .ins-buscar .field{flex:1}
 .ins-res{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.ins-item{display:flex;gap:10px;align-items:center;border:1px solid var(--line);background:var(--box);padding:6px 10px}
+.ins-item .medalla{width:32px;height:32px}
+.ins-poner{background:none;border:1px solid var(--line);color:var(--link);font:inherit;font-size:11px;font-weight:bold;min-height:32px;padding:0 8px;cursor:pointer;white-space:nowrap}
+.ins-item .ins-txt{flex:1;min-width:0}
+.ins-item .ins-txt b{display:block;color:var(--title)}
+.ins-item .ins-txt span{display:block;font-size:11px;color:var(--muted);overflow-wrap:anywhere}
 @keyframes destelloInsignia{0%,62%{left:-70%}100%{left:140%}}
 .cols{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;grid-template-areas:"centro" "der" "izq"}
 .col-izq{grid-area:izq}.col-centro{grid-area:centro}.col-der{grid-area:der}
@@ -530,6 +548,11 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
 </style>
 </head>
 <body data-cajas="simple">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <polygon id="verif-forma" points="12.00,1.00 14.38,3.11 17.50,2.47 18.51,5.49 21.53,6.50 20.89,9.62 23.00,12.00 20.89,14.38 21.53,17.50 18.51,18.51 17.50,21.53 14.38,20.89 12.00,23.00 9.62,20.89 6.50,21.53 5.49,18.51 2.47,17.50 3.11,14.38 1.00,12.00 3.11,9.62 2.47,6.50 5.49,5.49 6.50,2.47 9.62,3.11" stroke-linejoin="round"/>
+  <linearGradient id="g-oro" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF6C2"/><stop offset=".3" stop-color="#FFD54A"/><stop offset=".6" stop-color="#E2A417"/><stop offset="1" stop-color="#B9830A"/></linearGradient>
+  <linearGradient id="g-plata" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".35" stop-color="#DCE1E6"/><stop offset=".65" stop-color="#A6AEB6"/><stop offset="1" stop-color="#8B949C"/></linearGradient>
+</defs></svg>
 <div id="fondo-capa" aria-hidden="true"><video id="fondo-video" muted loop playsinline autoplay preload="auto" disablepictureinpicture hidden></video></div>
 
 <!-- ================= ENTRADA ================= -->
@@ -1494,7 +1517,7 @@ function pintar(){
   amigos.forEach(x => { const li = document.createElement('li'), a = document.createElement('a'), av = document.createElement('span'), n = document.createElement('span');
     a.href = linkPerfil(x); av.className = 'avatar'; ponerAvatar(av, x); av.removeAttribute('role'); av.removeAttribute('aria-label'); av.setAttribute('aria-hidden','true');
     if (!x.avatar){ const m = ver(miniatura(x)); if (m){ av.style.backgroundImage = `url("${m}")`; av.textContent = ''; } }   // sin avatar: su última foto
-    n.textContent = x.apodo; a.append(av, n); li.appendChild(a); ffb.appendChild(li); });
+    n.innerHTML = esc(x.apodo) + miniInsignias(x); a.append(av, n); li.appendChild(a); ffb.appendChild(li); });
   $('#p-favs-b').hidden = !p.favs;
   // Favoritos: solo gente que existe en RincónAF (o links); los nicks que no existen no se muestran
   $('#p-favs').innerHTML = p.favoritos.split('\n').map(t => t.trim()).filter(Boolean).map(t => ({t, m: miembros().find(x => normNick(x.apodo) === normNick(t))}))
@@ -1525,20 +1548,31 @@ function datosInsignia(p, k){ const [t, id] = [k.slice(0, 3), k.slice(4)];
   if (t === 'ins'){ const c = CATALOGO[id]; return c && {nombre:c.nombre, desc:c.desc, img:c.archivo ? 'insignias/' + c.archivo : '', emoji:c.emoji, nivel:c.nivel}; }
   if (t === 'fut'){ const e = (p.equipos || []).find(q => q.id === id); return e && {nombre:e.nombre, desc:'hincha de ' + e.nombre, img:e.escudo}; }
   return null; }
-function medallaHTML(p, k, chica){ const d = datosInsignia(p, k); if (!d) return '';
+function medallaHTML(p, k, chica){ const d = datosInsignia(p, k); if (!d) return '';   // chica = al lado del nick (con cartelito propio)
   if (d.mod) return d.mod === 'fundador' ? '<span class="insignia fundador" title="fundador de RincónAF">♛ fundador</span>' : '<span class="insignia beta" title="probó RincónAF desde el principio">✦ beta-tester</span>';
   const tip = d.desc || d.nombre;
-  return `<span class="medalla" tabindex="0" role="img" aria-label="${esc(d.nombre + (d.desc ? ': ' + d.desc : ''))}"${chica ? ` data-desc="${esc(tip)}"` : ''}>${d.img ? `<img src="${esc(d.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span class="emo" aria-hidden="true">${esc(d.emoji)}</span>`}</span>`; }
+  return `<span class="medalla"${chica ? ` tabindex="0" role="img" aria-label="${esc(d.nombre + (d.desc ? ': ' + d.desc : ''))}" data-desc="${esc(tip)}"` : ' aria-hidden="true"'}>${d.img ? `<img src="${esc(d.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span class="emo" aria-hidden="true">${esc(d.emoji)}</span>`}</span>`; }
+// Insignias chiquitas al lado del nick en el resto de la página (inicio, comentarios, firmas, top, etc.; no en los chats)
+// fundador y beta-tester se achican a un "verificado" dorado / plateado
+const VERIF = {fundador:['g-oro','#3A2400','fundador de RincónAF'], beta:['g-plata','#1C2127','beta-tester: probó RincónAF desde el principio']};
+function miniInsignias(x){ if (!x) return ''; const l = puestasDe(x); if (!l.length) return '';
+  return '<span class="ins-mini">' + l.map(k => { const d = datosInsignia(x, k); if (!d) return '';
+    if (d.mod){ const [g, chk, desc] = VERIF[d.mod];
+      return `<span class="verif ${d.mod}" role="img" aria-label="${esc(desc)}" data-desc="${esc(desc)}"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#verif-forma" fill="url(#${g})"/><path d="M7.2 12.4l3.1 3.1 6.5-6.6" fill="none" stroke="${chk}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`; }
+    const tip = d.desc || d.nombre;
+    return `<span class="medalla mini" role="img" aria-label="${esc(d.nombre + (d.desc ? ': ' + d.desc : ''))}" data-desc="${esc(tip)}">${d.img ? `<img src="${esc(d.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span class="emo" aria-hidden="true">${esc(d.emoji)}</span>`}</span>`; }).join('') + '</span>'; }
 function itemInsignia(p, k, mio, cuando){ const d = datosInsignia(p, k); if (!d) return ''; const puesta = puestasDe(p).includes(k);
-  return `<div class="ins-item">${medallaHTML(p, k, false)}<div class="ins-txt"><b>${esc(d.nombre)}</b>${d.desc && !d.mod ? `<span>${esc(d.desc)}</span>` : d.mod ? `<span>${esc(d.desc)}</span>` : ''}${cuando ? `<span>desde el ${fechaLarga(cuando)}</span>` : ''}</div>
-    ${mio ? `<button type="button" class="ins-poner" data-poner="${esc(k)}" aria-pressed="${puesta}">${puesta ? '✓ puesta' : 'ponérmela'}</button>` : ''}</div>`; }
+  const tip = d.nombre + (d.desc && d.desc !== d.nombre ? ' — ' + d.desc : '') + (cuando ? ' · desde el ' + fecha(cuando) : '');
+  const lbl = esc(d.nombre + (d.desc ? ': ' + d.desc : ''));
+  return mio ? `<button type="button" class="ins-tile" data-poner="${esc(k)}" aria-pressed="${puesta}" data-desc="${esc(tip)}" aria-label="${lbl}${puesta ? ' (puesta en tu nick, tocá para sacarla)' : ' (tocá para ponerla en tu nick)'}">${medallaHTML(p, k, false)}</button>`
+    : `<span class="ins-tile" tabindex="0" role="img" data-desc="${esc(tip)}" aria-label="${lbl}">${medallaHTML(p, k, false)}</span>`; }
 function pintarInsignias(p, mio){ const c = $('#p-ins'); let h = '';
-  if (mio) h += `<p class="muted chico" style="margin:0 0 14px">elegí hasta ${MAX_PUESTAS} para que se vean al lado de tu nick. pasando el mouse (o tocándolas) se ve su descripción.</p>`;
+  if (mio) h += `<p class="muted chico" style="margin:0 0 14px">tocá una insignia para ponértela al lado del nick (hasta ${MAX_PUESTAS}); tocala de nuevo para sacarla.</p>`;
   if ((p.insignias || []).length) h += `<div class="ins-grupo"><h3>moderadores <small>exclusivas del equipo de RincónAF</small></h3><div class="ins-lista">${p.insignias.map(t => itemInsignia(p, 'mod:' + t, mio)).join('')}</div></div>`;
   NIVELES.forEach(([n, nombre, sub]) => { const l = (p.ganadas || []).filter(g => CATALOGO[g.id]?.nivel === n).sort((a, b) => a.cuando - b.cuando); if (!l.length) return;
     h += `<div class="ins-grupo"><h3>${nombre}${sub ? ` <small>${sub}</small>` : ''}</h3><div class="ins-lista">${l.map(g => itemInsignia(p, 'ins:' + g.id, mio, g.cuando)).join('')}</div></div>`; });
   h += `<div class="ins-grupo"><h3>fútbol <small>${mio ? 'tus equipos (hasta 2)' : 'de qué cuadro es'}</small></h3>`;
-  if (p.equipos.length) h += `<div class="ins-lista">${p.equipos.map(e => itemInsignia(p, 'fut:' + e.id, mio).replace('</div>\n    <button', `</div><button type="button" class="borrar" data-quitar-equipo="${esc(e.id)}">quitar</button>\n    <button`)).join('')}</div>`;
+  if (p.equipos.length) h += `<div class="ins-lista">${p.equipos.map(e => mio ? `<span class="ins-wrap">${itemInsignia(p, 'fut:' + e.id, mio)}<button type="button" class="ins-x" data-quitar-equipo="${esc(e.id)}" aria-label="quitar ${esc(e.nombre)} de tus equipos" title="quitar equipo">✕</button></span>` : itemInsignia(p, 'fut:' + e.id, mio)).join('')}</div>`;
   else h += `<p class="muted chico" style="margin:0">${mio ? 'todavía no elegiste equipo.' : esc(p.apodo) + ' todavía no eligió equipo.'}</p>`;
   if (mio && p.equipos.length < 2) h += `<form class="ins-buscar" id="ins-buscar"><input class="field" id="ins-q" maxlength="40" autocomplete="off" placeholder="buscá tu equipo (ej: Boca Juniors)" aria-label="buscar equipo de fútbol"><button class="btn" type="submit">buscar</button></form><div class="ins-res" id="ins-res" aria-live="polite"></div>`;
   h += '</div>';
@@ -1573,7 +1607,7 @@ function listaFirmas(l, f){ l.innerHTML = '';
     const d = document.createElement('div'); d.className = 'firma';
     const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, autor);
     const c = document.createElement('div');
-    c.innerHTML = `<a class="quien" href="${autor.id ? linkPerfil(autor) : '#perfil'}">${esc(autor.apodo)}</a> <span class="cuando">dijo el ${fecha(x.cuando)} a las ${hora(x.cuando)}:</span><p>${esc(x.texto)}</p>`;
+    c.innerHTML = `<a class="quien" href="${autor.id ? linkPerfil(autor) : '#perfil'}">${esc(autor.apodo)}</a>${autor.id ? miniInsignias(autor) : ''} <span class="cuando">dijo el ${fecha(x.cuando)} a las ${hora(x.cuando)}:</span><p>${esc(x.texto)}</p>`;
     d.append(av, c); l.appendChild(d); }); }
 const textoLikes = n => `${n} ${n === 1 ? 'like' : 'likes'}`;
 function ponerLike(b, cuenta, f, mio){ const dio = f.likes.includes(perfil().id); b.hidden = mio;   // en tus fotos solo ves la cantidad
@@ -2224,7 +2258,7 @@ $('#grupo-form').onsubmit = async e => { e.preventDefault(); const nombre = $('#
 /* ---------- Solicitudes ---------- */
 function persona(x, acciones, detalle){ const d = document.createElement('div'); d.className = 'persona';
   const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, x);
-  const t = document.createElement('div'); t.innerHTML = `<a href="${linkPerfil(x)}"><b>${esc(x.apodo)}</b></a><br><span class="muted chico">${detalle}</span>`;
+  const t = document.createElement('div'); t.innerHTML = `<a href="${linkPerfil(x)}"><b>${esc(x.apodo)}</b></a>${miniInsignias(x)}<br><span class="muted chico">${detalle}</span>`;
   const ac = document.createElement('div'); ac.className = 'acciones'; ac.innerHTML = acciones; d.append(av, t, ac); return d; }
 function pintarSolicitudes(){
   const yo = perfil(); if (!yo) return;
@@ -2267,7 +2301,7 @@ function pintarNotis(){
   lista.forEach(({n, x, otros}) => {
     const s = n.leida ? 'anteriores' : 'nuevas'; if (s !== seccion){ seccion = s; const h = document.createElement('h2'); h.className = 'n-grupo'; h.textContent = s; l.appendChild(h); }
     const post = idSeguro(n.post), conv = typeof n.conv === 'string' && /^[0-9a-f-]{36}$/.test(n.conv) ? n.conv : null, xid = idSeguro(x.id);
-    const grupo = '«' + esc(txtSeguro(n.nombre, 40)) + '»', quien = `<b>${esc(x.apodo)}</b>` + (otros.length ? ` y ${otros.length} más` : '');
+    const grupo = '«' + esc(txtSeguro(n.nombre, 40)) + '»', quien = `<b>${esc(x.apodo)}</b>` + miniInsignias(x) + (otros.length ? ` y ${otros.length} más` : '');
     let txt = '', cita = '', ir = null;
     if (n.tipo === 'aceptada'){ txt = `${quien} aceptó tu solicitud de amistad. ya pueden chatear.`; ir = xid && '#chat/' + xid; }
     if (n.tipo === 'like-perfil'){ txt = `${quien} le dio ♥ a tu perfil.`; ir = '#perfil'; }
@@ -2504,7 +2538,7 @@ function pintarRincon(){
         : id ? `<iframe class="pin-embed" src="https://assets.pinterest.com/ext/embed.html?id=${id}" title="Pin de Pinterest que compartió ${esc(a.apodo)}" loading="lazy" scrolling="no"></iframe><a class="chico" href="${esc(u)}" target="_blank" rel="noopener">ver en pinterest</a>`
         : `<a class="media-link" href="${esc(u)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true">P</span><span><b>ver imagen en pinterest</b><span class="sitio">${esc(sitioDe(u))}</span></span></a>`; }
     else media = tarjetaLink(conHttp(x.url), x.tipo);
-    c.innerHTML = `<a href="${linkPerfil(a)}"><b>${esc(a.apodo)}</b></a> <span class="muted chico">${RTXT[x.tipo][1]} · ${fecha(x.cuando)} ${hora(x.cuando)}</span>
+    c.innerHTML = `<a href="${linkPerfil(a)}"><b>${esc(a.apodo)}</b></a>${miniInsignias(a)} <span class="muted chico">${RTXT[x.tipo][1]} · ${fecha(x.cuando)} ${hora(x.cuando)}</span>
       ${x.texto ? `<p style="margin:4px 0 0;word-break:break-word">${esc(x.texto)}</p>` : ''}${media}
       ${a.id === yo.id ? `<div><button class="borrar" type="button" data-borrar="${x.id}">borrar</button></div>` : ''}`;
     d.append(av, c); l.appendChild(d); });
@@ -2587,7 +2621,7 @@ function pintarEscuchando(){ const yo = perfil(); if (!yo) return; const l = $('
     av.href = linkPerfil(x); av.setAttribute('aria-label', 'perfil de ' + x.apodo); sp.className = 'avatar'; ponerAvatar(sp, x); sp.removeAttribute('role'); sp.removeAttribute('aria-label'); av.appendChild(sp);
     t.className = 'esc-txt';
     const tema = x.escuchandoUrl ? tarjetaTema(x) : `<span class="esc-tema">♪ ${esc(x.escuchando)}</span>`;
-    t.innerHTML = `<a href="${linkPerfil(x)}">${x.id === yo.id ? 'vos' : esc(x.apodo)}</a> ${x.id === yo.id ? 'estás' : 'está'} escuchando:${tema}<span class="muted">${haceCuanto(x.escuchandoCuando)}</span>`;
+    t.innerHTML = `<a href="${linkPerfil(x)}">${x.id === yo.id ? 'vos' : esc(x.apodo)}</a>${x.id === yo.id ? '' : miniInsignias(x)} ${x.id === yo.id ? 'estás' : 'está'} escuchando:${tema}<span class="muted">${haceCuanto(x.escuchandoCuando)}</span>`;
     li.append(av, t); l.appendChild(li);
     const card = t.querySelector('.esc-card');                                    // temas guardados sin portada: se busca y se completa
     if (card && !x.escuchandoImg) infoLink(x.escuchandoUrl).then(i => { const tapa = TAPA_OK.test(i.mini || '') ? i.mini : ''; if (!tapa || !card.isConnected) return;
@@ -2636,7 +2670,7 @@ function pintarFeed(){
 function posteoEl(x, yo){
   const a = porId(x.de), d = document.createElement('article'); d.className = 'posteo'; d.id = 'post-' + x.id;
   const yaLike = x.likes.includes(yo.id), u = x.url && (/^https?:\/\//.test(x.url) ? x.url : 'https://' + x.url);
-  d.innerHTML = `<div class="posteo-cab"><span class="avatar"></span><div style="flex:1;min-width:0"><a href="${linkPerfil(a)}"><b>${esc(a.apodo)}</b></a><br><span class="muted chico">${hace(x.cuando)}</span></div>
+  d.innerHTML = `<div class="posteo-cab"><span class="avatar"></span><div style="flex:1;min-width:0"><a href="${linkPerfil(a)}"><b>${esc(a.apodo)}</b></a>${miniInsignias(a)}<br><span class="muted chico">${hace(x.cuando)}</span></div>
       ${a.id === yo.id ? `<button class="borrar" type="button" data-pacc="borrar">borrar</button>` : ''}</div>
     ${x.texto ? `<p class="posteo-texto">${esc(x.texto)}</p>` : ''}
     ${x.img ? `<img class="compartida" src="${esc(ver(x.img))}" alt="${esc(x.texto || 'imagen de ' + a.apodo)}" loading="lazy">` : ''}
@@ -2653,7 +2687,7 @@ function posteoEl(x, yo){
   const cs = d.querySelector('.comentarios');
   x.comentarios.forEach(c => { const au = porId(c.de); if (!au) return; const e = document.createElement('div'); e.className = 'comentario';
     const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, au);
-    const t = document.createElement('div'); t.innerHTML = `<a href="${linkPerfil(au)}"><b>${esc(au.apodo)}</b></a> <span class="muted chico">${hace(c.cuando)}</span><p>${esc(c.texto)}</p>`;
+    const t = document.createElement('div'); t.innerHTML = `<a href="${linkPerfil(au)}"><b>${esc(au.apodo)}</b></a>${miniInsignias(au)} <span class="muted chico">${hace(c.cuando)}</span><p>${esc(c.texto)}</p>`;
     e.append(av, t); cs.appendChild(e); });
   d.querySelectorAll('video[data-path]').forEach(v => { const viejo = videosFeed.get(v.dataset.path);
     if (viejo && viejo !== v){ v.replaceWith(viejo); if (viejo._aviso && viejo.dataset.avisado){ delete viejo.dataset.avisado; viejo._aviso(); }   // el mismo video ya cargado
@@ -2731,7 +2765,7 @@ function pintarTop(){
   gente.forEach((x,i) => { const a = document.createElement('a'); a.className = 'top-fila' + (i < 3 && x.fans.length ? ' podio' : ''); a.href = linkPerfil(x);
     const av = document.createElement('span'); av.className = 'avatar'; ponerAvatar(av, x); const m = ver(miniatura(x)); if (m){ av.style.backgroundImage = `url("${m}")`; av.textContent = ''; }
     a.innerHTML = `<span class="pos">${i + 1}</span>`; a.appendChild(av);
-    const t = document.createElement('span'); t.innerHTML = `<b>${esc(x.apodo)}</b>${x.id === yo.id ? ' <span class="muted chico">(vos)</span>' : ''}`;
+    const t = document.createElement('span'); t.innerHTML = `<b>${esc(x.apodo)}</b>${miniInsignias(x)}${x.id === yo.id ? ' <span class="muted chico">(vos)</span>' : ''}`;
     const c = document.createElement('span'); c.className = 'cuantos'; c.textContent = '♥ ' + x.fans.length; c.setAttribute('aria-label', x.fans.length + ' corazones');
     a.append(t, c); l.appendChild(a); });
   if (!gente.length) l.innerHTML = `<p class="muted chico">${tFiltro === 'amigos' ? 'ninguno de tus amigos (ni vos) tiene 2 ♥ todavía.' : 'todavía nadie tiene 2 ♥ o más. ¡andá repartiendo ♥!'}</p>`;
