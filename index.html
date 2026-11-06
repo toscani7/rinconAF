@@ -401,7 +401,12 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
 .linea.con-sticker{display:block}
 .sticker-msg{display:flex;flex-direction:column;align-items:flex-start;gap:2px;margin:4px 0 2px}
 .sticker-msg img{display:block;width:120px;height:120px;object-fit:contain}
-.sticker-msg .guardar-stk{font-size:11px;margin:0}
+.sticker-msg button{background:none;border:0;padding:0;cursor:pointer;display:block}
+.sticker-msg button:focus-visible{outline:1px dotted var(--link);outline-offset:3px}
+#modal-stk-ver{align-items:center;padding:16px}
+#modal-stk-ver .modal{width:min(260px,100%);max-width:260px;align-items:center;text-align:center;gap:10px}
+#modal-stk-ver img{width:180px;height:180px;object-fit:contain;display:block;margin:0 auto}
+#modal-stk-ver .btn{width:100%;justify-content:center}
 .stk-grilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;max-height:min(50vh,360px);overflow:auto;padding:2px}
 .stk-item{position:relative;aspect-ratio:1;background:none;border:1px solid transparent;padding:4px;cursor:pointer}
 .stk-item:hover,.stk-item:focus-visible{border-color:var(--link);outline:none}
@@ -894,6 +899,16 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
     <label class="btn file-btn lleno" style="display:flex;justify-content:center">+ crear sticker (foto o GIF)<input type="file" accept="image/*" id="stk-nuevo" aria-label="Crear sticker con una foto o un GIF"></label>
     <p class="muted chico" style="margin:0">foto: la recortás en círculo, cuadrado o corazón. GIF: hasta 1,5 MB, se manda tal cual.</p>
     <p class="msg" id="stk-msg" role="alert"></p>
+  </div>
+</div>
+
+<!-- Mini ventana al tocar un sticker del chat: verlo grande y guardarlo -->
+<div class="modal-fondo" id="modal-stk-ver" hidden>
+  <div class="modal" role="dialog" aria-label="sticker" aria-modal="true">
+    <div id="stkv-img"></div>
+    <button type="button" class="btn lleno" id="stkv-guardar">guardar</button>
+    <p class="msg" id="stkv-msg" role="status" style="margin:0"></p>
+    <button type="button" class="btn" id="stkv-cerrar">cerrar</button>
   </div>
 </div>
 
@@ -2102,15 +2117,24 @@ async function pintarStickersMsg(ln){ const els = [...ln.querySelectorAll('.stic
   await infoStickers(els.map(e => e.dataset.sticker));
   els.forEach(e => { const id = Number(e.dataset.sticker), h = imgSticker(id, e.dataset.alt);
     if (!h){ e.innerHTML = '<span class="muted chico">sticker no disponible</span>'; return; }
-    e.innerHTML = h + (e.dataset.mio ? '' : STK.mios.includes(id) ? '<span class="muted chico guardar-stk" style="display:block">✓ en tus stickers</span>'
-      : `<button type="button" class="borrar guardar-stk" data-guardar-stk="${id}">guardar sticker</button>`); }); }
+    e.innerHTML = `<button type="button" data-ver-stk="${id}" aria-label="${esc(e.dataset.alt)}: tocá para verlo o guardarlo">${h}</button>`; }); }
 async function guardarSticker(id, de){ id = Number(id); if (STK.mios.includes(id)) return true;
   const {error} = await sb.from('stickers_guardados').insert({usuario:sesion, sticker:id});
   if (error && !/duplicate|23505/.test(error.message + error.code)){ console.error('guardar sticker', error); return false; }
   STK.mios.unshift(id); return true; }
-document.addEventListener('click', async e => { const b = e.target.closest('[data-guardar-stk]'); if (!b) return; b.disabled = true; b.textContent = 'guardando…';
-  if (await guardarSticker(b.dataset.guardarStk)) b.outerHTML = '<span class="muted chico guardar-stk" style="display:block">✓ en tus stickers</span>';
-  else { b.disabled = false; b.textContent = 'no se pudo guardar. reintentar'; } });
+// Tocar un sticker del chat: mini ventana con el sticker y "guardar" (queda en tus stickers)
+let stkViendo = null;
+function verSticker(id){ stkViendo = Number(id); const ya = STK.mios.includes(stkViendo), b = $('#stkv-guardar');
+  $('#stkv-img').innerHTML = imgSticker(stkViendo, 'sticker'); $('#stkv-msg').className = 'msg'; $('#stkv-msg').textContent = '';
+  b.disabled = ya; b.textContent = ya ? '✓ ya está en tus stickers' : 'guardar'; $('#modal-stk-ver').hidden = false; (ya ? $('#stkv-cerrar') : b).focus(); }
+const cerrarVerSticker = () => { $('#modal-stk-ver').hidden = true; stkViendo = null; };
+document.addEventListener('click', e => { const b = e.target.closest('[data-ver-stk]'); if (b) verSticker(b.dataset.verStk); });
+$('#stkv-cerrar').onclick = cerrarVerSticker;
+$('#modal-stk-ver').addEventListener('click', e => { if (e.target.id === 'modal-stk-ver') cerrarVerSticker(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal-stk-ver').hidden) cerrarVerSticker(); });
+$('#stkv-guardar').onclick = async () => { const b = $('#stkv-guardar'); if (stkViendo == null) return; b.disabled = true; b.textContent = 'guardando…';
+  if (await guardarSticker(stkViendo)){ b.textContent = '✓ guardado en tus stickers'; msg('#stkv-msg', 'ya lo podés mandar desde 🎭', 'ok'); }
+  else { b.disabled = false; b.textContent = 'guardar'; msg('#stkv-msg', 'no se pudo guardar. probá de nuevo.'); } };
 async function abrirStickers(c){ STK.conv = c; STK.editar = false; $('#stk-editar').setAttribute('aria-pressed', 'false'); $('#stk-editar').textContent = 'quitar';
   $('#stk-msg').className = 'msg'; $('#stk-msg').textContent = ''; $('#modal-stickers').hidden = false;
   if (!STK.cargados){ $('#stk-grilla').innerHTML = '<p class="muted chico stk-vacio">cargando…</p>'; await cargarMisStickers(); }
