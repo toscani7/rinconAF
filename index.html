@@ -74,8 +74,9 @@ h1,h2,h3{font-family:var(--ft);color:var(--title);margin:0;line-height:1.25}
 .marca{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--title);min-height:44px}
 .marca i{width:34px;height:34px;background:var(--logo) center/contain no-repeat;filter:var(--logofilt)}
 .marca b{font-family:var(--ft);font-size:18px;letter-spacing:.5px}
-.recargar-top{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;flex:none;border:1px solid var(--line);background:var(--bg2);font-size:22px;line-height:1;cursor:pointer;padding:0}
-.recargar-top:hover,.recargar-top:focus-visible{border-color:var(--link)}
+.recargar-top{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;flex:none;border:0;background:none;font-size:22px;line-height:1;cursor:pointer;padding:0}
+.recargar-top:hover,.recargar-top:focus-visible{opacity:.75}
+@media (max-width:899px){.recargar-top{order:99}}
 .recargar-top:disabled{cursor:wait}
 .recargar-top.girando span{display:inline-block;animation:girar-rec .9s linear infinite}
 @keyframes girar-rec{to{transform:rotate(360deg)}}
@@ -665,8 +666,8 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
 <template id="tpl-sitio">
   <header class="sitio"><div class="sitio-in">
     <a class="marca" href="#inicio"><i aria-hidden="true"></i><b>RincónAF</b></a>
-    <button class="recargar-top" type="button" data-recargar aria-label="Recargar" title="recargar"><span aria-hidden="true">🔃</span></button>
     <nav class="menu" aria-label="Secciones">
+      <button class="recargar-top" type="button" data-recargar aria-label="Recargar" title="recargar"><span aria-hidden="true">🔃</span></button>
       <a href="#buscar" data-sec="buscar" class="lupa" aria-label="Buscar gente"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg></a>
       <a href="#inicio" data-sec="inicio">inicio</a><span class="sep" aria-hidden="true">|</span>
       <a href="#perfil" data-sec="perfil">mi perfil</a><span class="sep" aria-hidden="true">|</span>
