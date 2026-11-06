@@ -2646,7 +2646,7 @@ $('#aj-version').textContent = 'versión ' + VERSION_RINCON;
 // Cartel de novedades: sale una sola vez por versión y por cuenta (queda anotado en el perfil, sirve en todos los dispositivos)
 function mostrarNovedades(){ const p = perfil(); if (!p || p.novedades === VERSION_RINCON) return;
   if (p.nuevo){ p.novedades = VERSION_RINCON; guardar(); return; }          // cuentas recién creadas: no hay nada "nuevo" que contarles
-  $('#nov-version').textContent = 'versión ' + VERSION_RINCON; $('#modal-novedades').hidden = false; setTimeout(() => $('#nov-ok').focus(), 50); }
+  $('#nov-version').textContent = 'versión ' + VERSION_RINCON; $('#modal-novedades').hidden = false; $('#modal-novedades .modal').scrollTop = 0; setTimeout(() => $('#nov-ok').focus({preventScroll:true}), 50); }
 function cerrarNovedades(){ if ($('#modal-novedades').hidden) return; $('#modal-novedades').hidden = true; const p = perfil(); if (p){ p.novedades = VERSION_RINCON; guardar(); } }
 $('#nov-ok').onclick = cerrarNovedades;
 $('#modal-novedades').addEventListener('click', e => { if (e.target.id === 'modal-novedades') cerrarNovedades(); });
