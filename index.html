@@ -462,6 +462,14 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
 .aj-item:hover,.aj-item:focus-visible{background:var(--bg2)}
 .aj-item span[aria-hidden]{color:var(--muted);font-size:20px}
 .aj-salir{color:#FF5C5C;font-weight:bold}
+#reco-texto{width:100%;resize:vertical;min-height:110px}
+.buzon-item.nueva{border-left:4px solid var(--link)}
+.reco-tipos{display:flex;flex-wrap:wrap;gap:6px}
+.reco-tipos button{background:var(--bg2);border:1px solid var(--line);color:var(--ink);font:inherit;font-size:13px;padding:6px 10px;min-height:36px;cursor:pointer}
+.reco-tipos button[aria-pressed="true"]{border-color:var(--link);color:var(--link);font-weight:bold;background:color-mix(in srgb, var(--link) 14%, transparent)}
+.buzon-tipo{font-size:11px;color:var(--muted);border:1px solid var(--line);padding:0 5px;white-space:nowrap}
+.buzon-item .avatar{width:40px;height:40px;flex:none;font-size:12px}
+.buzon-nuevo{font-size:10px;font-weight:bold;letter-spacing:.5px;color:var(--link);border:1px solid var(--link);padding:0 4px}
 #ajustes .caja{margin-bottom:14px}
 .aj-switch{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:46px;cursor:pointer}
 .aj-switch input{width:24px;height:24px;flex:none;accent-color:var(--link)}
@@ -992,6 +1000,8 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
       <h1 style="font-size:22px;margin:0 0 14px">ajustes</h1>
       <div class="aj-lista">
         <a class="aj-item" href="#ajustes/notificaciones"><span>🔔 notificaciones</span><span aria-hidden="true">›</span></a>
+        <a class="aj-item" href="#ajustes/recomendaciones"><span>💡 recomendaciones</span><span aria-hidden="true">›</span></a>
+        <a class="aj-item" href="#ajustes/buzon" id="aj-buzon-item" hidden><span>📬 buzón de recomendaciones <b id="aj-buzon-n"></b></span><span aria-hidden="true">›</span></a>
         <a class="aj-item" href="#" data-legal="terminos"><span>📄 legal</span><span aria-hidden="true">›</span></a>
         <button class="aj-item aj-salir" type="button" data-salir><span>salir</span></button>
       </div>
@@ -1015,6 +1025,26 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
         <p class="msg" id="aj-tonos-msg" role="alert"></p>
         <p class="muted" style="font-size:11px;margin:10px 0 0">estos sonidos suenan con RincónAF abierto. los avisos que llegan con la página cerrada usan el sonido de notificaciones de tu celular (iPhone y Android no dejan que una página lo cambie).</p>
       </div>
+    </div>
+    <div id="aj-recos" hidden>
+      <a class="chico" href="#ajustes" style="display:inline-flex;align-items:center;min-height:40px">‹ ajustes</a>
+      <h1 style="font-size:22px;margin:0 0 14px">recomendaciones</h1>
+      <form class="caja bloque" id="reco-form">
+        <p style="margin:0 0 4px;font-weight:bold;color:var(--title)">💡 dejá tus recomendaciones para la página</p>
+        <p class="muted chico" style="margin:0 0 10px">en próximas actualizaciones pueden ser tomadas. las lee el fundador de RincónAF y ve quién la mandó.</p>
+        <p class="lbl" id="reco-tipo-lbl" style="margin:0 0 6px">¿de qué se trata?</p>
+        <div class="reco-tipos" role="group" aria-labelledby="reco-tipo-lbl" id="reco-tipos"></div>
+        <label class="lbl" for="reco-texto" style="margin-top:10px">tu recomendación</label>
+        <textarea class="field" id="reco-texto" maxlength="1000" rows="5" placeholder="estaría bueno que…"></textarea>
+        <p class="muted" style="font-size:11px;margin:4px 0 10px;text-align:right"><span id="reco-cuenta">0</span>/1000</p>
+        <button class="btn lleno" type="submit">enviar recomendación</button>
+        <p class="msg" id="reco-msg" role="alert"></p>
+      </form>
+    </div>
+    <div id="aj-buzon" hidden>
+      <a class="chico" href="#ajustes" style="display:inline-flex;align-items:center;min-height:40px">‹ ajustes</a>
+      <h1 style="font-size:22px;margin:0 0 14px">buzón de recomendaciones</h1>
+      <div id="buzon-lista"><p class="muted chico">cargando…</p></div>
     </div>
   </main>
 </section>
@@ -2550,8 +2580,44 @@ function pintarTonos(){ const cont = $('#aj-tonos'); if (!cont) return; const el
         <span class="muted" data-nombre-tono="${k}"></span></div></div>`; }).join('');
   TIPOS_SONIDO.forEach(async ([k]) => { try { const g = await bdOp('readonly', st => st.get(k)); const e = cont.querySelector(`[data-nombre-tono="${k}"]`);
     if (e) e.textContent = g && g.nombre ? '✓ ' + g.nombre : 'todavía no subiste ninguno'; } catch {} }); }
-function pintarAjustes(sub){ const notis = sub === 'notificaciones'; $('#aj-menu').hidden = notis; $('#aj-notis').hidden = !notis;
-  if (notis){ $('#aj-sonido').checked = sonidoOn(); pintarPush(); pintarTonos(); } }
+function pintarAjustes(sub){ const yo = perfil(), fundador = !!yo && yo.insignias.includes('fundador');
+  if (sub === 'buzon' && !fundador) sub = '';
+  const notis = sub === 'notificaciones', recos = sub === 'recomendaciones', buzon = sub === 'buzon';
+  $('#aj-menu').hidden = notis || recos || buzon; $('#aj-notis').hidden = !notis; $('#aj-recos').hidden = !recos; $('#aj-buzon').hidden = !buzon;
+  $('#aj-buzon-item').hidden = !fundador;
+  if (notis){ $('#aj-sonido').checked = sonidoOn(); pintarPush(); pintarTonos(); }
+  if (recos){ $('#reco-msg').className = 'msg'; $('#reco-cuenta').textContent = $('#reco-texto').value.length; }
+  if (buzon) cargarBuzon(); else if (fundador && !notis && !recos) contarBuzon(); }
+const TIPOS_RECO = [['estetica','🎨 estética'], ['personalizacion','🧩 personalización'], ['apartado','➕ apartado nuevo'], ['arreglar','🔧 algo para arreglar'], ['sacar','✂️ algo para sacar'], ['otra','💬 otra cosa']];
+let recoTipo = 'otra';
+const pintarTiposReco = () => { $('#reco-tipos').innerHTML = TIPOS_RECO.map(([k, t]) => `<button type="button" data-reco-tipo="${k}" aria-pressed="${k === recoTipo}">${t}</button>`).join(''); };
+pintarTiposReco();
+$('#reco-tipos').addEventListener('click', e => { const b = e.target.closest('[data-reco-tipo]'); if (b){ recoTipo = b.dataset.recoTipo; pintarTiposReco(); } });
+// Recomendaciones: cualquiera las manda; solo la cuenta fundadora las puede leer (lo controla la base de datos)
+$('#reco-texto').addEventListener('input', e => { $('#reco-cuenta').textContent = e.target.value.length; });
+$('#reco-form').addEventListener('submit', async e => { e.preventDefault(); const ta = $('#reco-texto'), t = ta.value.trim(), b = e.target.querySelector('[type=submit]');
+  if (!t){ msg('#reco-msg', 'escribí tu recomendación primero.'); return; }
+  b.disabled = true; b.textContent = 'enviando…';
+  const {error} = await sb.from('recomendaciones').insert({texto:t, tipo:recoTipo});
+  b.disabled = false; b.textContent = 'enviar recomendación';
+  if (error){ console.error('recomendación', error); msg('#reco-msg', /row-level security/i.test(error.message || '') ? 'llegaste al máximo de 10 recomendaciones por día. probá mañana.' : 'no se pudo enviar. probá de nuevo en un rato.'); return; }
+  ta.value = ''; recoTipo = 'otra'; pintarTiposReco(); $('#reco-cuenta').textContent = '0'; msg('#reco-msg', '¡gracias! tu recomendación llegó al buzón.', 'ok'); });
+async function contarBuzon(){ const {count, error} = await sb.from('recomendaciones').select('id', {count:'exact', head:true}).eq('leida', false);
+  $('#aj-buzon-n').textContent = !error && count ? `(${count} nueva${count > 1 ? 's' : ''})` : ''; }
+async function cargarBuzon(){ const l = $('#buzon-lista'); l.innerHTML = '<p class="muted chico">cargando…</p>';
+  const {data, error} = await sb.from('recomendaciones').select('*').order('id', {ascending:false}).limit(200);
+  if (error){ console.error('buzón', error); l.innerHTML = '<p class="msg err">no se pudo cargar el buzón.</p>'; return; }
+  if (!data.length){ l.innerHTML = '<div class="caja"><p class="muted" style="margin:0">todavía no llegó ninguna recomendación.</p></div>'; return; }
+  l.innerHTML = '';
+  data.forEach(r => { const au = porUid(r.autor), d = document.createElement('div'); d.className = 'caja buzon-item' + (r.leida ? '' : ' nueva'); d.dataset.reco = r.id;
+    d.innerHTML = `<div style="display:flex;align-items:center;gap:8px"><span class="avatar"></span><div style="flex:1;min-width:0">${au ? `<a href="${linkPerfil(au)}"><b>${esc(au.apodo)}</b></a>` : '<b>alguien</b>'}${r.leida ? '' : ' <span class="buzon-nuevo">NUEVA</span>'} <span class="buzon-tipo">${esc((TIPOS_RECO.find(x => x[0] === r.tipo) || TIPOS_RECO.at(-1))[1])}</span><br><span class="muted chico">${hace(Date.parse(r.creado))}</span></div>
+      <button class="borrar" type="button" data-borrar-reco="${Number(r.id)}">borrar</button></div><p style="margin:10px 0 0;white-space:pre-wrap;overflow-wrap:anywhere"></p>`;
+    d.querySelector('p').textContent = r.texto; if (au) ponerAvatar(d.querySelector('.avatar'), au); else d.querySelector('.avatar').remove();
+    l.appendChild(d); });
+  if (data.some(r => !r.leida)) sb.from('recomendaciones').update({leida:true}).eq('leida', false).then(({error}) => { if (!error) $('#aj-buzon-n').textContent = ''; }); }
+$('#buzon-lista').addEventListener('click', async e => { const b = e.target.closest('[data-borrar-reco]'); if (!b || !confirm('¿Borrar esta recomendación?')) return;
+  const {error} = await sb.from('recomendaciones').delete().eq('id', +b.dataset.borrarReco);
+  if (!falla('borrar la recomendación', error)) b.closest('.buzon-item').remove(); });
 $('#aj-sonido').onchange = e => { try { localStorage.setItem(LLAVE_SONIDO, e.target.checked ? 'si' : 'no'); } catch {} if (e.target.checked){ ultimoSonido = 0; sonar('noti'); } };
 $('#aj-tonos').addEventListener('change', async e => { const t = e.target;
   if (t.dataset.tono){ const k = t.dataset.tono, el = tonosElegidos(); el[k] = t.value; try { localStorage.setItem(LLAVE_TONOS, JSON.stringify(el)); } catch {}
