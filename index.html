@@ -74,6 +74,12 @@ h1,h2,h3{font-family:var(--ft);color:var(--title);margin:0;line-height:1.25}
 .marca{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--title);min-height:44px}
 .marca i{width:34px;height:34px;background:var(--logo) center/contain no-repeat;filter:var(--logofilt)}
 .marca b{font-family:var(--ft);font-size:18px;letter-spacing:.5px}
+.recargar-top{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;flex:none;border:1px solid var(--line);background:var(--bg2);font-size:22px;line-height:1;cursor:pointer;padding:0}
+.recargar-top:hover,.recargar-top:focus-visible{border-color:var(--link)}
+.recargar-top:disabled{cursor:wait}
+.recargar-top.girando span{display:inline-block;animation:girar-rec .9s linear infinite}
+@keyframes girar-rec{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.recargar-top.girando span{animation:none;opacity:.5}}
 .menu{display:flex;gap:2px;flex-wrap:wrap;margin-left:auto;font-size:13px}
 .menu a,.menu button{display:inline-flex;align-items:center;min-height:44px;padding:0 8px;color:var(--link);text-decoration:none;background:none;border:0;cursor:pointer}
 .menu a:hover,.menu button:hover{text-decoration:underline}
@@ -659,6 +665,7 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
 <template id="tpl-sitio">
   <header class="sitio"><div class="sitio-in">
     <a class="marca" href="#inicio"><i aria-hidden="true"></i><b>RincónAF</b></a>
+    <button class="recargar-top" type="button" data-recargar aria-label="Recargar" title="recargar"><span aria-hidden="true">🔃</span></button>
     <nav class="menu" aria-label="Secciones">
       <a href="#buscar" data-sec="buscar" class="lupa" aria-label="Buscar gente"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg></a>
       <a href="#inicio" data-sec="inicio">inicio</a><span class="sep" aria-hidden="true">|</span>
@@ -681,7 +688,6 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
     <div class="feed">
       <div class="feed-top">
         <h1 style="font-size:22px">inicio</h1>
-        <button class="btn" type="button" id="recargar">↻ recargar</button>
       </div>
       <p class="muted chico" style="margin:0">lo que postean vos y tus amigos.</p>
       <button class="btn lleno nuevos" type="button" id="hay-nuevos" hidden></button>
@@ -3037,10 +3043,15 @@ function comentarPosteo(e){ e.preventDefault(); const f = e.target, art = f.clos
   const nuevo = posteoEl(x, yo); art.replaceWith(nuevo); nuevo.querySelector('.form-com input').focus(); }
 ['#feed', '#p-posts'].forEach(c => { $(c).addEventListener('click', accionPosteo); $(c).addEventListener('submit', comentarPosteo); });
 // Recargar: trae lo nuevo de Supabase; lo nuevo queda arriba
-async function recargar(){ const b = $('#recargar'); b.disabled = true; b.textContent = 'recargando…';
-  try { await cargarTodo(); } catch (er){ falla('recargar', er); }
-  b.disabled = false; b.textContent = '↻ recargar'; pintarFeed(); actualizarMenu(); }
-$('#recargar').onclick = recargar; $('#hay-nuevos').onclick = recargar;
+// Recargar (botón 🔃 de arriba, en todas las pantallas): trae todo de nuevo y te deja en la misma pantalla
+let recargando = false;
+async function recargar(){ if (recargando || !perfil()) return; recargando = true; const y = window.scrollY;
+  $$('[data-recargar]').forEach(b => { b.disabled = true; b.classList.add('girando'); b.setAttribute('aria-label', 'Recargando…'); });
+  try { await guardarYa(); if (!ed.hidden) cerrarEd(); await cargarTodo(); cargarConvs(); mostrar(); window.scrollTo(0, y); }
+  catch (er){ falla('recargar', er); }
+  finally { recargando = false; $$('[data-recargar]').forEach(b => { b.disabled = false; b.classList.remove('girando'); b.setAttribute('aria-label', 'Recargar'); }); } }
+document.addEventListener('click', e => { if (e.target.closest('[data-recargar]')) recargar(); });
+$('#hay-nuevos').onclick = recargar;
 // Botón flotante y ventana para postear
 function pTipoSet(t){ pTipo = t; $$('[data-ptipo]').forEach(b => b.setAttribute('aria-pressed', b.dataset.ptipo === t));
   $('#post-img-b').hidden = t !== 'imagen'; $('#post-url-b').hidden = t !== 'video'; $('#post-texto-lbl').textContent = t === 'texto' ? '¿qué estás pensando?' : 'texto (opcional)'; }
@@ -3165,7 +3176,9 @@ function seguirEntrando(){
   viendo = null; verFoto = null; aplicar(perfil());
   conectarRealtime(); cargarConvs(); rposts = []; rEstado = 'nada'; pasarRinconViejo(); reafirmarPush();
   if (perfil().nuevo) setTimeout(() => { if (esMio()) abrirEd(); }, 300);   // la primera vez se abre el editor
-  if (location.hash === '#perfil') mostrar(); else location.hash = '#perfil'; }
+  const sec = location.hash.slice(1).split('/')[0];   // si recargaste la página, te quedás donde estabas
+  if (!perfil().nuevo && PANT.includes(sec) && sec !== 'entrada') mostrar();
+  else if (location.hash === '#perfil') mostrar(); else location.hash = '#perfil'; }
 async function salir(){ await guardarYa(); await soltarPush(); cerrarChat(); firmadas.clear(); STK.info.clear(); STK.mios = []; STK.cargados = false; borrarDatosLocalesViejos(); if (sb) await sb.auth.signOut(); sesion = null; viendo = null; usuarios = {}; feed = []; document.documentElement.removeAttribute('style'); document.body.className = ''; document.body.dataset.cajas = 'simple';
   cerrarEd(); tab('entrar'); $$('#entrada input').forEach(i => { if (i.type === 'checkbox') i.checked = false; else i.value = ''; }); $$('#entrada .msg').forEach(m => m.className = 'msg'); location.hash = '#entrada'; }
 
@@ -3222,7 +3235,8 @@ function mostrar(){ const [h, arg] = location.hash.slice(1).split('/'); let id =
   if (!PANT.includes(id)) id = perfil() ? 'perfil' : 'entrada';
   if (!perfil()) id = 'entrada'; else if (id === 'entrada') id = 'perfil';
   if (id === 'perfil'){ const nuevo = (arg && porId(+arg)) || perfil();
-    if (viendo !== nuevo){ viendo = nuevo; verFoto = null; seccionPerfil = 'perfil'; cerrarFoto(); if (!esMio()){ viendo.visitas++; sb.rpc('sumar_visita', {p:viendo.uid}).then(({error}) => { if (error) console.error(error); }); } }
+    if (viendo !== nuevo){ const mismo = recargando && viendo && viendo.id === nuevo.id;   // al recargar: mismo perfil, misma pestaña y sin sumar otra visita
+      viendo = nuevo; verFoto = null; if (!mismo) seccionPerfil = 'perfil'; cerrarFoto(); if (!esMio() && !mismo){ viendo.visitas++; sb.rpc('sumar_visita', {p:viendo.uid}).then(({error}) => { if (error) console.error(error); }); } }
     aplicar(viendo); pintar();                          // cada perfil se ve con el estilo de su dueño
   } else { viendo = null; cerrarFoto(); if (perfil()) aplicar(perfil());
     if (id === 'inicio'){ resaltar = null; pintarFeed(); pintarEscuchando(); refrescarEscuchando(); }
