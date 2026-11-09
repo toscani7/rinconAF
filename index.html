@@ -2967,15 +2967,19 @@ function embedDe(u){ try { const x = new URL(u), h = x.hostname.replace(/^(www|m
     if (yt) return {src:`https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0&playsinline=1`, forma:'video', musica:/music\.youtube/.test(x.hostname)};
     if (h === 'open.spotify.com' && (m = x.pathname.match(/\/(track|album|playlist|artist|episode|show)\/([A-Za-z0-9]{10,30})/)))
       return {src:`https://open.spotify.com/embed/${m[1]}/${m[2]}?utm_source=generator`, forma:m[1] === 'track' || m[1] === 'episode' ? 'spotify' : 'spotify-lista', musica:true};
-    if (h === 'soundcloud.com' || h === 'on.soundcloud.com' || h === 'm.soundcloud.com')
-      return {src:`https://w.soundcloud.com/player/?url=${encodeURIComponent(u)}&auto_play=true&visual=false&hide_related=true&show_comments=false&show_reposts=false&show_teaser=false`, forma:'soundcloud', musica:true};
+    if (h === 'soundcloud.com' || h === 'on.soundcloud.com' || h === 'm.soundcloud.com'){ const limpio = h === 'on.soundcloud.com' ? 'https://on.soundcloud.com' + x.pathname : 'https://soundcloud.com' + x.pathname.replace(/\/+$/, '');
+      return {src:scPlayer(limpio), forma:/\/sets\//.test(x.pathname) ? 'soundcloud-lista' : 'soundcloud', musica:true, sc:limpio}; }
     if (h === 'vimeo.com' && (m = x.pathname.match(/^\/(?:video\/)?(\d{5,})/))) return {src:`https://player.vimeo.com/video/${m[1]}?autoplay=1`, forma:'video'};
     if (/(^|\.)tiktok\.com$/.test(h) && (m = x.pathname.match(/\/video\/(\d{8,})/))) return {src:`https://www.tiktok.com/player/v1/${m[1]}?autoplay=1&rel=0`, forma:'vertical'};
     if (h === 'instagram.com' && (m = x.pathname.match(/^\/(?:[\w.]+\/)?(p|reel|reels|tv)\/([\w-]{5,})/))) return {src:`https://www.instagram.com/${m[1] === 'reels' ? 'reel' : m[1]}/${m[2]}/embed`, forma:'vertical'};
     if (x.hostname === 'music.apple.com') return {src:'https://embed.music.apple.com' + x.pathname + x.search, forma:x.searchParams.get('i') || /\/song\//.test(x.pathname) ? 'apple' : 'apple-lista', musica:true};
     if (h === 'deezer.com' && (m = x.pathname.match(/\/(track|album|playlist)\/(\d+)/))) return {src:`https://widget.deezer.com/widget/dark/${m[1]}/${m[2]}`, forma:m[1] === 'track' ? 'deezer' : 'deezer-lista', musica:true};
   } catch {} return null; }
-const ALTO_REPRO = {spotify:152, 'spotify-lista':352, soundcloud:166, apple:175, 'apple-lista':450, deezer:150, 'deezer-lista':300};
+const scPlayer = url => `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&auto_play=true&visual=false&hide_related=true&show_comments=false&show_reposts=false&show_teaser=false`;
+// SoundCloud: los links cortos (on.soundcloud.com) o con datos extra no los acepta su reproductor; se le pregunta a SoundCloud la dirección real de la canción
+async function scReal(e){ try { const j = await pedirJSON(`https://soundcloud.com/oembed?format=json&url=${encodeURIComponent(e.sc)}`); const m = /src="([^"]+)"/.exec(j?.html || ''); if (!m) return null;
+    const api = new URL(m[1].replace(/&amp;/g, '&')).searchParams.get('url'); return api && /^https:\/\/api\.soundcloud\.com\//.test(api) ? scPlayer(api) : null; } catch { return null; } }
+const ALTO_REPRO = {spotify:152, 'spotify-lista':352, soundcloud:166, 'soundcloud-lista':350, apple:175, 'apple-lista':450, deezer:150, 'deezer-lista':300};
 let reproUrl = null;
 function altoRepro(){ const r = $('#repro'), f = $('#repro-marco iframe'); if (!f) return; const e = embedDe(reproUrl), w = r.clientWidth;
   f.style.height = (e.forma === 'video' ? Math.round(w * 9 / 16) : e.forma === 'vertical' ? Math.round(Math.min(w * 16 / 9, innerHeight * .62)) : ALTO_REPRO[e.forma] || 200) + 'px';
@@ -2985,7 +2989,8 @@ function abrirRepro(u, titulo, sub){ const e = embedDe(u); if (!e) return false;
   $('#repro-tit').textContent = titulo || (e.musica ? 'escuchando en ' : 'viendo en ') + nombreSitio(u); $('#repro-sub').textContent = sub || nombreSitio(u);
   $('#repro-abrir').href = u; $('#repro-abrir').title = 'abrir en ' + nombreSitio(u);
   $('#repro-tam').hidden = e.forma !== 'video'; r.classList.remove('chico', 'grande'); $('#repro-min').textContent = '▾';
-  const f = document.createElement('iframe'); f.src = e.src; f.title = 'reproductor de ' + nombreSitio(u);
+  const f = document.createElement('iframe'); f.title = 'reproductor de ' + nombreSitio(u);
+  if (e.sc){ f.src = 'about:blank'; scReal(e).then(src => { if (reproUrl === u && f.isConnected) f.src = src || e.src; }); } else f.src = e.src;
   f.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture; clipboard-write'; f.allowFullscreen = true; f.referrerPolicy = 'strict-origin-when-cross-origin';
   $('#repro-marco').replaceChildren(f); r.hidden = false; document.documentElement.classList.add('con-repro'); altoRepro(); marcarSonando(); return true; }
 function cerrarRepro(){ $('#repro').hidden = true; $('#repro-marco').replaceChildren(); reproUrl = null; document.documentElement.classList.remove('con-repro'); marcarSonando(); }
