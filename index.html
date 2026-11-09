@@ -506,18 +506,26 @@ html.en-llamada,html.en-llamada body{overflow:hidden}
 .ll-cab{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;padding-top:max(10px, env(safe-area-inset-top));border-bottom:1px solid #333}
 .ll-cab b{display:block;font-size:16px;color:#FFF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ll-sub{display:block;font-size:12px;color:#AAA}
-.ll-grilla{flex:1;min-height:0;display:grid;gap:4px;padding:4px;grid-template-columns:1fr;grid-auto-rows:1fr;position:relative}
-.ll-grilla[data-n="2"]{grid-template-columns:1fr}
-.ll-grilla[data-n="2"] .ll-yo{position:absolute;right:12px;bottom:12px;width:min(30vw,170px);aspect-ratio:3/4;z-index:2;border:2px solid #555}
-.ll-grilla[data-n="3"],.ll-grilla[data-n="4"]{grid-template-columns:1fr 1fr}
-.ll-grilla[data-n="5"],.ll-grilla[data-n="6"]{grid-template-columns:1fr 1fr}
-.ll-grilla[data-n="7"],.ll-grilla[data-n="8"],.ll-grilla[data-n="9"],.ll-grilla[data-n="10"],.ll-grilla[data-n="11"],.ll-grilla[data-n="12"]{grid-template-columns:1fr 1fr 1fr}
-@media (min-width:900px){
-  .ll-grilla[data-n="3"],.ll-grilla[data-n="5"],.ll-grilla[data-n="6"]{grid-template-columns:1fr 1fr 1fr}
-  .ll-grilla[data-n="7"],.ll-grilla[data-n="8"],.ll-grilla[data-n="10"],.ll-grilla[data-n="11"],.ll-grilla[data-n="12"]{grid-template-columns:repeat(4,1fr)}
-  .ll-grilla[data-n="2"] .ll-yo{width:240px;aspect-ratio:16/10}}
-.ll-tile{position:relative;min-height:0;background:#1A1A1A;border:1px solid #333;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.ll-tile video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
+.ll-grilla{flex:1;min-height:0;position:relative;overflow:hidden}
+.ll-tile{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;position:absolute;left:0;top:0;width:0;height:0;background:#1A1A1A;border:1px solid #333;border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:zoom-in;transition:left .2s, top .2s, width .2s, height .2s}
+.ll-grilla.con-foco .ll-tile{cursor:zoom-out}
+.ll-tile.ll-chiquito .avatar{width:min(44px,45%);font-size:16px}
+.ll-tile.ll-chiquito .ll-nombre{font-size:10px;left:3px;bottom:3px}
+.ll-tile video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;opacity:0;pointer-events:none}
+.ll-tile.con-video video{opacity:1}
+.ll-tile.ll-grande video{object-fit:contain}
+.ll-volbtn{position:absolute;top:6px;right:6px;z-index:2;min-width:34px;height:30px;padding:0 6px;background:rgba(0,0,0,.6);color:#FFF;border:1px solid rgba(255,255,255,.25);border-radius:6px;font:12px Verdana, sans-serif;cursor:pointer;display:flex;align-items:center;gap:3px}
+.ll-volbtn:hover,.ll-volbtn:focus-visible{border-color:#FFF}
+.ll-tile.ll-chiquito .ll-volbtn{display:none}
+.ll-vol{position:absolute;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(340px,calc(100% - 24px));z-index:6;background:#161616;color:#EEE;border:1px solid #555;border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 8px 30px rgba(0,0,0,.6)}
+.ll-vol[hidden]{display:none}
+.ll-vol-cab{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ll-vol-cab b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ll-vol-fila{display:flex;align-items:center;gap:10px}
+.ll-vol-fila input[type=range]{flex:1;accent-color:#FFF;min-height:32px}
+.ll-vol-fila output{min-width:46px;text-align:right;font-variant-numeric:tabular-nums}
+.ll-vol .btn{min-height:40px;background:#222;color:#FFF;border-color:#555}
+.ll-vol .btn:hover{background:#FFF;color:#000}
 .ll-tile.ll-yo.espejo video{transform:scaleX(-1)}
 .ll-tile .avatar{width:min(96px,40%);height:auto;aspect-ratio:1;font-size:28px}
 .ll-tile.con-video .avatar{visibility:hidden}
@@ -1053,6 +1061,12 @@ html.en-llamada,html.en-llamada body{overflow:hidden}
   <div class="ll-cab"><div style="min-width:0"><b id="ll-titulo">llamada</b><span class="ll-sub" id="ll-estado" role="status"></span></div>
     <button class="ll-ctl ll-chico" type="button" id="ll-min" aria-label="Minimizar la llamada" title="minimizar">▁<span>minimizar</span></button></div>
   <div class="ll-grilla" id="ll-grilla" data-n="1"></div>
+  <div class="ll-vol" id="ll-vol" role="dialog" aria-labelledby="ll-vol-quien" hidden>
+    <div class="ll-vol-cab"><b id="ll-vol-quien"></b><button class="ll-ctl ll-chico" type="button" id="ll-vol-cerrar" aria-label="Cerrar">×</button></div>
+    <label class="ll-vol-fila"><span aria-hidden="true">🔉</span><input type="range" id="ll-vol-rango" min="0" max="200" step="5" value="100" aria-label="Volumen de esta persona"><output id="ll-vol-num">100%</output></label>
+    <button class="btn" type="button" id="ll-vol-mute">silenciar para mí</button>
+    <p class="muted chico" style="margin:0;color:#999">solo cambia cómo la escuchás vos.</p>
+  </div>
   <div class="ll-aviso" id="ll-aviso" role="alertdialog" aria-live="assertive" hidden><p id="ll-aviso-txt"></p><button class="btn lleno" type="button" id="ll-seguimos">seguimos</button></div>
   <div class="ll-controles">
     <button class="ll-ctl" type="button" id="ll-mic" aria-pressed="true" aria-label="Micrófono">🎤<span>micrófono</span></button>
@@ -3475,12 +3489,12 @@ async function llTomarCam(){ const pedir = f => navigator.mediaDevices.getUserMe
   llReanudar(); }
 // Los celus (sobre todo iPhone) pausan los videos y el medidor de sonido cuando se pide la cámara o se sale de la página: se vuelven a poner en marcha solos
 function llReanudar(){ if (!LL.id && !LL.pc) return;
-  $$('#ll-grilla video').forEach(v => { if (v.srcObject && v.paused && !v.hidden) v.play().catch(() => {}); });
-  LL.remotos.forEach(r => { if (r.audio.srcObject && r.audio.paused) r.audio.play().catch(() => {}); });
+  $$('#ll-grilla video').forEach(v => { if (v.srcObject && v.paused && v.closest('.con-video')) v.play().catch(() => {}); });
+  LL.remotos.forEach((r, uid) => { if (r.audio.srcObject && r.audio.paused) r.audio.play().catch(() => {}); const o = llVolDe(uid); if (!o.m && o.v !== 1 && (r.gain ? r.gctx !== LL.actx || r.gst !== r.audio.srcObject || LL.actx?.state !== 'running' : LL.actx?.state === 'running')) llAplicarVol(uid); });
   const a = LL.actx; if (a && a.state !== 'running') a.resume().then(() => { if (a.state !== 'running') llRehacerNiveles(); }, llRehacerNiveles); }
 function llRehacerNiveles(){ LL.niveles.forEach(n => { try { n.src.disconnect(); } catch {} }); LL.niveles = new Map();
   try { LL.actx?.close(); } catch {} LL.actx = null;
-  llNivelLocal(); LL.remotos.forEach((r, uid) => { if (r.audio.srcObject) llMedirNivel(uid, r.audio.srcObject); }); }
+  llNivelLocal(); LL.remotos.forEach((r, uid) => { if (r.audio.srcObject) llMedirNivel(uid, r.audio.srcObject); llAplicarVol(uid); }); }
 // Micrófono nuevo sin cortar la llamada (Android a veces lo deja "dormido" al usar otra app: vos escuchás pero no se manda tu voz)
 async function llRenovarMic(){ if (LL.renovandoMic || document.hidden) return; LL.renovandoMic = true; const viejo = LL.mic;
   try { await llTomarMic(); LL.mic.enabled = LL.micOn; if (LL.ta) await LL.ta.sender.replaceTrack(LL.mic); if (viejo && viejo !== LL.mic) viejo.stop(); llRehacerNiveles(); LL.micSinDatos = 0; }
@@ -3553,6 +3567,8 @@ document.addEventListener('visibilitychange', () => { if (document.hidden || !LL
   if (LL.pc && !['connected', 'connecting', 'new'].includes(LL.pc.connectionState)) llReconectar(); });
 // Vigilante (cada 2 s): si el video de alguien con cámara prendida se trabó, se vuelve a pedir; si tu voz dejó de salir, se renueva el micrófono
 async function llVigilar(){ const pc = LL.pc; if (!pc || !LL.conectado || document.hidden || LL.reconectando) return;
+  llPintar();
+  $$('#ll-grilla .ll-tile.con-video video').forEach(v => { if (v.videoWidth || !v.srcObject || Date.now() - (v._desde || 0) < 2500) return; v._desde = Date.now(); const so = v.srcObject; v.srcObject = null; v.srcObject = so; v.play().catch(() => {}); });
   let st; try { st = await pc.getStats(); } catch { return; } if (pc !== LL.pc) return;
   const ahora = Date.now(), cuadros = new Map(); let enviado = 0;
   st.forEach(s => { if (s.type === 'inbound-rtp' && s.kind === 'video' && s.mid) cuadros.set(s.mid, s.framesDecoded || 0); if (s.type === 'outbound-rtp' && s.kind === 'audio') enviado += s.bytesSent || 0; });
@@ -3601,11 +3617,30 @@ function llRemoto(uid){ let r = LL.remotos.get(uid);
   return r; }
 function llRecibirPista(e){ const info = LL.mids.get(e.transceiver?.mid); if (!info) return;
   const r = llRemoto(info.uid), st = new MediaStream([e.track]);
-  if (info.pista === 'audio'){ r.audio.srcObject = st; r.audio.play().catch(() => {}); llMedirNivel(info.uid, st); }
+  if (info.pista === 'audio'){ r.audio.srcObject = st; r.audio.play().catch(() => {}); llMedirNivel(info.uid, st); llAplicarVol(info.uid); }
   else { r.video = st; e.track.onunmute = () => { llPintar(); llReanudar(); }; e.track.onmute = () => llPintar(); }
   llPintar(); }
-function llQuitarRemoto(uid){ const r = LL.remotos.get(uid); if (!r) return; try { r.audio.pause(); r.audio.srcObject = null; } catch {}
+function llQuitarRemoto(uid){ const r = LL.remotos.get(uid); if (!r) return; try { r.audio.pause(); r.audio.srcObject = null; } catch {} llSoltarGanancia(r);
   LL.remotos.delete(uid); const n = LL.niveles.get(uid); if (n){ try { n.src.disconnect(); } catch {} LL.niveles.delete(uid); } }
+
+// ---------- Volumen de cada persona (solo para vos, se guarda en este dispositivo) ----------
+function llVolDe(uid){ try { const o = JSON.parse(localStorage.getItem('ll-vol') || '{}')[uid]; return {v:o?.v ?? 1, m:!!o?.m}; } catch { return {v:1, m:false}; } }
+function llGuardarVol(uid, o){ try { const t = JSON.parse(localStorage.getItem('ll-vol') || '{}'); if (o.v === 1 && !o.m) delete t[uid]; else t[uid] = o; localStorage.setItem('ll-vol', JSON.stringify(t)); } catch {} }
+function llSoltarGanancia(r){ try { r.gsrc?.disconnect(); r.gain?.disconnect(); } catch {} r.gsrc = r.gain = r.gctx = r.gst = null; }
+// A volumen normal suena directo (lo más estable); para bajar o subir se pasa por el mezclador de audio, porque el iPhone no deja cambiar el volumen de un audio común
+function llAplicarVol(uid){ const r = LL.remotos.get(uid); if (!r?.audio.srcObject) return; const o = llVolDe(uid);
+  if (o.m){ llSoltarGanancia(r); r.audio.muted = true; return; }
+  if (o.v === 1){ llSoltarGanancia(r); r.audio.muted = false; r.audio.volume = 1; return; }
+  const a = llActx();
+  if (a && a.state === 'running'){
+    if (r.gctx !== a || r.gst !== r.audio.srcObject){ llSoltarGanancia(r);
+      try { r.gsrc = a.createMediaStreamSource(r.audio.srcObject); r.gain = a.createGain(); r.gsrc.connect(r.gain); r.gain.connect(a.destination); r.gctx = a; r.gst = r.audio.srcObject; } catch { llSoltarGanancia(r); } }
+    if (r.gain){ r.gain.gain.value = o.v; r.audio.muted = true; return; } }
+  llSoltarGanancia(r); r.audio.muted = false; try { r.audio.volume = Math.min(1, o.v); } catch {} }
+function llAbrirVol(uid){ LL.volUid = uid; const o = llVolDe(uid); $('#ll-vol-quien').textContent = llNombre(uid);
+  $('#ll-vol-rango').value = Math.round(o.v * 100); $('#ll-vol-num').textContent = Math.round(o.v * 100) + '%';
+  $('#ll-vol-mute').textContent = o.m ? 'volver a escuchar' : 'silenciar para mí'; $('#ll-vol').hidden = false; llActx(); }
+function llCerrarVol(){ $('#ll-vol').hidden = true; LL.volUid = null; }
 
 // ---------- Quién está hablando (y para el corte por silencio) ----------
 function llActx(){ if (!LL.actx){ const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; try { LL.actx = new C(); } catch { return null; } }
@@ -3653,7 +3688,7 @@ function llAjustarCalidad(){ const s = LL.tv?.sender; if (!s || !s.getParameters
     s.setParameters(p).catch(() => {}); } catch {} }
 async function llFlotante(){
   try { if (document.pictureInPictureElement){ await document.exitPictureInPicture(); return; }
-    const v = [...$$('#ll-grilla .ll-tile:not(.ll-yo) video')].find(x => x.srcObject && !x.hidden) || $('#ll-grilla .ll-yo video:not([hidden])');
+    const v = $('#ll-grilla .ll-tile.con-video:not(.ll-yo) video') || $('#ll-grilla .ll-yo.con-video video');
     if (!v) return llToast('la ventanita flotante necesita que alguien tenga la cámara prendida.');
     await v.play().catch(() => {}); await v.requestPictureInPicture(); }
   catch { llToast('este navegador no permite la ventanita flotante.'); } }
@@ -3695,7 +3730,7 @@ async function llPulso(){ if (!LL.id) return; const id = LL.id;
 function llColgar(){ if (!LL.id && !LL.pc){ llLimpiar(); return; } const id = LL.id, cortar = LL.iniciador && !LL.atendida;
   llLimpiar(); if (id) apiLl('salir', {llamada:id, cortarTodo:cortar}).catch(() => {}); }
 function llFinRemoto(){ if (!LL.id) return; llLimpiar(); llToast('la llamada terminó.'); }
-function llLimpiar(){
+function llLimpiar(){ LL.foco = null; try { llCerrarVol(); } catch {} LL.remotos.forEach(llSoltarGanancia);
   [LL.tick, LL.pulsoT, LL.nivelT, LL.vigiaT].forEach(clearInterval); clearTimeout(llEstadoT); llTimbre(null);
   try { LL.pc?.close(); } catch {}
   LL.mic?.stop(); LL.cam?.stop(); [...LL.remotos.keys()].forEach(llQuitarRemoto);
@@ -3731,23 +3766,52 @@ function llPintar(){
   const vistos = new Set();
   lista.forEach(x => { vistos.add(x.uid); let t = g.querySelector(`.ll-tile[data-uid="${x.uid}"]`);
     if (!t){ t = document.createElement('div'); t.className = 'll-tile' + (x.mio ? ' ll-yo' : ''); t.dataset.uid = x.uid;
-      t.innerHTML = `<video playsinline muted hidden></video><span class="avatar"></span><span class="ll-nombre"></span>`; ponerAvatar(t.querySelector('.avatar'), porUid(x.uid) || {apodo:'?'});
+      t.innerHTML = `<video playsinline muted></video><span class="avatar"></span><span class="ll-nombre"></span>` + (x.mio ? '' : `<button class="ll-volbtn" type="button" aria-label="Volumen de ${txtSeguro(llNombre(x.uid))}" title="volumen">🔊</button>`); ponerAvatar(t.querySelector('.avatar'), porUid(x.uid) || {apodo:'?'});
       if (x.mio) g.prepend(t); else g.appendChild(t); }
     const v = t.querySelector('video'), p = x.mio ? null : LL.gente.get(x.uid), rem = x.mio ? null : LL.remotos.get(x.uid);
     // cada video se conecta una sola vez; después solo se muestra u oculta (así no se congela al prender o apagar cámaras)
     if (x.mio){ if (LL.cam && v._tr !== LL.cam){ v._tr = LL.cam; v.srcObject = new MediaStream([LL.cam]); } }
     else if (rem?.video && v.srcObject !== rem.video) v.srcObject = rem.video;
     const ok = x.mio ? (LL.camOn && !!LL.cam && LL.cam.readyState === 'live') : (!!p?.cam && !!rem?.video && !rem.video.getVideoTracks()[0]?.muted);
-    v.hidden = !ok; t.classList.toggle('con-video', ok); if (x.mio) t.classList.toggle('espejo', LL.frente);
+    if (ok && !t.classList.contains('con-video')){ v._desde = Date.now(); if (v.srcObject){ const so = v.srcObject; v.srcObject = null; v.srcObject = so; } }
+    t.classList.toggle('con-video', ok); if (x.mio) t.classList.toggle('espejo', LL.frente);
     if (ok && v.paused) v.play().catch(() => {});
     const mic = x.mio ? LL.micOn : p?.mic !== false;
+    const vb = t.querySelector('.ll-volbtn'); if (vb){ const o = llVolDe(x.uid); vb.textContent = o.m ? '🔇' : o.v === 1 ? '🔊' : '🔊 ' + Math.round(o.v * 100) + '%'; }
     t.querySelector('.ll-nombre').textContent = (x.mio ? 'vos' : llNombre(x.uid)) + (x.sonando ? ' · sonando…' : '') + (mic ? '' : ' 🔇'); });
   g.querySelectorAll('.ll-tile').forEach(t => { if (!vistos.has(t.dataset.uid)) t.remove(); });
+  llAcomodar();
   $('#ll-mic').setAttribute('aria-pressed', LL.micOn); $('#ll-mic').classList.toggle('apagado', !LL.micOn); $('#ll-mic span').textContent = LL.micOn ? 'micrófono' : 'muteado';
   $('#ll-cam').setAttribute('aria-pressed', LL.camOn); $('#ll-cam').classList.toggle('prendido', LL.camOn); $('#ll-cam').disabled = !!LL.freno && !LL.camOn;
   $('#ll-girar').hidden = !LL.camOn || !((LL.camaras || 0) > 1 || 'ontouchstart' in window);
   $('#ll-pip').hidden = !document.pictureInPictureEnabled;
   llPintarReloj(); }
+
+// Cuadros estilo Discord: rectángulos del mismo tamaño, centrados; la fila más corta va arriba (3 = 1 arriba y 2 abajo). Tocar uno lo agranda; tocar de nuevo vuelve.
+function llAcomodar(){ const g = $('#ll-grilla'); if (!g || $('#ll-pantalla').hidden) return;
+  const ts = [...g.querySelectorAll('.ll-tile')], n = ts.length; if (!n) return;
+  const W = g.clientWidth, H = g.clientHeight, gap = 6, pad = 6, w0 = W - pad * 2, h0 = H - pad * 2; if (w0 <= 0 || h0 <= 0) return;
+  const vertical = h0 > w0 * 1.1, pon = (t, x, y, w, h) => { t.style.left = x + 'px'; t.style.top = y + 'px'; t.style.width = w + 'px'; t.style.height = h + 'px'; };
+  let foco = LL.foco && ts.find(t => t.dataset.uid === LL.foco && t.classList.contains('con-video'));
+  if (LL.foco && !foco) LL.foco = null;
+  g.classList.toggle('con-foco', !!foco);
+  ts.forEach(t => t.classList.remove('ll-grande', 'll-chiquito'));
+  if (foco){ const otros = ts.filter(t => t !== foco), sh = otros.length ? Math.round(Math.min(96, Math.max(54, h0 * .16))) : 0;
+    let sw = Math.round(sh * (vertical ? .8 : 16 / 9)); const cabe = Math.floor((w0 + gap) / (sw + gap));
+    if (otros.length > cabe) sw = Math.floor((w0 - gap * (otros.length - 1)) / otros.length);
+    foco.classList.add('ll-grande'); pon(foco, pad, pad, w0, h0 - (sh ? sh + gap : 0));
+    const fila = otros.length * sw + (otros.length - 1) * gap; let x = pad + (w0 - fila) / 2;
+    otros.forEach(t => { t.classList.add('ll-chiquito'); pon(t, x, pad + h0 - sh, sw, sh); x += sw + gap; }); return; }
+  const opciones = [];
+  for (let c = 1; c <= n; c++){ if (vertical && n >= 3 && c < 2) continue;
+    const r = Math.ceil(n / c), cw = (w0 - gap * (c - 1)) / c, ch = (h0 - gap * (r - 1)) / r; if (cw <= 0 || ch <= 0) continue;
+    const a = vertical ? Math.min(16 / 9, Math.max(3 / 4, cw / ch)) : 16 / 9; let w = cw, h = cw / a; if (h > ch){ h = ch; w = ch * a; }
+    opciones.push({c, r, w, h}); }
+  if (!opciones.length) return; const max = Math.max(...opciones.map(o => o.w * o.h));
+  const mejor = vertical ? opciones.find(o => o.w * o.h === max) : opciones.filter(o => o.w * o.h >= max * .8).pop(); const {c, r, w, h} = mejor, primera = n - c * (r - 1);
+  let y = pad + (h0 - (r * h + (r - 1) * gap)) / 2, i = 0;
+  for (let fila = 0; fila < r; fila++){ const k = fila === 0 ? primera : c, ancho = k * w + (k - 1) * gap; let x = pad + (w0 - ancho) / 2;
+    for (let j = 0; j < k; j++, i++){ pon(ts[i], x, y, w, h); x += w + gap; } y += h + gap; } }
 
 // ---------- Llamada entrante ----------
 function llMostrarEntrante(l){
@@ -3809,6 +3873,18 @@ document.addEventListener('click', e => {
   const u = e.target.closest('[data-ll-unirse]');
   if (u){ const l = [...LL.activas.values()].find(x => x.id === +u.dataset.llUnirse); if (l) llEntrar(l, false); } });
 $('#ll-mic').onclick = () => llMicrofono(); $('#ll-cam').onclick = () => llCamara(); $('#ll-girar').onclick = llGirar; $('#ll-pip').onclick = llFlotante;
+$('#ll-grilla').addEventListener('click', e => { const vb = e.target.closest('.ll-volbtn'); if (vb){ e.stopPropagation(); llAbrirVol(vb.closest('.ll-tile').dataset.uid); return; }
+  if (LL.presionLarga){ LL.presionLarga = false; return; } if (!$('#ll-vol').hidden){ llCerrarVol(); return; } const t = e.target.closest('.ll-tile'); LL.foco = (!LL.foco && t?.classList.contains('con-video')) ? t.dataset.uid : null; llAcomodar(); });
+$('#ll-grilla').addEventListener('contextmenu', e => { const t = e.target.closest('.ll-tile:not(.ll-yo)'); if (!t) return; e.preventDefault(); llAbrirVol(t.dataset.uid); });
+$('#ll-grilla').addEventListener('pointerdown', e => { const t = e.target.closest('.ll-tile:not(.ll-yo)'); if (!t || e.pointerType === 'mouse') return; clearTimeout(LL.presionT);
+  LL.presionT = setTimeout(() => { LL.presionLarga = true; llAbrirVol(t.dataset.uid); }, 550); });
+['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => $('#ll-grilla').addEventListener(ev, () => clearTimeout(LL.presionT)));
+$('#ll-vol-rango').addEventListener('input', e => { const uid = LL.volUid; if (!uid) return; const v = +e.target.value / 100; $('#ll-vol-num').textContent = e.target.value + '%';
+  llGuardarVol(uid, {v, m:false}); $('#ll-vol-mute').textContent = 'silenciar para mí'; llAplicarVol(uid); llPintar(); });
+$('#ll-vol-mute').onclick = () => { const uid = LL.volUid; if (!uid) return; const o = llVolDe(uid); llGuardarVol(uid, {v:o.v, m:!o.m}); llAbrirVol(uid); llAplicarVol(uid); llPintar(); };
+$('#ll-vol-cerrar').onclick = llCerrarVol;
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#ll-vol').hidden){ llCerrarVol(); return; } if (e.key === 'Escape' && LL.foco && !$('#ll-pantalla').hidden){ LL.foco = null; llAcomodar(); } });
+if (window.ResizeObserver) new ResizeObserver(() => llAcomodar()).observe($('#ll-grilla')); else addEventListener('resize', () => llAcomodar());
 $('#ll-colgar').onclick = llColgar; $('#ll-barra-colgar').onclick = llColgar; $('#ll-min').onclick = llMinimizar; $('#ll-volver').onclick = llVolver;
 $('#ll-seguimos').onclick = llSeguimos;
 $('#ll-pantalla').addEventListener('pointerdown', llReanudar);
