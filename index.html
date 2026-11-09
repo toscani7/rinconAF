@@ -3558,8 +3558,9 @@ async function llReconectar(){ if (!LL.id || LL.reconectando) return; LL.reconec
     try { await llRecuperarMedios(); const viejo = LL.pc; LL.pc = null; try { viejo?.close(); } catch {}
       [...LL.remotos.keys()].forEach(llQuitarRemoto); LL.mids = new Map(); LL.subs = new Map(); LL.conectado = false; LL.cola = Promise.resolve(); LL.ta = null; LL.tv = null;
       $$('#ll-grilla .ll-tile:not(.ll-yo) video').forEach(v => { v.srcObject = null; });
-      await llConectar(true); if (LL.id !== id) return; LL.reconectando = false; LL.caida = 0; llPintar(); return; }
-    catch (e){ console.error('reconectar', e); if (e.codigo === 410 || e.codigo === 404 || e.codigo === 403){ LL.reconectando = false; return llFinRemoto(); }
+      await llConectar(true); if (LL.id !== id) return; LL.reconectando = false; LL.caida = 0; LL.camPorReconexion = false; llAvisarEstado(); llPintar(); return; }
+    catch (e){ console.error('reconectar', e?.codigo || '', e?.message || e);
+      if (LL.camPorReconexion){ LL.camPorReconexion = false; llApagarCamLocal(); llToast('no se pudo prender la cámara. la llamada sigue con voz.'); } if (e.codigo === 410 || e.codigo === 404 || e.codigo === 403){ LL.reconectando = false; return llFinRemoto(); }
       await new Promise(ok => setTimeout(ok, 2000 * (i + 1))); } }
   LL.reconectando = false; if (LL.id === id){ llToast('no se pudo reconectar la llamada.'); llColgar(); } }
 document.addEventListener('visibilitychange', () => { if (document.hidden || !LL.id) return;
@@ -3672,7 +3673,10 @@ function llPublicarVideo(){ return llEncolar(async () => { const pc = LL.pc, id 
     const r = await apiLl('publicar', {llamada:id, sdp:pc.localDescription.sdp, mid:tv.mid, nombre}); if (pc !== LL.pc) return;
     await pc.setRemoteDescription(r.answer); LL.tv = tv; llAjustarCalidad();
     if (viejo && viejo !== tv){ viejo.sender.replaceTrack(null).catch(() => {}); apiLl('cerrar', {llamada:id, mids:[viejo.mid]}).catch(() => {}); } }
-  catch (e){ console.error('publicar', e); try { tv.sender.replaceTrack(null); } catch {} if (pc === LL.pc){ llToast(e.codigo === 429 ? e.message : 'no se pudo prender la cámara. probá de nuevo.'); llApagarCamLocal(); llAvisarEstado(); llPintar(); } } }); }
+  catch (e){ console.error('publicar cámara:', e?.codigo || '', e?.message || e); try { tv.sender.replaceTrack(null); } catch {} if (pc !== LL.pc) return;
+    if (e.codigo === 429){ llToast(e.message); llApagarCamLocal(); llAvisarEstado(); llPintar(); return; }
+    // plan B: se vuelve a entrar a la llamada con la cámara ya prendida (es como arranca una videollamada); se corta el sonido un segundo
+    LL.camPorReconexion = true; llToast('conectando la cámara…'); setTimeout(llReconectar, 0); } }); }
 function llApagarCamLocal(){ LL.camOn = false; if (LL.cam){ LL.cam.stop(); LL.cam = null; } }
 // Girar: muchos celus no pueden tener las dos cámaras abiertas, así que primero se suelta una y después se toma la otra
 async function llGirar(){ if (!LL.camOn || !LL.tv || LL.girando) return; LL.girando = true; LL.frente = !LL.frente;
