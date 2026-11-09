@@ -3331,7 +3331,13 @@ $('#form-entrar').onsubmit = async e => { e.preventDefault(); const mail = $('#e
   if (!mailOk(mail)) return msg('#e-msg','Revisá el correo.'); if (!pass) return msg('#e-msg','Falta la contraseña.');
   msg('#e-msg','entrando…','ok');
   const {data, error} = await sb.auth.signInWithPassword({email:mail, password:pass});
-  if (error) return msg('#e-msg', /confirm/i.test(error.message) ? 'Todavía no confirmaste tu correo: buscá el mail que te mandamos.' : 'Correo o contraseña incorrectos.');
+  if (error){ console.error('entrar:', error.status, error.message);
+    const t = /confirm/i.test(error.message) ? 'Todavía no confirmaste tu correo: buscá el mail que te mandamos.'
+      : /invalid login|invalid_credentials|invalid grant/i.test(error.message + ' ' + (error.code || '')) ? 'Correo o contraseña incorrectos.'
+      : error.status === 429 ? 'Demasiados intentos seguidos. Esperá unos minutos y probá de nuevo.'
+      : !error.status || /fetch|network|failed/i.test(error.message) ? 'No hay conexión con el servidor. Revisá tu internet y probá de nuevo.'
+      : 'No se pudo entrar (' + (error.status || '') + ' ' + String(error.message || '').slice(0, 80) + ').';
+    return msg('#e-msg', t); }
   entrar(data.session); };
 $('#olvide').onclick = async () => { const mail = $('#e-mail').value.trim().toLowerCase();
   if (!mailOk(mail)) return msg('#e-msg','Escribí tu correo arriba y tocá de nuevo «¿te olvidaste la contraseña?».');
