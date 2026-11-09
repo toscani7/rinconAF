@@ -720,6 +720,7 @@ html.en-llamada,html.en-llamada body{overflow:hidden}
 #entrada .muted{color:#8C8C8C}
 #entrada .ent-pie{text-align:center;margin:0;font-size:11px;color:#6A6A6A}
 #entrada .ent-pie a{color:#A0A0A0}
+html.pc-pausa *:not(#ll-pantalla, #ll-pantalla *),html.pc-pausa *:not(#ll-pantalla *)::before,html.pc-pausa *:not(#ll-pantalla *)::after{animation-play-state:paused !important}
 @media (prefers-reduced-motion: reduce){ *:not(.nick):not(.letra):not(#fondo-capa):not(.nombre-rincon):not(.nov-arcoiris){animation:none !important} .frase-marq span{padding-left:0} }
 </style>
 </head>
@@ -1162,6 +1163,7 @@ html.en-llamada,html.en-llamada body{overflow:hidden}
       <h1 style="font-size:22px;margin:0 0 14px">ajustes</h1>
       <div class="aj-lista">
         <a class="aj-item" href="#ajustes/notificaciones"><span>🔔 notificaciones</span><span aria-hidden="true">›</span></a>
+        <a class="aj-item" href="#ajustes/rendimiento" id="aj-rend-item" hidden><span>⚡ rendimiento</span><span aria-hidden="true">›</span></a>
         <a class="aj-item" href="#ajustes/recomendaciones"><span>💡 recomendaciones</span><span aria-hidden="true">›</span></a>
         <a class="aj-item" href="#ajustes/buzon" id="aj-buzon-item" hidden><span>📬 buzón de recomendaciones <b id="aj-buzon-n"></b></span><span aria-hidden="true">›</span></a>
         <a class="aj-item" href="#" data-legal="terminos"><span>📄 legal</span><span aria-hidden="true">›</span></a>
@@ -1187,6 +1189,19 @@ html.en-llamada,html.en-llamada body{overflow:hidden}
         <div id="aj-tonos"></div>
         <p class="msg" id="aj-tonos-msg" role="alert"></p>
         <p class="muted" style="font-size:11px;margin:10px 0 0">estos sonidos suenan con RincónAF abierto. los avisos que llegan con la página cerrada usan el sonido de notificaciones de tu celular (iPhone y Android no dejan que una página lo cambie).</p>
+      </div>
+    </div>
+    <div id="aj-rend" hidden>
+      <a class="chico" href="#ajustes" style="display:inline-flex;align-items:center;min-height:40px">‹ ajustes</a>
+      <h1 style="font-size:22px;margin:0 0 14px">rendimiento</h1>
+      <div class="caja bloque">
+        <p style="margin:0 0 4px;font-weight:bold;color:var(--title)">⏸️ frenar las animaciones para gastar menos</p>
+        <p class="muted chico" style="margin:0 0 10px">las animaciones (fondos, nombres, efectos) se frenan y vuelven solas. las llamadas, los mensajes y los avisos siguen andando igual.</p>
+        <div class="aj-opciones" role="radiogroup" aria-label="Cuándo frenar las animaciones">
+          <label class="aj-switch"><span><b>al minimizar</b><span class="muted chico" style="display:block">cuando minimizás RincónAF o queda al lado del reloj</span></span><input type="radio" name="aj-pausa" value="min"></label>
+          <label class="aj-switch"><span><b>también al usar otro programa</b><span class="muted chico" style="display:block">ideal si lo tenés en otra pantalla mientras jugás: se frena apenas hacés clic en otro lado</span></span><input type="radio" name="aj-pausa" value="foco"></label>
+          <label class="aj-switch"><span><b>nunca</b><span class="muted chico" style="display:block">las animaciones siguen siempre (gasta más)</span></span><input type="radio" name="aj-pausa" value="nunca"></label>
+        </div>
       </div>
     </div>
     <div id="aj-recos" hidden>
@@ -2776,12 +2791,23 @@ function pintarTonos(){ const cont = $('#aj-tonos'); if (!cont) return; const el
     if (e) e.textContent = g && g.nombre ? '✓ ' + g.nombre : 'todavía no subiste ninguno'; } catch {} }); }
 function pintarAjustes(sub){ const yo = perfil(), fundador = !!yo && yo.insignias.includes('fundador');
   if (sub === 'buzon' && !fundador) sub = '';
-  const notis = sub === 'notificaciones', recos = sub === 'recomendaciones', buzon = sub === 'buzon';
-  $('#aj-menu').hidden = notis || recos || buzon; $('#aj-notis').hidden = !notis; $('#aj-recos').hidden = !recos; $('#aj-buzon').hidden = !buzon;
+  if (sub === 'rendimiento' && !window.rinconPC) sub = '';
+  const notis = sub === 'notificaciones', recos = sub === 'recomendaciones', buzon = sub === 'buzon', rend = sub === 'rendimiento';
+  $('#aj-menu').hidden = notis || recos || buzon || rend; $('#aj-notis').hidden = !notis; $('#aj-recos').hidden = !recos; $('#aj-buzon').hidden = !buzon; $('#aj-rend').hidden = !rend;
+  $('#aj-rend-item').hidden = !window.rinconPC; if (rend) $$('[name="aj-pausa"]').forEach(r => r.checked = r.value === modoPausa());
   $('#aj-buzon-item').hidden = !fundador;
   if (notis){ $('#aj-sonido').checked = sonidoOn(); pintarPush(); pintarTonos(); }
   if (recos){ $('#reco-msg').className = 'msg'; $('#reco-cuenta').textContent = $('#reco-texto').value.length; }
-  if (buzon) cargarBuzon(); else if (fundador && !notis && !recos) contarBuzon(); }
+  if (buzon) cargarBuzon(); else if (fundador && !notis && !recos && !rend) contarBuzon(); }
+// Programa de PC: frenar animaciones al minimizar (o al usar otro programa) para gastar menos. Las llamadas no se tocan.
+const modoPausa = () => { try { const m = localStorage.getItem('rend-pausa'); return ['min', 'foco', 'nunca'].includes(m) ? m : 'min'; } catch { return 'min'; } };
+const estadoPC = {min:false, foco:true};
+function aplicarPausaPC(){ const m = modoPausa(), pausar = !!window.rinconPC && m !== 'nunca' && (estadoPC.min || (m === 'foco' && !estadoPC.foco));
+  if (document.documentElement.classList.contains('pc-pausa') === pausar) return;
+  document.documentElement.classList.toggle('pc-pausa', pausar);
+  const v = $('#fondo-video'); if (v && !v.hidden){ if (pausar) v.pause(); else v.play().catch(() => {}); } }
+if (window.rinconPC?.onEstado) window.rinconPC.onEstado(d => { estadoPC.min = !!d?.min; estadoPC.foco = d?.foco !== false; aplicarPausaPC(); });
+document.addEventListener('change', e => { if (e.target.name === 'aj-pausa'){ try { localStorage.setItem('rend-pausa', e.target.value); } catch {} aplicarPausaPC(); } });
 const TIPOS_RECO = [['estetica','🎨 estética'], ['personalizacion','🧩 personalización'], ['apartado','➕ apartado nuevo'], ['arreglar','🔧 algo para arreglar'], ['sacar','✂️ algo para sacar'], ['otra','💬 otra cosa']];
 let recoTipo = 'otra';
 const pintarTiposReco = () => { $('#reco-tipos').innerHTML = TIPOS_RECO.map(([k, t]) => `<button type="button" data-reco-tipo="${k}" aria-pressed="${k === recoTipo}">${t}</button>`).join(''); };
