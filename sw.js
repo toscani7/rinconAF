@@ -23,6 +23,7 @@ self.addEventListener('push', e => {
     if (!apple && ventanas.some(c => c.visibilityState === 'visible' && c.focused)) return;
     await self.registration.showNotification(d.title || 'RincónAF', {
       body: d.body || '', icon: '/icon-192.png', badge: '/icon-192.png', tag: d.tag || undefined, renotify: !!d.tag,
+      requireInteraction: !!d.llamada, vibrate: d.llamada ? [500, 250, 500, 250, 500] : undefined,   // las llamadas quedan a la vista hasta que las tocás
       data: {url: typeof d.url === 'string' && d.url.startsWith('/') ? d.url : '/'}});
   })());
 });
