@@ -2256,8 +2256,13 @@ function conectarRealtime(){
 function cerrarChat(){ if (canalChat){ sb.removeChannel(canalChat); canalChat = null; } privadas = []; privadasCargadas = false; grupos = []; gruposCargados = false; rtEstado = ''; chatCon = null;
   Object.keys(msgsPriv).forEach(k => delete msgsPriv[k]); urlsChat.clear(); fotosGrupo.clear(); }
 const chatAbierta = c => chatCon?.conv?.id === c.id && $('#chat').classList.contains('activa') && !document.hidden;
+// Programa de PC: aviso de Windows cuando llega un mensaje y la ventana no está a la vista
+function avisoPC(m, yo){ if (!window.rinconPC || m.autor === yo.uid || m.tipo === 'sistema' || (!document.hidden && document.hasFocus())) return;
+  try { const c = todasConvs().find(x => x.id === m.conversacion); const quien = porUid(m.autor)?.apodo || 'alguien';
+    const donde = c && (c.esGrupo || c.uids) && c.nombre ? ` en ${c.nombre}` : '';
+    window.rinconPC.aviso({titulo:quien + donde, cuerpo:m.texto ? String(m.texto).slice(0, 140) : 'te mandó algo', hash:'#chat'}); } catch {} }
 async function recibirMensaje(m){
-  const yo = perfil(); if (!yo) return;
+  const yo = perfil(); if (!yo) return; avisoPC(m, yo);
   const c = todasConvs().find(x => x.id === m.conversacion);
   if (!c){ await cargarConvs();                     // conversación o grupo nuevo: la lista ya llega con los no leídos contados por el servidor
     if (m.tipo === 'sistema') setTimeout(() => sesion && cargarGrupos(), 3000); return; }   // un grupo recién creado puede recibir su foto un instante después
@@ -2858,6 +2863,7 @@ const claveU8 = b => { const s = atob((b + '='.repeat((4 - b.length % 4) % 4)).r
 async function suscripcionActual(){ try { const reg = await navigator.serviceWorker.getRegistration(); return reg ? await reg.pushManager.getSubscription() : null; } catch { return null; } }
 async function guardarSuscripcion(sub){ const j = sub.toJSON(); const {error} = await sb.rpc('guardar_suscripcion', {p_endpoint:j.endpoint, p_p256dh:j.keys.p256dh, p_auth:j.keys.auth}); if (error) throw error; }
 async function pintarPush(){ const est = $('#push-estado'), b = $('#push-boton'); if (!est) return; b.hidden = true;
+  if (window.rinconPC){ est.textContent = '✓ en el programa de PC los avisos de mensajes y llamadas llegan solos mientras RincónAF esté abierto o al lado del reloj.'; return; }
   if (!pushSoportado()){ est.textContent = esIOS && !instalada()
       ? 'en iPhone, los avisos funcionan solo si agregás RincónAF a la pantalla de inicio (Compartir → «Agregar a inicio») y lo abrís desde ese ícono.'
       : 'este navegador no permite avisos. probá con Chrome o Safari actualizados.'; return; }
@@ -3828,7 +3834,8 @@ function llMostrarEntrante(l){
   $('#ll-entra-quien').textContent = grupo ? `${llNombre(l.iniciador)} en ${c.nombre}` : llNombre(l.iniciador);
   $('#ll-entra-tipo').innerHTML = (l.video ? '<span class="ll-ico ll-ico-cam" aria-hidden="true"></span> te está llamando por video' : '<span class="ll-ico ll-ico-tel" aria-hidden="true"></span> te está llamando') + (grupo ? ' (llamada grupal)' : '');
   $('#ll-atender-video').hidden = !l.video; $('#ll-atender').textContent = l.video ? 'atender sin cámara' : 'atender';
-  $('#ll-entrante').hidden = false; llTimbre('entrante'); if (navigator.vibrate) try { navigator.vibrate([400, 200, 400]); } catch {}
+  $('#ll-entrante').hidden = false; llTimbre('entrante');
+  if (window.rinconPC){ try { window.rinconPC.traer(); window.rinconPC.aviso({titulo:$('#ll-entra-quien').textContent, cuerpo:l.video ? 'te está llamando por video' : 'te está llamando', urgente:true}); } catch {} } if (navigator.vibrate) try { navigator.vibrate([400, 200, 400]); } catch {}
   clearTimeout(LL.entranteT); LL.entranteT = setTimeout(() => { if (LL.entrante?.id === l.id) llCerrarEntrante(); }, LL_REGLAS.sonar * 1000); }
 function llCerrarEntrante(){ LL.entrante = null; clearTimeout(LL.entranteT); $('#ll-entrante').hidden = true; if (!LL.id) llTimbre(null); }
 function llRechazar(){ const l = LL.entrante; llCerrarEntrante(); if (l) apiLl('rechazar', {llamada:l.id}).catch(() => {}); }
