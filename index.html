@@ -1108,11 +1108,10 @@ html.pc-pausa *:not(#ll-pantalla, #ll-pantalla *),html.pc-pausa *:not(#ll-pantal
     <h2 id="nov-titulo" style="margin:0;font-size:18px;color:var(--title)">✨ novedades de RincónAF</h2>
     <p class="muted chico" style="margin:-6px 0 0" id="nov-version"></p>
     <ul class="nov-lista">
-      <li><b><span class="ll-ico ll-ico-tel" aria-hidden="true"></span> llamadas y videollamadas.</b> en cualquier chat tocá <span class="ll-ico ll-ico-tel" aria-hidden="true"></span> para llamar o <span class="ll-ico ll-ico-cam" aria-hidden="true"></span> para videollamada. en los grupos pueden estar hasta 12 personas, y si ya hay una llamada en curso aparece «unirse».</li>
-      <li><b>🔔 te avisa aunque tengas la página cerrada.</b> si tenés los avisos activados, te llega «te está llamando». tocalo y atendés.</li>
-      <li><b>🎛️ durante la llamada</b> podés mutearte, prender o apagar la cámara, girarla en el celu, minimizar la llamada para seguir usando la página o sacar el video a una <b>ventanita flotante</b>.</li>
-      <li><b>⏱️ se cortan solas</b> si nadie atiende, si te quedás solo un par de minutos o si pasan 20 minutos sin que nadie hable. antes te pregunta «¿siguen ahí?» para que no se corte en medio de una partida.</li>
-      <li><b>🧾 en el chat</b> queda anotado cuánto duró cada llamada o si nadie atendió.</li>
+      <li><b><span class="ll-ico ll-ico-tel" aria-hidden="true"></span> llamadas y videollamadas.</b> arreglamos varios errores y la pantalla es más amigable: las cámaras se acomodan en cuadros, como en Discord; tocá la cámara de alguien para agrandarla, y con 🔊 subís o bajás el volumen de cada persona. <span class="muted">siguen en BETA, así que todavía pueden tener algún error.</span></li>
+      <li><b>▶️ mini reproductor.</b> las canciones y los videos del rincón y de «escuchando ahora» ya no te llevan a YouTube, SoundCloud, Spotify, etc.: se escuchan y se ven dentro de la página, y siguen sonando mientras la recorrés. si querés abrirlos en su sitio, tocá la flecha ↗ de arriba a la derecha del reproductor.</li>
+      <li><b>💻 versión para computadora.</b> ya está lista (es experimental). no contiene virus: si Windows te muestra un cartel de protección, tocá «Más información» → «Ejecutar de todas formas» y seguí tranquilo. el link está en <b>ajustes → descargas</b>.</li>
+      <li><b>⏸️ frenar las animaciones en segundo plano.</b> para que la computadora gaste menos mientras jugás o usás otro programa. está en <b>ajustes → rendimiento</b> (solo en la versión para computadora).</li>
     </ul>
     <button type="button" class="btn lleno" id="nov-ok">¡dale!</button>
   </div>
@@ -1183,6 +1182,7 @@ html.pc-pausa *:not(#ll-pantalla, #ll-pantalla *),html.pc-pausa *:not(#ll-pantal
       <div class="aj-lista">
         <a class="aj-item" href="#ajustes/notificaciones"><span>🔔 notificaciones</span><span aria-hidden="true">›</span></a>
         <a class="aj-item" href="#ajustes/rendimiento" id="aj-rend-item" hidden><span>⚡ rendimiento</span><span aria-hidden="true">›</span></a>
+        <a class="aj-item" href="#ajustes/descargas"><span>⬇️ descargas</span><span aria-hidden="true">›</span></a>
         <a class="aj-item" href="#ajustes/recomendaciones"><span>💡 recomendaciones</span><span aria-hidden="true">›</span></a>
         <a class="aj-item" href="#ajustes/buzon" id="aj-buzon-item" hidden><span>📬 buzón de recomendaciones <b id="aj-buzon-n"></b></span><span aria-hidden="true">›</span></a>
         <a class="aj-item" href="#" data-legal="terminos"><span>📄 legal</span><span aria-hidden="true">›</span></a>
@@ -1221,6 +1221,22 @@ html.pc-pausa *:not(#ll-pantalla, #ll-pantalla *),html.pc-pausa *:not(#ll-pantal
           <label class="aj-switch"><span><b>también al usar otro programa</b><span class="muted chico" style="display:block">ideal si lo tenés en otra pantalla mientras jugás: se frena apenas hacés clic en otro lado</span></span><input type="radio" name="aj-pausa" value="foco"></label>
           <label class="aj-switch"><span><b>nunca</b><span class="muted chico" style="display:block">las animaciones siguen siempre (gasta más)</span></span><input type="radio" name="aj-pausa" value="nunca"></label>
         </div>
+      </div>
+    </div>
+    <div id="aj-desc" hidden>
+      <a class="chico" href="#ajustes" style="display:inline-flex;align-items:center;min-height:40px">‹ ajustes</a>
+      <h1 style="font-size:22px;margin:0 0 14px">descargas</h1>
+      <div class="caja bloque">
+        <p style="margin:0 0 4px;font-weight:bold;color:var(--title)">💻 RincónAF para Windows <span class="muted chico" style="font-weight:normal">· versión 1.0.1 · experimental</span></p>
+        <p class="muted chico" style="margin:0 0 10px">RincónAF en su propia ventana, con su ícono. queda al lado del reloj para avisarte de mensajes y llamadas, y se actualiza solo. para Windows 10 y 11 · 113 MB.</p>
+        <p class="aviso" id="desc-ya" style="margin:0 0 10px" hidden>✓ ya estás usando la versión para computadora.</p>
+        <a class="btn lleno" id="desc-pc" href="#" download style="display:flex;align-items:center;justify-content:center;text-decoration:none">⬇️ descargar para Windows</a>
+        <p class="chico" style="margin:8px 0 0;text-align:center">¿no se descarga? <a href="https://github.com/toscani7/rinconAF/releases/latest" target="_blank" rel="noopener">bajalo desde acá</a> (tocá el archivo que termina en .exe).</p>
+        <p class="muted" style="font-size:11px;margin:10px 0 0">no contiene virus. como el programa es nuevo, Windows puede mostrar «Windows protegió su PC»: tocá «Más información» → «Ejecutar de todas formas». para desinstalarlo: Configuración → Aplicaciones → RincónAF.</p>
+      </div>
+      <div class="caja bloque">
+        <p style="margin:0 0 4px;font-weight:bold;color:var(--title)">📱 en el celu</p>
+        <p class="muted chico" style="margin:0">no hace falta descargar nada: abrí RincónAF en el navegador y agregalo a la pantalla de inicio (en iPhone: Compartir → «Agregar a inicio»; en Android: menú ⋮ → «Instalar app»). queda con su ícono, como una app.</p>
       </div>
     </div>
     <div id="aj-recos" hidden>
@@ -2819,13 +2835,16 @@ function pintarTonos(){ const cont = $('#aj-tonos'); if (!cont) return; const el
 function pintarAjustes(sub){ const yo = perfil(), fundador = !!yo && yo.insignias.includes('fundador');
   if (sub === 'buzon' && !fundador) sub = '';
   if (sub === 'rendimiento' && !window.rinconPC) sub = '';
-  const notis = sub === 'notificaciones', recos = sub === 'recomendaciones', buzon = sub === 'buzon', rend = sub === 'rendimiento';
-  $('#aj-menu').hidden = notis || recos || buzon || rend; $('#aj-notis').hidden = !notis; $('#aj-recos').hidden = !recos; $('#aj-buzon').hidden = !buzon; $('#aj-rend').hidden = !rend;
+  const notis = sub === 'notificaciones', recos = sub === 'recomendaciones', buzon = sub === 'buzon', rend = sub === 'rendimiento', desc = sub === 'descargas';
+  $('#aj-menu').hidden = notis || recos || buzon || rend || desc; $('#aj-notis').hidden = !notis; $('#aj-recos').hidden = !recos; $('#aj-buzon').hidden = !buzon; $('#aj-rend').hidden = !rend; $('#aj-desc').hidden = !desc;
+  if (desc){ $('#desc-pc').href = DESCARGA_PC; $('#desc-ya').hidden = !window.rinconPC; }
   $('#aj-rend-item').hidden = !window.rinconPC; if (rend) $$('[name="aj-pausa"]').forEach(r => r.checked = r.value === modoPausa());
   $('#aj-buzon-item').hidden = !fundador;
   if (notis){ $('#aj-sonido').checked = sonidoOn(); pintarPush(); pintarTonos(); }
   if (recos){ $('#reco-msg').className = 'msg'; $('#reco-cuenta').textContent = $('#reco-texto').value.length; }
-  if (buzon) cargarBuzon(); else if (fundador && !notis && !recos && !rend) contarBuzon(); }
+  if (buzon) cargarBuzon(); else if (fundador && !notis && !recos && !rend && !desc) contarBuzon(); }
+// Programa para Windows: se baja de la sección «Releases» de GitHub (siempre la última versión)
+const DESCARGA_PC = 'https://github.com/toscani7/rinconAF/releases/latest/download/RinconAF-Setup.exe';
 // Programa de PC: frenar animaciones al minimizar (o al usar otro programa) para gastar menos. Las llamadas no se tocan.
 const modoPausa = () => { try { const m = localStorage.getItem('rend-pausa'); return ['min', 'foco', 'nunca'].includes(m) ? m : 'min'; } catch { return 'min'; } };
 const estadoPC = {min:false, foco:true};
@@ -2841,7 +2860,7 @@ const pintarTiposReco = () => { $('#reco-tipos').innerHTML = TIPOS_RECO.map(([k,
 pintarTiposReco();
 $('#reco-tipos').addEventListener('click', e => { const b = e.target.closest('[data-reco-tipo]'); if (b){ recoTipo = b.dataset.recoTipo; pintarTiposReco(); } });
 // Versión de RincónAF: se sube en cada actualización (1.1, 1.2… cambios chicos; 2.0 cambios grandes)
-const VERSION_RINCON = '2.0';
+const VERSION_RINCON = '2.1';
 $('#aj-version').textContent = 'versión ' + VERSION_RINCON;
 // Cartel de novedades: sale una sola vez por versión y por cuenta (queda anotado en el perfil, sirve en todos los dispositivos)
 function mostrarNovedades(){ const p = perfil(); if (!p || p.novedades === VERSION_RINCON) return;
