@@ -720,6 +720,25 @@ html.en-llamada,html.en-llamada body{overflow:hidden}
 #entrada .muted{color:#8C8C8C}
 #entrada .ent-pie{text-align:center;margin:0;font-size:11px;color:#6A6A6A}
 #entrada .ent-pie a{color:#A0A0A0}
+/* ===== Mini reproductor (rincón y "escuchando ahora"): queda abierto mientras navegás ===== */
+.repro{position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:45;width:min(380px, calc(100vw - 24px));background:#0D0D0D;color:#EEE;border:1px solid #444;border-radius:10px;overflow:hidden;box-shadow:0 10px 32px rgba(0,0,0,.55);font-family:Verdana, Tahoma, sans-serif;text-shadow:none}
+.repro[hidden]{display:none}
+.repro.grande{width:min(720px, calc(100vw - 24px))}
+.repro-cab{display:flex;align-items:center;gap:4px;padding:4px 4px 4px 10px;border-bottom:1px solid #2A2A2A;min-height:40px}
+.repro-tit{flex:1;min-width:0;font-size:12px;line-height:1.3;overflow:hidden}
+.repro-tit b{display:block;color:#FFF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.repro-tit span{display:block;color:#999;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.repro-cab button,.repro-cab a{flex:none;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;background:none;border:1px solid transparent;border-radius:6px;color:#DDD;font:15px Verdana, sans-serif;text-decoration:none;cursor:pointer}
+.repro-cab button:hover,.repro-cab a:hover,.repro-cab button:focus-visible,.repro-cab a:focus-visible{border-color:#666;color:#FFF}
+.repro-cab button[hidden]{display:none}
+.repro-marco iframe{display:block;width:100%;border:0;background:#000}
+.repro.chico .repro-marco{height:0;overflow:hidden}
+.r-card[data-repro],.esc-card[data-repro]{cursor:pointer}
+.r-card .r-play{flex:none;margin-left:auto;width:34px;height:34px;border-radius:50%;background:var(--link);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:13px}
+.r-card.sonando{border-color:var(--link);box-shadow:inset 0 0 0 1px var(--link)}
+@media (max-width:600px){.repro{left:8px;right:8px;width:auto;bottom:calc(8px + env(safe-area-inset-bottom))}.repro.grande{width:auto}}
+html.con-repro body{padding-bottom:calc(var(--repro-h, 0px) + 16px)}
+html.con-repro .fab{bottom:calc(var(--repro-h, 0px) + 24px + env(safe-area-inset-bottom))}
 html.pc-pausa *:not(#ll-pantalla, #ll-pantalla *),html.pc-pausa *:not(#ll-pantalla *)::before,html.pc-pausa *:not(#ll-pantalla *)::after{animation-play-state:paused !important}
 @media (prefers-reduced-motion: reduce){ *:not(.nick):not(.letra):not(#fondo-capa):not(.nombre-rincon):not(.nov-arcoiris){animation:none !important} .frase-marq span{padding-left:0} }
 </style>
@@ -1265,6 +1284,14 @@ html.pc-pausa *:not(#ll-pantalla, #ll-pantalla *),html.pc-pausa *:not(#ll-pantal
 <p class="aviso-flot" id="aviso-flot" role="alert" hidden></p>
 
 <!-- ================= EDITOR ================= -->
+<div class="repro" id="repro" role="region" aria-label="Reproductor" hidden>
+  <div class="repro-cab"><span class="repro-tit"><b id="repro-tit"></b><span id="repro-sub"></span></span>
+    <button type="button" id="repro-tam" aria-label="Agrandar" title="agrandar" hidden>⤢</button>
+    <button type="button" id="repro-min" aria-label="Achicar el reproductor" title="achicar (sigue sonando)">▾</button>
+    <a id="repro-abrir" href="#" target="_blank" rel="noopener" aria-label="Abrir en la página original" title="abrir afuera">↗</a>
+    <button type="button" id="repro-cerrar" aria-label="Cerrar el reproductor" title="cerrar">×</button></div>
+  <div class="repro-marco" id="repro-marco"></div>
+</div>
 <aside id="editor" class="editor" hidden role="dialog" aria-labelledby="ed-titulo">
   <div class="ed-top"><h2 id="ed-titulo">editar mi perfil</h2><button class="ed-cerrar" type="button" id="cerrar-editor" aria-label="Cerrar">×</button></div>
   <div class="ed-tabs" role="tablist" aria-label="Partes" id="ed-tabs"></div>
@@ -2935,6 +2962,44 @@ function pintarInicioExtra(){
     : `<p class="muted" style="margin:0">${amigosDe(yo).length ? 'todavía no te escribió nadie.' : 'cuando tengas amigos, sus mensajes aparecen acá.'}</p>`;
 }
 
+/* ---------- Mini reproductor: canciones y videos se ven y escuchan sin salir de RincónAF ---------- */
+function embedDe(u){ try { const x = new URL(u), h = x.hostname.replace(/^(www|m)\./, ''), yt = ytId(u); let m;
+    if (yt) return {src:`https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0&playsinline=1`, forma:'video', musica:/music\.youtube/.test(x.hostname)};
+    if (h === 'open.spotify.com' && (m = x.pathname.match(/\/(track|album|playlist|artist|episode|show)\/([A-Za-z0-9]{10,30})/)))
+      return {src:`https://open.spotify.com/embed/${m[1]}/${m[2]}?utm_source=generator`, forma:m[1] === 'track' || m[1] === 'episode' ? 'spotify' : 'spotify-lista', musica:true};
+    if (h === 'soundcloud.com' || h === 'on.soundcloud.com' || h === 'm.soundcloud.com')
+      return {src:`https://w.soundcloud.com/player/?url=${encodeURIComponent(u)}&auto_play=true&visual=false&hide_related=true&show_comments=false&show_reposts=false&show_teaser=false`, forma:'soundcloud', musica:true};
+    if (h === 'vimeo.com' && (m = x.pathname.match(/^\/(?:video\/)?(\d{5,})/))) return {src:`https://player.vimeo.com/video/${m[1]}?autoplay=1`, forma:'video'};
+    if (/(^|\.)tiktok\.com$/.test(h) && (m = x.pathname.match(/\/video\/(\d{8,})/))) return {src:`https://www.tiktok.com/player/v1/${m[1]}?autoplay=1&rel=0`, forma:'vertical'};
+    if (h === 'instagram.com' && (m = x.pathname.match(/^\/(?:[\w.]+\/)?(p|reel|reels|tv)\/([\w-]{5,})/))) return {src:`https://www.instagram.com/${m[1] === 'reels' ? 'reel' : m[1]}/${m[2]}/embed`, forma:'vertical'};
+    if (x.hostname === 'music.apple.com') return {src:'https://embed.music.apple.com' + x.pathname + x.search, forma:x.searchParams.get('i') || /\/song\//.test(x.pathname) ? 'apple' : 'apple-lista', musica:true};
+    if (h === 'deezer.com' && (m = x.pathname.match(/\/(track|album|playlist)\/(\d+)/))) return {src:`https://widget.deezer.com/widget/dark/${m[1]}/${m[2]}`, forma:m[1] === 'track' ? 'deezer' : 'deezer-lista', musica:true};
+  } catch {} return null; }
+const ALTO_REPRO = {spotify:152, 'spotify-lista':352, soundcloud:166, apple:175, 'apple-lista':450, deezer:150, 'deezer-lista':300};
+let reproUrl = null;
+function altoRepro(){ const r = $('#repro'), f = $('#repro-marco iframe'); if (!f) return; const e = embedDe(reproUrl), w = r.clientWidth;
+  f.style.height = (e.forma === 'video' ? Math.round(w * 9 / 16) : e.forma === 'vertical' ? Math.round(Math.min(w * 16 / 9, innerHeight * .62)) : ALTO_REPRO[e.forma] || 200) + 'px';
+  requestAnimationFrame(() => { document.documentElement.style.setProperty('--repro-h', r.offsetHeight + 'px'); }); }
+function abrirRepro(u, titulo, sub){ const e = embedDe(u); if (!e) return false;
+  const r = $('#repro'); reproUrl = u;
+  $('#repro-tit').textContent = titulo || (e.musica ? 'escuchando en ' : 'viendo en ') + nombreSitio(u); $('#repro-sub').textContent = sub || nombreSitio(u);
+  $('#repro-abrir').href = u; $('#repro-abrir').title = 'abrir en ' + nombreSitio(u);
+  $('#repro-tam').hidden = e.forma !== 'video'; r.classList.remove('chico', 'grande'); $('#repro-min').textContent = '▾';
+  const f = document.createElement('iframe'); f.src = e.src; f.title = 'reproductor de ' + nombreSitio(u);
+  f.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture; clipboard-write'; f.allowFullscreen = true; f.referrerPolicy = 'strict-origin-when-cross-origin';
+  $('#repro-marco').replaceChildren(f); r.hidden = false; document.documentElement.classList.add('con-repro'); altoRepro(); marcarSonando(); return true; }
+function cerrarRepro(){ $('#repro').hidden = true; $('#repro-marco').replaceChildren(); reproUrl = null; document.documentElement.classList.remove('con-repro'); marcarSonando(); }
+function marcarSonando(){ $$('.r-card[data-link]').forEach(a => a.classList.toggle('sonando', a.dataset.link === reproUrl)); }
+$('#repro-cerrar').onclick = cerrarRepro;
+$('#repro-min').onclick = () => { const r = $('#repro'), c = r.classList.toggle('chico'); $('#repro-min').textContent = c ? '▴' : '▾'; $('#repro-min').title = c ? 'mostrar' : 'achicar (sigue sonando)'; altoRepro(); };
+$('#repro-tam').onclick = () => { $('#repro').classList.toggle('grande'); altoRepro(); };
+addEventListener('resize', () => { if (reproUrl) altoRepro(); });
+document.addEventListener('click', e => { const a = e.target.closest('a.r-card[data-link], a.esc-card, a.media-link'); if (!a || e.ctrlKey || e.metaKey || e.shiftKey || e.button) return;
+  const u = a.dataset.link || a.getAttribute('href'); if (!u || !embedDe(u)) return;
+  e.preventDefault(); if (u === reproUrl && !$('#repro').hidden){ const r = $('#repro'); if (r.classList.contains('chico')) $('#repro-min').click(); return; }
+  const tit = a.querySelector('.r-tit, .esc-info b, b')?.textContent?.trim(), sub = a.querySelector('.r-sub, .esc-info span')?.textContent?.replace(/\s*↗\s*$/, '').trim();
+  abrirRepro(u, tit, sub); });
+
 /* ---------- Rincón: canciones, imágenes y videos (solo tuyos y de tus amigos) ---------- */
 let rposts = [], rEstado = 'nada', rTipo = 'musica', rFiltro = 'todo', rImg = null;   // rEstado: nada | cargando | listo | error
 const RTXT = {musica:['link de la canción (youtube, spotify, soundcloud…)','compartió una canción'], imagen:['','compartió una imagen'], video:['link del video (youtube, tiktok, instagram…)','compartió un video']};
@@ -2973,7 +3038,7 @@ function tarjetaLink(u, tipo){ const i = infoCache.get(u), id = ytId(u), mini = 
   const tit = (i && i.titulo) || (tipo === 'musica' ? 'escuchar en ' : 'ver en ') + nombreSitio(u);
   return `<a class="r-card ${tipo === 'video' || id ? 'video' : 'musica'}" href="${esc(u)}" target="_blank" rel="noopener" data-link="${esc(u)}">
     <span class="r-mini" aria-hidden="true"${mini ? ` style="background-image:url(&quot;${esc(mini)}&quot;)"` : ''}>${mini ? '' : (tipo === 'musica' ? '♪' : '►')}</span>
-    <span class="r-info"><span class="r-tit">${esc(tit)}</span><span class="r-sub">${esc(i && i.titulo ? [i.autor, nombreSitio(u)].filter(Boolean).join(' · ') : sitioDe(u))}</span></span></a>`; }
+    <span class="r-info"><span class="r-tit">${esc(tit)}</span><span class="r-sub">${esc(i && i.titulo ? [i.autor, nombreSitio(u)].filter(Boolean).join(' · ') : sitioDe(u))}</span></span>${embedDe(u) ? `<span class="r-play" aria-hidden="true">${tipo === 'musica' ? '▶' : '►'}</span>` : ''}</a>`; }
 function completarTarjetas(cont){ cont.querySelectorAll('.r-card[data-link]').forEach(a => { const u = a.dataset.link; if (infoCache.has(u)) return;
   infoLink(u).then(i => { if (!i.titulo || !a.isConnected) return; a.querySelector('.r-tit').textContent = i.titulo;
     a.querySelector('.r-sub').textContent = [i.autor, nombreSitio(u)].filter(Boolean).join(' · ');
@@ -3014,7 +3079,7 @@ function pintarRincon(){
       ${x.texto ? `<p style="margin:4px 0 0;word-break:break-word">${esc(x.texto)}</p>` : ''}${media}
       ${a.id === yo.id ? `<div><button class="borrar" type="button" data-borrar="${x.id}">borrar</button></div>` : ''}`;
     d.append(av, c); l.appendChild(d); });
-  completarTarjetas(l);
+  completarTarjetas(l); marcarSonando();
 }
 $('#rincon').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.rtipo){ rTipo = b.dataset.rtipo; $('#r-msg').className = 'msg'; pintarRincon(); }
@@ -3462,6 +3527,8 @@ function mostrar(){
   const [h, arg] = location.hash.slice(1).split('/'); let id = h;
   if (!PANT.includes(id)) id = perfil() ? 'perfil' : 'entrada';
   if (!perfil()) id = 'entrada'; else if (id === 'entrada') id = 'perfil';
+  if (id === 'entrada' && reproUrl) cerrarRepro();
+  if (id === 'chat' && reproUrl && innerWidth < 760 && !$('#repro').classList.contains('chico')) $('#repro-min').click();
   if (id === 'perfil'){ const nuevo = (arg && porId(+arg)) || perfil();
     if (viendo !== nuevo){ const mismo = recargando && viendo && viendo.id === nuevo.id;   // al recargar: mismo perfil, misma pestaña y sin sumar otra visita
       viendo = nuevo; verFoto = null; if (!mismo) seccionPerfil = 'perfil'; cerrarFoto(); if (!esMio() && !mismo){ viendo.visitas++; sb.rpc('sumar_visita', {p:viendo.uid}).then(({error}) => { if (error) console.error(error); }); } }
