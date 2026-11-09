@@ -3456,10 +3456,15 @@ function llReanudar(){ if (!LL.id && !LL.pc) return;
 function llRehacerNiveles(){ LL.niveles.forEach(n => { try { n.src.disconnect(); } catch {} }); LL.niveles = new Map();
   try { LL.actx?.close(); } catch {} LL.actx = null;
   llNivelLocal(); LL.remotos.forEach((r, uid) => { if (r.audio.srcObject) llMedirNivel(uid, r.audio.srcObject); }); }
+// Micrófono nuevo sin cortar la llamada (Android a veces lo deja "dormido" al usar otra app: vos escuchás pero no se manda tu voz)
+async function llRenovarMic(){ if (LL.renovandoMic || document.hidden) return; LL.renovandoMic = true; const viejo = LL.mic;
+  try { await llTomarMic(); LL.mic.enabled = LL.micOn; if (LL.ta) await LL.ta.sender.replaceTrack(LL.mic); if (viejo && viejo !== LL.mic) viejo.stop(); llRehacerNiveles(); LL.micSinDatos = 0; }
+  catch (e){ console.error('mic', e); if (!LL.mic || LL.mic.readyState === 'ended') LL.mic = viejo; }
+  LL.renovandoMic = false; }
 // Si el celu soltó el micrófono o la cámara (por ejemplo, al usar otra app), se vuelven a tomar
-async function llRecuperarMedios(){ if (!LL.id || document.hidden) return;
-  try { if (!LL.mic || LL.mic.readyState === 'ended'){ await llTomarMic(); LL.mic.enabled = LL.micOn; if (LL.ta) await LL.ta.sender.replaceTrack(LL.mic); llRehacerNiveles(); } } catch (e){ console.error('mic', e); }
-  try { if (LL.camOn && LL.tv && (!LL.cam || LL.cam.readyState === 'ended')){ LL.cam = null; await llTomarCam(); await LL.tv.sender.replaceTrack(LL.cam); } } catch (e){ console.error('cam', e); }
+async function llRecuperarMedios(forzarMic = false){ if (!LL.id || document.hidden) return;
+  if (forzarMic || !LL.mic || LL.mic.readyState === 'ended' || LL.mic.muted) await llRenovarMic();
+  try { if (LL.camOn && (!LL.cam || LL.cam.readyState === 'ended')){ LL.cam = null; await llTomarCam(); if (LL.pc && LL.conectado) await llPublicarVideo(); } } catch (e){ console.error('cam', e); }
   llReanudar(); llPintar(); }
 function llErrorMedios(e){ const n = e?.name || '';
   return n === 'NotAllowedError' || n === 'SecurityError' ? 'no diste permiso para usar el micrófono o la cámara. habilitalo en el candado de la barra del navegador y probá de nuevo.'
@@ -3498,15 +3503,16 @@ async function llConectar(reconexion = false){
     else if (s === 'disconnected'){ LL.caida = Date.now(); llPintar(); setTimeout(() => { if (pc === LL.pc && pc.connectionState !== 'connected') llReconectar(); }, 5000); }
     else if (s === 'failed') llReconectar(); };
   LL.ta = pc.addTransceiver(LL.mic, {direction:'sendonly'}); LL.mic.enabled = LL.micOn;
-  if (!LL.freno){ LL.tv = pc.addTransceiver(LL.cam || 'video', {direction:'sendonly'}); if (!LL.cam) await LL.tv.sender.replaceTrack(null); }
+  LL.tv = null; if (!LL.freno && LL.camOn && LL.cam) LL.tv = pc.addTransceiver(LL.cam, {direction:'sendonly'});
   await pc.setLocalDescription(await pc.createOffer()); await llEsperarIce(pc);
-  const pistas = [{mid:LL.ta.mid, nombre:'audio'}]; if (LL.tv) pistas.push({mid:LL.tv.mid, nombre:'video'});
+  const pistas = [{mid:LL.ta.mid, nombre:'audio'}]; if (LL.tv) pistas.push({mid:LL.tv.mid, nombre:'video-' + Date.now().toString(36)});
   const r = await apiLl('entrar', {llamada:LL.id, sdp:pc.localDescription.sdp, pistas, mic:LL.micOn, cam:LL.camOn});
   if (pc !== LL.pc) return;
   await pc.setRemoteDescription(r.answer);
   LL.freno = r.freno; if (!reconexion){ LL.inicio = Date.now(); LL.actividad = Date.now(); }
   await llCargarGente();
-  llAjustarCalidad(); if (!reconexion) llArrancarRelojes(); llRehacerNiveles(); llPintar(); }
+  llAjustarCalidad(); if (!reconexion) llArrancarRelojes(); llRehacerNiveles(); llPintar();
+  if (LL.camOn && LL.cam && !LL.tv) llPublicarVideo(); }
 // Reconexión automática: misma llamada, conexión nueva (los demás te vuelven a recibir solos)
 async function llReconectar(){ if (!LL.id || LL.reconectando) return; LL.reconectando = true; LL.caida = LL.caida || Date.now(); llPintar(); const id = LL.id;
   for (let i = 0; i < 4 && LL.id === id; i++){
@@ -3518,8 +3524,21 @@ async function llReconectar(){ if (!LL.id || LL.reconectando) return; LL.reconec
       await new Promise(ok => setTimeout(ok, 2000 * (i + 1))); } }
   LL.reconectando = false; if (LL.id === id){ llToast('no se pudo reconectar la llamada.'); llColgar(); } }
 document.addEventListener('visibilitychange', () => { if (document.hidden || !LL.id) return;
-  llRecuperarMedios(); llReanudar(); llPulso();
+  llRecuperarMedios(true); llReanudar(); llPulso();
   if (LL.pc && !['connected', 'connecting', 'new'].includes(LL.pc.connectionState)) llReconectar(); });
+// Vigilante (cada 2 s): si el video de alguien con cámara prendida se trabó, se vuelve a pedir; si tu voz dejó de salir, se renueva el micrófono
+async function llVigilar(){ const pc = LL.pc; if (!pc || !LL.conectado || document.hidden || LL.reconectando) return;
+  let st; try { st = await pc.getStats(); } catch { return; } if (pc !== LL.pc) return;
+  const ahora = Date.now(), cuadros = new Map(); let enviado = 0;
+  st.forEach(s => { if (s.type === 'inbound-rtp' && s.kind === 'video' && s.mid) cuadros.set(s.mid, s.framesDecoded || 0); if (s.type === 'outbound-rtp' && s.kind === 'audio') enviado += s.bytesSent || 0; });
+  LL.trabas = LL.trabas || new Map();
+  LL.mids.forEach((info, mid) => { if (!info.pista.startsWith('video')) return; const p = LL.gente.get(info.uid); const f = cuadros.get(mid) ?? 0, t = LL.trabas.get(mid) || {f:-1, desde:ahora, pedido:0};
+    if (!p?.cam || f !== t.f){ LL.trabas.set(mid, {f, desde:ahora, pedido:t.pedido}); return; }
+    if (ahora - t.desde > 4000 && ahora - t.pedido > 8000){ LL.trabas.set(mid, {f, desde:ahora, pedido:ahora}); llRepedirVideo(mid); } });
+  if (LL.micOn && LL.mic){ if (enviado === LL.enviadoAntes){ LL.micSinDatos = (LL.micSinDatos || 0) + 1; if (LL.micSinDatos >= 2) llRenovarMic(); } else LL.micSinDatos = 0; }
+  LL.enviadoAntes = enviado; }
+function llRepedirVideo(mid){ const k = [...LL.subs].find(([, v]) => v.mid === mid)?.[0]; if (!k) return;
+  LL.subs.delete(k); LL.mids.delete(mid); llEncolar(() => apiLl('cerrar', {llamada:LL.id, mids:[mid]}).catch(() => {})); llRevisarSubs(); }
 
 async function llCargarGente(){ if (!LL.id) return;
   const [{data:l}, {data:ps}] = await Promise.all([sb.from('llamadas').select('*').eq('id', LL.id).maybeSingle(), sb.from('llamada_participantes').select('*').eq('llamada', LL.id)]);
@@ -3579,10 +3598,21 @@ function llLeerNiveles(){ const ahora = Date.now(); let cambio = false;
 async function llMicrofono(on = !LL.micOn){ if (!LL.mic) return; LL.micOn = on; LL.mic.enabled = on; if (on) LL.muteDesde = 0; llPintar(); llAvisarEstado(); }
 async function llCamara(on = !LL.camOn){
   if (on && LL.freno) return llToast('las videollamadas están en pausa hasta el mes que viene (se llegó al límite gratis). la voz sigue andando.');
-  if (on && !LL.tv) return llToast('esta llamada empezó sin video.');
-  if (on){ try { if (!LL.cam || LL.cam.readyState === 'ended') await llTomarCam(); await LL.tv.sender.replaceTrack(LL.cam); LL.camOn = true; LL.muteDesde = 0; llAjustarCalidad(); } catch (e){ return llToast(llErrorMedios(e)); } }
-  else { llApagarCamLocal(); if (LL.tv) await LL.tv.sender.replaceTrack(null).catch(() => {}); }
-  llPintar(); llAvisarEstado(); setTimeout(llReanudar, 300); }
+  if (LL.camCambiando) return; LL.camCambiando = true;
+  try {
+    if (on){ try { if (!LL.cam || LL.cam.readyState === 'ended') await llTomarCam(); } catch (e){ return llToast(llErrorMedios(e)); }
+      LL.camOn = true; LL.muteDesde = 0; llPintar();
+      if (LL.pc && LL.conectado) await llPublicarVideo(); }
+    else { llApagarCamLocal(); if (LL.tv) await LL.tv.sender.replaceTrack(null).catch(() => {}); llAvisarEstado(); }
+  } finally { LL.camCambiando = false; llPintar(); setTimeout(llReanudar, 300); } }
+// Cada vez que se prende la cámara se abre un canal de video nuevo y limpio (así los demás siempre lo reciben, sin trabarse)
+function llPublicarVideo(){ return llEncolar(async () => { const pc = LL.pc, id = LL.id; if (!pc || !LL.cam || !LL.camOn) return;
+  const viejo = LL.tv, tv = pc.addTransceiver(LL.cam, {direction:'sendonly'}), nombre = 'video-' + Date.now().toString(36);
+  try { await pc.setLocalDescription(await pc.createOffer()); await llEsperarIce(pc, 1500);
+    const r = await apiLl('publicar', {llamada:id, sdp:pc.localDescription.sdp, mid:tv.mid, nombre}); if (pc !== LL.pc) return;
+    await pc.setRemoteDescription(r.answer); LL.tv = tv; llAjustarCalidad();
+    if (viejo && viejo !== tv){ viejo.sender.replaceTrack(null).catch(() => {}); apiLl('cerrar', {llamada:id, mids:[viejo.mid]}).catch(() => {}); } }
+  catch (e){ console.error('publicar', e); try { tv.sender.replaceTrack(null); } catch {} if (pc === LL.pc){ llToast(e.codigo === 429 ? e.message : 'no se pudo prender la cámara. probá de nuevo.'); llApagarCamLocal(); llAvisarEstado(); llPintar(); } } }); }
 function llApagarCamLocal(){ LL.camOn = false; if (LL.cam){ LL.cam.stop(); LL.cam = null; } }
 // Girar: muchos celus no pueden tener las dos cámaras abiertas, así que primero se suelta una y después se toma la otra
 async function llGirar(){ if (!LL.camOn || !LL.tv || LL.girando) return; LL.girando = true; LL.frente = !LL.frente;
@@ -3605,7 +3635,7 @@ async function llFlotante(){
 
 // ---------- Corte automático ----------
 function llArrancarRelojes(){ clearInterval(LL.tick); clearInterval(LL.pulsoT); clearInterval(LL.nivelT);
-  LL.tick = setInterval(llRevisarReglas, 1000); LL.nivelT = setInterval(llLeerNiveles, 250);
+  LL.tick = setInterval(llRevisarReglas, 1000); LL.nivelT = setInterval(llLeerNiveles, 250); clearInterval(LL.vigiaT); LL.vigiaT = setInterval(llVigilar, 2000);
   LL.pulsoT = setInterval(llPulso, LL_REGLAS.pulso * 1000); }
 function llOtrosDentro(){ const yo = llYo(); return [...LL.gente.values()].filter(p => p.perfil !== yo && p.estado === 'dentro'); }
 function llRevisarReglas(){ if (!LL.id || !LL.inicio) return; const ahora = Date.now(), otros = llOtrosDentro().length;
@@ -3628,7 +3658,7 @@ function llMostrarAviso(tipo){ LL.aviso = {tipo, hasta:Date.now() + LL_REGLAS.av
 function llSeguimos(){ if (!LL.aviso) return; const tipo = LL.aviso.tipo; LL.aviso = null; $('#ll-aviso').hidden = true; const ahora = Date.now();
   if (tipo === 'todos'){ LL.actividad = ahora; apiLl('seguimos', {llamada:LL.id}).catch(() => {}); } else LL.muteDesde = ahora; }
 async function llPulso(){ if (!LL.id) return; const id = LL.id;
-  const audio = [...LL.remotos.values()].filter(r => r.audio.srcObject).length, video = llOtrosDentro().filter(p => p.cam && (p.pistas || []).includes('video')).length;
+  const audio = [...LL.remotos.values()].filter(r => r.audio.srcObject).length, video = llOtrosDentro().filter(p => p.cam && (p.pistas || []).some(x => x.startsWith('video'))).length;
   llReanudar();
   try { const r = await apiLl('pulso', {llamada:id, audio, video}); if (LL.id !== id) return;
     if (r.estado === 'terminada') return llFinRemoto();
@@ -3641,13 +3671,13 @@ function llColgar(){ if (!LL.id && !LL.pc){ llLimpiar(); return; } const id = LL
   llLimpiar(); if (id) apiLl('salir', {llamada:id, cortarTodo:cortar}).catch(() => {}); }
 function llFinRemoto(){ if (!LL.id) return; llLimpiar(); llToast('la llamada terminó.'); }
 function llLimpiar(){
-  [LL.tick, LL.pulsoT, LL.nivelT].forEach(clearInterval); clearTimeout(llEstadoT); llTimbre(null);
+  [LL.tick, LL.pulsoT, LL.nivelT, LL.vigiaT].forEach(clearInterval); clearTimeout(llEstadoT); llTimbre(null);
   try { LL.pc?.close(); } catch {}
   LL.mic?.stop(); LL.cam?.stop(); [...LL.remotos.keys()].forEach(llQuitarRemoto);
   LL.niveles.forEach(n => { try { n.src.disconnect(); } catch {} }); try { LL.actx?.close(); } catch {} LL.actx = null;
   if (document.pictureInPictureElement) document.exitPictureInPicture().catch(() => {});
   Object.assign(LL, {id:null, conv:null, pc:null, ta:null, tv:null, mic:null, cam:null, micOn:true, camOn:false, conectado:false, inicio:0, atendida:0, soloDesde:0, muteDesde:0,
-    actividad:0, ultimaVoz:0, aviso:null, min:false, iniciador:false, estado:'', caida:0, titulo:'', reconectando:false, girando:false, frente:true, cola:Promise.resolve()});
+    actividad:0, ultimaVoz:0, aviso:null, min:false, iniciador:false, estado:'', caida:0, titulo:'', reconectando:false, girando:false, frente:true, camCambiando:false, renovandoMic:false, micSinDatos:0, enviadoAntes:-1, trabas:new Map(), cola:Promise.resolve()});
   LL.gente = new Map(); LL.mids = new Map(); LL.subs = new Map(); LL.niveles = new Map();
   $('#ll-pantalla').hidden = true; $('#ll-barra').hidden = true; $('#ll-aviso').hidden = true; $('#ll-grilla').innerHTML = '';
   document.documentElement.classList.remove('en-llamada'); llPintarBanner(); }
@@ -3689,7 +3719,7 @@ function llPintar(){
     t.querySelector('.ll-nombre').textContent = (x.mio ? 'vos' : llNombre(x.uid)) + (x.sonando ? ' · sonando…' : '') + (mic ? '' : ' 🔇'); });
   g.querySelectorAll('.ll-tile').forEach(t => { if (!vistos.has(t.dataset.uid)) t.remove(); });
   $('#ll-mic').setAttribute('aria-pressed', LL.micOn); $('#ll-mic').classList.toggle('apagado', !LL.micOn); $('#ll-mic span').textContent = LL.micOn ? 'micrófono' : 'muteado';
-  $('#ll-cam').setAttribute('aria-pressed', LL.camOn); $('#ll-cam').classList.toggle('prendido', LL.camOn); $('#ll-cam').disabled = !LL.tv && !!LL.pc;
+  $('#ll-cam').setAttribute('aria-pressed', LL.camOn); $('#ll-cam').classList.toggle('prendido', LL.camOn); $('#ll-cam').disabled = !!LL.freno && !LL.camOn;
   $('#ll-girar').hidden = !LL.camOn || !((LL.camaras || 0) > 1 || 'ontouchstart' in window);
   $('#ll-pip').hidden = !document.pictureInPictureEnabled;
   llPintarReloj(); }
