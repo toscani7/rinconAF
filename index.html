@@ -493,7 +493,11 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
 .conv-cab{flex-wrap:wrap}
 .conv-cab .cab-nombre{min-width:120px !important}
 @media (max-width:599px){.conv-cab #info-btn{margin-left:auto}}
-.ll-llamar{min-width:44px;min-height:44px;padding:0 8px;font-size:18px}
+.ll-llamar{min-width:44px;min-height:44px;padding:0 8px;font-size:18px;display:inline-flex;align-items:center;justify-content:center}
+.ll-ico{display:inline-block;width:1.25em;height:1.25em;vertical-align:-.25em;background:center/contain no-repeat}
+.ll-llamar .ll-ico{width:22px;height:22px}
+.ll-ico-tel{background-image:url(data:image/png;base64,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)}
+.ll-ico-cam{background-image:url(data:image/png;base64,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)}
 .ll-banner{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:8px 12px;border-bottom:1px solid var(--line);background:color-mix(in srgb, var(--link) 12%, var(--box));font-size:14px}
 .ll-banner[hidden]{display:none}
 .ll-pantalla{position:fixed;inset:0;z-index:80;background:#0B0B0B;color:#EEE;font-family:Verdana, Tahoma, sans-serif;text-shadow:none;display:flex;flex-direction:column}
@@ -514,7 +518,7 @@ html.en-llamada,html.en-llamada body{overflow:hidden}
   .ll-grilla[data-n="2"] .ll-yo{width:240px;aspect-ratio:16/10}}
 .ll-tile{position:relative;min-height:0;background:#1A1A1A;border:1px solid #333;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .ll-tile video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
-.ll-tile.ll-yo video{transform:scaleX(-1)}
+.ll-tile.ll-yo.espejo video{transform:scaleX(-1)}
 .ll-tile .avatar{width:min(96px,40%);height:auto;aspect-ratio:1;font-size:28px}
 .ll-tile.con-video .avatar{visibility:hidden}
 .ll-tile.hablando{border-color:#7CFC00;box-shadow:inset 0 0 0 2px #7CFC00}
@@ -1037,7 +1041,7 @@ html.en-llamada,html.en-llamada body{overflow:hidden}
 <div class="modal-fondo ll-entrante-fondo" id="ll-entrante" hidden>
   <div class="modal ll-entra" role="alertdialog" aria-modal="true" aria-labelledby="ll-entra-quien" aria-describedby="ll-entra-tipo">
     <span class="avatar" id="ll-entra-av"></span><p id="ll-entra-quien"></p><p class="muted" id="ll-entra-tipo"></p>
-    <div class="ll-entra-btns"><button class="btn ll-colgar" type="button" id="ll-rechazar">rechazar</button><button class="btn lleno" type="button" id="ll-atender">atender</button><button class="btn lleno" type="button" id="ll-atender-video">🎥 con video</button></div>
+    <div class="ll-entra-btns"><button class="btn ll-colgar" type="button" id="ll-rechazar">rechazar</button><button class="btn lleno" type="button" id="ll-atender">atender</button><button class="btn lleno" type="button" id="ll-atender-video"><span class="ll-ico ll-ico-cam" aria-hidden="true"></span> con video</button></div>
   </div>
 </div>
 <div class="modal-fondo" id="modal-novedades" hidden>
@@ -1045,7 +1049,7 @@ html.en-llamada,html.en-llamada body{overflow:hidden}
     <h2 id="nov-titulo" style="margin:0;font-size:18px;color:var(--title)">✨ novedades de RincónAF</h2>
     <p class="muted chico" style="margin:-6px 0 0" id="nov-version"></p>
     <ul class="nov-lista">
-      <li><b>📞 llamadas y videollamadas.</b> en cualquier chat tocá 📞 para llamar o 🎥 para videollamada. en los grupos pueden estar hasta 12 personas, y si ya hay una llamada en curso aparece «unirse».</li>
+      <li><b><span class="ll-ico ll-ico-tel" aria-hidden="true"></span> llamadas y videollamadas.</b> en cualquier chat tocá <span class="ll-ico ll-ico-tel" aria-hidden="true"></span> para llamar o <span class="ll-ico ll-ico-cam" aria-hidden="true"></span> para videollamada. en los grupos pueden estar hasta 12 personas, y si ya hay una llamada en curso aparece «unirse».</li>
       <li><b>🔔 te avisa aunque tengas la página cerrada.</b> si tenés los avisos activados, te llega «te está llamando». tocalo y atendés.</li>
       <li><b>🎛️ durante la llamada</b> podés mutearte, prender o apagar la cámara, girarla en el celu, minimizar la llamada para seguir usando la página o sacar el video a una <b>ventanita flotante</b>.</li>
       <li><b>⏱️ se cortan solas</b> si nadie atiende, si te quedás solo un par de minutos o si pasan 20 minutos sin que nadie hable. antes te pregunta «¿siguen ahí?» para que no se corte en medio de una partida.</li>
@@ -1449,7 +1453,7 @@ const obsVideos = 'IntersectionObserver' in window ? new IntersectionObserver(es
   const v = e.target; obsVideos.unobserve(v); if (!v.getAttribute('src') && v.dataset.src){ v.preload = 'metadata'; v.src = v.dataset.src; } }), {rootMargin:'300px 0px'}) : null;
 function cargarCuandoSeVea(v){ if (obsVideos) obsVideos.observe(v); else if (!v.getAttribute('src')){ v.preload = 'metadata'; v.src = v.dataset.src; } }
 // Si le das play a un video, los demás se pausan (también los del chat)
-document.addEventListener('play', e => { if (e.target.tagName !== 'VIDEO') return; document.querySelectorAll('video').forEach(o => { if (o !== e.target && !o.paused) o.pause(); }); }, true);
+document.addEventListener('play', e => { if (e.target.tagName !== 'VIDEO' || e.target.closest('#ll-grilla')) return; document.querySelectorAll('video').forEach(o => { if (o !== e.target && !o.paused && !o.closest('#ll-grilla')) o.pause(); }); }, true);   // los videos de una llamada nunca se pausan entre sí
 function vigilarVideo(v){
   const aviso = motivo => { if (v.dataset.avisado) return; v.dataset.avisado = '1'; v.dataset.motivo = motivo || v.dataset.motivo || 'formato';
     const p = document.createElement('p'); p.className = 'muted chico aviso-video'; p.style.margin = '4px 0 0';
@@ -2428,7 +2432,7 @@ function pintarChat(){
     conv.dataset.conv = c.id;
     conv.innerHTML = `<div class="conv-cab"><a href="#chat" class="chico volver" style="min-height:44px;display:inline-flex;align-items:center">‹ chats</a><span class="avatar"></span>
         <div style="flex:1;min-width:0"><a href="${linkPerfil(c.otro)}"><b>${esc(nombre)}</b></a></div>
-        <div class="ll-btns"><button class="btn ll-llamar" type="button" data-llamar="voz" aria-label="Llamar a ${esc(nombre)}" title="llamada">📞</button><button class="btn ll-llamar" type="button" data-llamar="video" aria-label="Videollamada con ${esc(nombre)}" title="videollamada">🎥</button></div></div>
+        <div class="ll-btns"><button class="btn ll-llamar" type="button" data-llamar="voz" aria-label="Llamar a ${esc(nombre)}" title="llamada"><span class="ll-ico ll-ico-tel" aria-hidden="true"></span></button><button class="btn ll-llamar" type="button" data-llamar="video" aria-label="Videollamada con ${esc(nombre)}" title="videollamada"><span class="ll-ico ll-ico-cam" aria-hidden="true"></span></button></div></div>
       <div class="ll-banner" id="ll-banner" hidden></div>
       <div class="lineas" id="lineas"></div>
       <form class="composer" id="chat-form"><label class="sr" for="chat-txt">Mensaje para ${esc(nombre)}</label>
@@ -2441,11 +2445,22 @@ function pintarChat(){
   }
   pintarMensajesPriv(c); pintarEstadoChat(); llPintarBanner();
 }
+// El chat queda "pegado abajo" mientras estés leyendo lo último: si después cargan fotos o stickers, sigue abajo.
+// Si subiste a leer mensajes viejos, no te mueve.
+function pegarAbajo(ln){ if (ln._pegar) return; ln._pegar = true;
+  ln.addEventListener('scroll', () => { if (!ln._armando) ln.dataset.pegado = ln.scrollHeight - ln.scrollTop - ln.clientHeight < 80 ? 'si' : 'no'; }, {passive:true});
+  const bajar = () => { if (ln.dataset.pegado !== 'no') ln.scrollTop = ln.scrollHeight; };
+  ln.addEventListener('load', bajar, true); ln.addEventListener('loadedmetadata', bajar, true);
+  new MutationObserver(() => { if (!ln._armando) bajar(); }).observe(ln, {childList:true, subtree:true}); }
 function pintarMensajesPriv(c){
   if ($('#chat-conv')?.dataset.conv !== c.id) return;
-  const yo = perfil(), ln = $('#lineas'), box = msgsPriv[c.id] || {lista:[], cargando:true}, abajo = ln.scrollHeight - ln.scrollTop - ln.clientHeight < 80;
+  const yo = perfil(), ln = $('#lineas'), box = msgsPriv[c.id] || {lista:[], cargando:true};
+  pegarAbajo(ln);
+  const abajo = ln.dataset.pegado !== 'no', yAntes = window.scrollY;
+  ln._armando = true; ln.style.minHeight = ln.offsetHeight + 'px';          // mientras se rearma, la lista no se achica (así la página no salta para arriba)
   ln.innerHTML = '';
-  if (box.cargando){ ln.innerHTML = '<p class="sistema">cargando mensajes…</p>'; return; }
+  const listo = () => { ln.style.minHeight = ''; if (Math.abs(window.scrollY - yAntes) > 2) window.scrollTo(0, yAntes); requestAnimationFrame(() => { ln._armando = false; }); };
+  if (box.cargando){ ln.innerHTML = '<p class="sistema">cargando mensajes…</p>'; listo(); return; }
   if (box.error) ln.insertAdjacentHTML('beforeend', `<p class="sistema">${box.error} <button type="button" class="borrar" data-recargar-msgs>reintentar</button></p>`);
   if (!box.lista.length && !box.error) ln.innerHTML = c.esGrupo ? `<p class="sistema">este es el comienzo de el grupo ${esc(c.nombre)}.</p>` : `<p class="sistema">este es el comienzo de tu chat con ${esc(c.otro.apodo)}.</p>`;
   box.lista.forEach(m => { const d = document.createElement('div'), mio = m.autor === yo.uid, t = Date.parse(m.creado);
@@ -2470,7 +2485,8 @@ function pintarMensajesPriv(c){
   ln.querySelectorAll('[data-adj]').forEach(cargarMediaPriv);
   pintarStickersMsg(ln);
   const rb = ln.querySelector('[data-recargar-msgs]'); if (rb) rb.onclick = () => cargarMensajes(c);
-  if (abajo || box.lista.at(-1)?.autor === yo.uid) ln.scrollTop = ln.scrollHeight;
+  const pegar = abajo || box.lista.at(-1)?.autor === yo.uid;
+  ln.dataset.pegado = pegar ? 'si' : 'no'; listo(); if (pegar) ln.scrollTop = ln.scrollHeight;
   ponerBotonZumbido(c);
 }
 // Volver a la pestaña: marca como leída la conversación abierta y se pone al día
@@ -2504,7 +2520,7 @@ function pintarGrupo(yo){
     conv.dataset.conv = g.id;
     conv.innerHTML = `<div class="conv-cab"><a href="#chat" class="chico volver" style="min-height:44px;display:inline-flex;align-items:center">‹ chats</a><span class="avatar"></span>
         <div class="cab-nombre" style="flex:1;min-width:0"><b id="g-cab-nombre"></b><br><span class="muted chico" id="g-cab-cuenta"></span></div>
-        <div class="ll-btns"><button class="btn ll-llamar" type="button" data-llamar="voz" aria-label="Llamada con el grupo" title="llamada grupal">📞</button><button class="btn ll-llamar" type="button" data-llamar="video" aria-label="Videollamada con el grupo" title="videollamada grupal">🎥</button></div>
+        <div class="ll-btns"><button class="btn ll-llamar" type="button" data-llamar="voz" aria-label="Llamada con el grupo" title="llamada grupal"><span class="ll-ico ll-ico-tel" aria-hidden="true"></span></button><button class="btn ll-llamar" type="button" data-llamar="video" aria-label="Videollamada con el grupo" title="videollamada grupal"><span class="ll-ico ll-ico-cam" aria-hidden="true"></span></button></div>
         <button class="btn" type="button" id="info-btn" aria-expanded="false">info del grupo</button></div>
       <div class="ll-banner" id="ll-banner" hidden></div>
       <div class="info-grupo" id="info-grupo" hidden></div>
@@ -3423,9 +3439,28 @@ function llToast(t){ let el = $('#ll-toast'); if (!el){ el = document.createElem
   el.textContent = t; el.hidden = false; clearTimeout(el._t); el._t = setTimeout(() => el.hidden = true, 4000); }
 
 // ---------- Micrófono y cámara ----------
-async function llTomarMic(){ LL.mic = (await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true, noiseSuppression:true, autoGainControl:true}})).getAudioTracks()[0]; }
-async function llTomarCam(){ const s = await navigator.mediaDevices.getUserMedia({video:{width:{ideal:960}, height:{ideal:540}, frameRate:{ideal:24, max:30}, facingMode:LL.frente ? 'user' : 'environment'}});
-  LL.cam = s.getVideoTracks()[0]; LL.cam.onended = () => { if (LL.camOn) llCamara(false); }; }
+async function llTomarMic(){ LL.mic = (await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true, noiseSuppression:true, autoGainControl:true}})).getAudioTracks()[0];
+  LL.mic.onended = () => setTimeout(llRecuperarMedios, 300); llReanudar(); }
+// Cámara: primero la de adelante o la de atrás exacta; si el aparato no distingue (compus), cualquiera
+async function llTomarCam(){ const pedir = f => navigator.mediaDevices.getUserMedia({video:{width:{ideal:960}, height:{ideal:540}, frameRate:{ideal:24, max:30}, facingMode:f}});
+  const modo = LL.frente ? 'user' : 'environment'; let s;
+  try { s = await pedir({exact:modo}); } catch (e){ if (e?.name === 'NotAllowedError' || e?.name === 'SecurityError') throw e; s = await pedir(modo); }
+  LL.cam = s.getVideoTracks()[0]; LL.cam.onended = () => setTimeout(llRecuperarMedios, 300);
+  try { LL.camaras = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'videoinput').length; } catch {}
+  llReanudar(); }
+// Los celus (sobre todo iPhone) pausan los videos y el medidor de sonido cuando se pide la cámara o se sale de la página: se vuelven a poner en marcha solos
+function llReanudar(){ if (!LL.id && !LL.pc) return;
+  $$('#ll-grilla video').forEach(v => { if (v.srcObject && v.paused && !v.hidden) v.play().catch(() => {}); });
+  LL.remotos.forEach(r => { if (r.audio.srcObject && r.audio.paused) r.audio.play().catch(() => {}); });
+  const a = LL.actx; if (a && a.state !== 'running') a.resume().then(() => { if (a.state !== 'running') llRehacerNiveles(); }, llRehacerNiveles); }
+function llRehacerNiveles(){ LL.niveles.forEach(n => { try { n.src.disconnect(); } catch {} }); LL.niveles = new Map();
+  try { LL.actx?.close(); } catch {} LL.actx = null;
+  llNivelLocal(); LL.remotos.forEach((r, uid) => { if (r.audio.srcObject) llMedirNivel(uid, r.audio.srcObject); }); }
+// Si el celu soltó el micrófono o la cámara (por ejemplo, al usar otra app), se vuelven a tomar
+async function llRecuperarMedios(){ if (!LL.id || document.hidden) return;
+  try { if (!LL.mic || LL.mic.readyState === 'ended'){ await llTomarMic(); LL.mic.enabled = LL.micOn; if (LL.ta) await LL.ta.sender.replaceTrack(LL.mic); llRehacerNiveles(); } } catch (e){ console.error('mic', e); }
+  try { if (LL.camOn && LL.tv && (!LL.cam || LL.cam.readyState === 'ended')){ LL.cam = null; await llTomarCam(); await LL.tv.sender.replaceTrack(LL.cam); } } catch (e){ console.error('cam', e); }
+  llReanudar(); llPintar(); }
 function llErrorMedios(e){ const n = e?.name || '';
   return n === 'NotAllowedError' || n === 'SecurityError' ? 'no diste permiso para usar el micrófono o la cámara. habilitalo en el candado de la barra del navegador y probá de nuevo.'
     : n === 'NotFoundError' ? 'no se encontró micrófono o cámara en este dispositivo.' : n === 'NotReadableError' ? 'el micrófono o la cámara los está usando otra app.' : 'no se pudo usar el micrófono o la cámara.'; }
@@ -3454,14 +3489,14 @@ async function llEntrar(l, conVideo){
   llPintar();
   try { await llConectar(); } catch (e){ console.error('entrar', e); const id = LL.id; llLimpiar(); apiLl('salir', {llamada:id}).catch(() => {}); llToast(e.message || 'no se pudo entrar a la llamada.'); } }
 
-async function llConectar(){
+async function llConectar(reconexion = false){
   const {iceServers, freno} = await apiLl('hielo'); LL.freno = freno || LL.freno; if (LL.freno && LL.camOn) llApagarCamLocal();
   const pc = LL.pc = new RTCPeerConnection({iceServers, bundlePolicy:'max-bundle'});
   pc.ontrack = llRecibirPista;
   pc.onconnectionstatechange = () => { const s = pc.connectionState; if (pc !== LL.pc) return;
     if (s === 'connected'){ LL.conectado = true; LL.caida = 0; llRevisarSubs(); llPintar(); }
-    else if (s === 'disconnected'){ LL.caida = Date.now(); llPintar(); }
-    else if (s === 'failed'){ llToast('se cortó la conexión de la llamada.'); llColgar(); } };
+    else if (s === 'disconnected'){ LL.caida = Date.now(); llPintar(); setTimeout(() => { if (pc === LL.pc && pc.connectionState !== 'connected') llReconectar(); }, 5000); }
+    else if (s === 'failed') llReconectar(); };
   LL.ta = pc.addTransceiver(LL.mic, {direction:'sendonly'}); LL.mic.enabled = LL.micOn;
   if (!LL.freno){ LL.tv = pc.addTransceiver(LL.cam || 'video', {direction:'sendonly'}); if (!LL.cam) await LL.tv.sender.replaceTrack(null); }
   await pc.setLocalDescription(await pc.createOffer()); await llEsperarIce(pc);
@@ -3469,9 +3504,22 @@ async function llConectar(){
   const r = await apiLl('entrar', {llamada:LL.id, sdp:pc.localDescription.sdp, pistas, mic:LL.micOn, cam:LL.camOn});
   if (pc !== LL.pc) return;
   await pc.setRemoteDescription(r.answer);
-  LL.freno = r.freno; LL.inicio = Date.now(); LL.actividad = Date.now();
+  LL.freno = r.freno; if (!reconexion){ LL.inicio = Date.now(); LL.actividad = Date.now(); }
   await llCargarGente();
-  llAjustarCalidad(); llArrancarRelojes(); llNivelLocal(); llPintar(); }
+  llAjustarCalidad(); if (!reconexion) llArrancarRelojes(); llRehacerNiveles(); llPintar(); }
+// Reconexión automática: misma llamada, conexión nueva (los demás te vuelven a recibir solos)
+async function llReconectar(){ if (!LL.id || LL.reconectando) return; LL.reconectando = true; LL.caida = LL.caida || Date.now(); llPintar(); const id = LL.id;
+  for (let i = 0; i < 4 && LL.id === id; i++){
+    try { await llRecuperarMedios(); const viejo = LL.pc; LL.pc = null; try { viejo?.close(); } catch {}
+      [...LL.remotos.keys()].forEach(llQuitarRemoto); LL.mids = new Map(); LL.subs = new Map(); LL.conectado = false; LL.cola = Promise.resolve(); LL.ta = null; LL.tv = null;
+      $$('#ll-grilla .ll-tile:not(.ll-yo) video').forEach(v => { v.srcObject = null; });
+      await llConectar(true); if (LL.id !== id) return; LL.reconectando = false; LL.caida = 0; llPintar(); return; }
+    catch (e){ console.error('reconectar', e); if (e.codigo === 410 || e.codigo === 404 || e.codigo === 403){ LL.reconectando = false; return llFinRemoto(); }
+      await new Promise(ok => setTimeout(ok, 2000 * (i + 1))); } }
+  LL.reconectando = false; if (LL.id === id){ llToast('no se pudo reconectar la llamada.'); llColgar(); } }
+document.addEventListener('visibilitychange', () => { if (document.hidden || !LL.id) return;
+  llRecuperarMedios(); llReanudar(); llPulso();
+  if (LL.pc && !['connected', 'connecting', 'new'].includes(LL.pc.connectionState)) llReconectar(); });
 
 async function llCargarGente(){ if (!LL.id) return;
   const [{data:l}, {data:ps}] = await Promise.all([sb.from('llamadas').select('*').eq('id', LL.id).maybeSingle(), sb.from('llamada_participantes').select('*').eq('llamada', LL.id)]);
@@ -3510,7 +3558,7 @@ function llRemoto(uid){ let r = LL.remotos.get(uid);
 function llRecibirPista(e){ const info = LL.mids.get(e.transceiver?.mid); if (!info) return;
   const r = llRemoto(info.uid), st = new MediaStream([e.track]);
   if (info.pista === 'audio'){ r.audio.srcObject = st; r.audio.play().catch(() => {}); llMedirNivel(info.uid, st); }
-  else { r.video = st; e.track.onunmute = () => llPintar(); e.track.onmute = () => llPintar(); }
+  else { r.video = st; e.track.onunmute = () => { llPintar(); llReanudar(); }; e.track.onmute = () => llPintar(); }
   llPintar(); }
 function llQuitarRemoto(uid){ const r = LL.remotos.get(uid); if (!r) return; try { r.audio.pause(); r.audio.srcObject = null; } catch {}
   LL.remotos.delete(uid); const n = LL.niveles.get(uid); if (n){ try { n.src.disconnect(); } catch {} LL.niveles.delete(uid); } }
@@ -3532,13 +3580,15 @@ async function llMicrofono(on = !LL.micOn){ if (!LL.mic) return; LL.micOn = on; 
 async function llCamara(on = !LL.camOn){
   if (on && LL.freno) return llToast('las videollamadas están en pausa hasta el mes que viene (se llegó al límite gratis). la voz sigue andando.');
   if (on && !LL.tv) return llToast('esta llamada empezó sin video.');
-  if (on){ try { if (!LL.cam) await llTomarCam(); await LL.tv.sender.replaceTrack(LL.cam); LL.camOn = true; LL.muteDesde = 0; llAjustarCalidad(); } catch (e){ return llToast(llErrorMedios(e)); } }
+  if (on){ try { if (!LL.cam || LL.cam.readyState === 'ended') await llTomarCam(); await LL.tv.sender.replaceTrack(LL.cam); LL.camOn = true; LL.muteDesde = 0; llAjustarCalidad(); } catch (e){ return llToast(llErrorMedios(e)); } }
   else { llApagarCamLocal(); if (LL.tv) await LL.tv.sender.replaceTrack(null).catch(() => {}); }
-  llPintar(); llAvisarEstado(); }
+  llPintar(); llAvisarEstado(); setTimeout(llReanudar, 300); }
 function llApagarCamLocal(){ LL.camOn = false; if (LL.cam){ LL.cam.stop(); LL.cam = null; } }
-async function llGirar(){ if (!LL.camOn) return; LL.frente = !LL.frente; const viejo = LL.cam;
-  try { LL.cam = null; await llTomarCam(); await LL.tv.sender.replaceTrack(LL.cam); viejo?.stop(); llPintar(); }
-  catch (e){ LL.frente = !LL.frente; LL.cam = viejo; llToast('no se pudo cambiar de cámara.'); } }
+// Girar: muchos celus no pueden tener las dos cámaras abiertas, así que primero se suelta una y después se toma la otra
+async function llGirar(){ if (!LL.camOn || !LL.tv || LL.girando) return; LL.girando = true; LL.frente = !LL.frente;
+  try { LL.cam?.stop(); LL.cam = null; await llTomarCam(); await LL.tv.sender.replaceTrack(LL.cam); }
+  catch { LL.frente = !LL.frente; try { LL.cam = null; await llTomarCam(); await LL.tv.sender.replaceTrack(LL.cam); } catch {} llToast('este celular no dejó cambiar de cámara.'); }
+  LL.girando = false; llPintar(); }
 let llEstadoT = null;
 function llAvisarEstado(){ clearTimeout(llEstadoT); llEstadoT = setTimeout(() => { if (LL.id) apiLl('estado', {llamada:LL.id, mic:LL.micOn, cam:LL.camOn}).catch(() => {}); }, 300); }
 function llAjustarCalidad(){ const s = LL.tv?.sender; if (!s || !s.getParameters) return;
@@ -3559,6 +3609,7 @@ function llArrancarRelojes(){ clearInterval(LL.tick); clearInterval(LL.pulsoT); 
   LL.pulsoT = setInterval(llPulso, LL_REGLAS.pulso * 1000); }
 function llOtrosDentro(){ const yo = llYo(); return [...LL.gente.values()].filter(p => p.perfil !== yo && p.estado === 'dentro'); }
 function llRevisarReglas(){ if (!LL.id || !LL.inicio) return; const ahora = Date.now(), otros = llOtrosDentro().length;
+  if (!document.hidden) llReanudar();                                // ningún video ni audio queda pausado por el navegador
   if (otros > 0){ LL.atendida = LL.atendida || ahora; LL.soloDesde = 0; }
   else if (!LL.atendida){ if (ahora - LL.inicio > LL_REGLAS.sonar * 1000){ llToast('nadie atendió.'); return llColgar(); } }
   else { LL.soloDesde = LL.soloDesde || ahora; if (ahora - LL.soloDesde > LL_REGLAS.solo * 1000){ llToast('te quedaste solo en la llamada, así que se cortó.'); return llColgar(); } }
@@ -3578,8 +3629,10 @@ function llSeguimos(){ if (!LL.aviso) return; const tipo = LL.aviso.tipo; LL.avi
   if (tipo === 'todos'){ LL.actividad = ahora; apiLl('seguimos', {llamada:LL.id}).catch(() => {}); } else LL.muteDesde = ahora; }
 async function llPulso(){ if (!LL.id) return; const id = LL.id;
   const audio = [...LL.remotos.values()].filter(r => r.audio.srcObject).length, video = llOtrosDentro().filter(p => p.cam && (p.pistas || []).includes('video')).length;
+  llReanudar();
   try { const r = await apiLl('pulso', {llamada:id, audio, video}); if (LL.id !== id) return;
-    if (r.estado === 'terminada' || !r.dentro) return llFinRemoto();
+    if (r.estado === 'terminada') return llFinRemoto();
+    if (!r.dentro && !LL.reconectando) return llReconectar();          // el servidor te dio por ido (celu dormido un rato): volvés a entrar solo
     if (r.freno && !LL.freno){ LL.freno = true; } }
   catch (e){ if (e.codigo === 404 || e.codigo === 410) llFinRemoto(); } }
 
@@ -3591,10 +3644,10 @@ function llLimpiar(){
   [LL.tick, LL.pulsoT, LL.nivelT].forEach(clearInterval); clearTimeout(llEstadoT); llTimbre(null);
   try { LL.pc?.close(); } catch {}
   LL.mic?.stop(); LL.cam?.stop(); [...LL.remotos.keys()].forEach(llQuitarRemoto);
-  LL.niveles.forEach(n => { try { n.src.disconnect(); } catch {} });
+  LL.niveles.forEach(n => { try { n.src.disconnect(); } catch {} }); try { LL.actx?.close(); } catch {} LL.actx = null;
   if (document.pictureInPictureElement) document.exitPictureInPicture().catch(() => {});
   Object.assign(LL, {id:null, conv:null, pc:null, ta:null, tv:null, mic:null, cam:null, micOn:true, camOn:false, conectado:false, inicio:0, atendida:0, soloDesde:0, muteDesde:0,
-    actividad:0, ultimaVoz:0, aviso:null, min:false, iniciador:false, estado:'', caida:0, titulo:'', cola:Promise.resolve()});
+    actividad:0, ultimaVoz:0, aviso:null, min:false, iniciador:false, estado:'', caida:0, titulo:'', reconectando:false, girando:false, frente:true, cola:Promise.resolve()});
   LL.gente = new Map(); LL.mids = new Map(); LL.subs = new Map(); LL.niveles = new Map();
   $('#ll-pantalla').hidden = true; $('#ll-barra').hidden = true; $('#ll-aviso').hidden = true; $('#ll-grilla').innerHTML = '';
   document.documentElement.classList.remove('en-llamada'); llPintarBanner(); }
@@ -3623,20 +3676,21 @@ function llPintar(){
   const vistos = new Set();
   lista.forEach(x => { vistos.add(x.uid); let t = g.querySelector(`.ll-tile[data-uid="${x.uid}"]`);
     if (!t){ t = document.createElement('div'); t.className = 'll-tile' + (x.mio ? ' ll-yo' : ''); t.dataset.uid = x.uid;
-      t.innerHTML = `<video playsinline autoplay muted hidden></video><span class="avatar"></span><span class="ll-nombre"></span>`; ponerAvatar(t.querySelector('.avatar'), porUid(x.uid) || {apodo:'?'});
+      t.innerHTML = `<video playsinline muted hidden></video><span class="avatar"></span><span class="ll-nombre"></span>`; ponerAvatar(t.querySelector('.avatar'), porUid(x.uid) || {apodo:'?'});
       if (x.mio) g.prepend(t); else g.appendChild(t); }
-    const v = t.querySelector('video'), p = x.mio ? null : LL.gente.get(x.uid);
-    const st = x.mio ? (LL.camOn && LL.cam ? new MediaStream([LL.cam]) : null) : (p?.cam ? LL.remotos.get(x.uid)?.video : null);
-    const ok = !!st && (x.mio || !st.getVideoTracks()[0]?.muted);
-    if (ok){ const tr = st.getVideoTracks()[0]; if (v.srcObject?.getVideoTracks()[0] !== tr){ v.srcObject = x.mio ? new MediaStream([tr]) : st; v.play().catch(() => {}); } }
-    else if (v.srcObject && !(document.pictureInPictureElement === v)) v.srcObject = null;
-    v.hidden = !ok; t.classList.toggle('con-video', ok);
+    const v = t.querySelector('video'), p = x.mio ? null : LL.gente.get(x.uid), rem = x.mio ? null : LL.remotos.get(x.uid);
+    // cada video se conecta una sola vez; después solo se muestra u oculta (así no se congela al prender o apagar cámaras)
+    if (x.mio){ if (LL.cam && v._tr !== LL.cam){ v._tr = LL.cam; v.srcObject = new MediaStream([LL.cam]); } }
+    else if (rem?.video && v.srcObject !== rem.video) v.srcObject = rem.video;
+    const ok = x.mio ? (LL.camOn && !!LL.cam && LL.cam.readyState === 'live') : (!!p?.cam && !!rem?.video && !rem.video.getVideoTracks()[0]?.muted);
+    v.hidden = !ok; t.classList.toggle('con-video', ok); if (x.mio) t.classList.toggle('espejo', LL.frente);
+    if (ok && v.paused) v.play().catch(() => {});
     const mic = x.mio ? LL.micOn : p?.mic !== false;
     t.querySelector('.ll-nombre').textContent = (x.mio ? 'vos' : llNombre(x.uid)) + (x.sonando ? ' · sonando…' : '') + (mic ? '' : ' 🔇'); });
   g.querySelectorAll('.ll-tile').forEach(t => { if (!vistos.has(t.dataset.uid)) t.remove(); });
   $('#ll-mic').setAttribute('aria-pressed', LL.micOn); $('#ll-mic').classList.toggle('apagado', !LL.micOn); $('#ll-mic span').textContent = LL.micOn ? 'micrófono' : 'muteado';
   $('#ll-cam').setAttribute('aria-pressed', LL.camOn); $('#ll-cam').classList.toggle('prendido', LL.camOn); $('#ll-cam').disabled = !LL.tv && !!LL.pc;
-  $('#ll-girar').hidden = !LL.camOn || !('ontouchstart' in window);
+  $('#ll-girar').hidden = !LL.camOn || !((LL.camaras || 0) > 1 || 'ontouchstart' in window);
   $('#ll-pip').hidden = !document.pictureInPictureEnabled;
   llPintarReloj(); }
 
@@ -3649,7 +3703,7 @@ function llMostrarEntrante(l){
   LL.entrante = l; const q = porUid(l.iniciador);
   ponerAvatar($('#ll-entra-av'), q || {apodo:'?'});
   $('#ll-entra-quien').textContent = grupo ? `${llNombre(l.iniciador)} en ${c.nombre}` : llNombre(l.iniciador);
-  $('#ll-entra-tipo').textContent = (l.video ? '🎥 te está llamando por video' : '📞 te está llamando') + (grupo ? ' (llamada grupal)' : '');
+  $('#ll-entra-tipo').innerHTML = (l.video ? '<span class="ll-ico ll-ico-cam" aria-hidden="true"></span> te está llamando por video' : '<span class="ll-ico ll-ico-tel" aria-hidden="true"></span> te está llamando') + (grupo ? ' (llamada grupal)' : '');
   $('#ll-atender-video').hidden = !l.video; $('#ll-atender').textContent = l.video ? 'atender sin cámara' : 'atender';
   $('#ll-entrante').hidden = false; llTimbre('entrante'); if (navigator.vibrate) try { navigator.vibrate([400, 200, 400]); } catch {}
   clearTimeout(LL.entranteT); LL.entranteT = setTimeout(() => { if (LL.entrante?.id === l.id) llCerrarEntrante(); }, LL_REGLAS.sonar * 1000); }
@@ -3677,8 +3731,8 @@ function llCambioLlamada(l){ if (!l?.id) return;
 async function llCambioParticipante(p){ if (!p?.llamada) return;
   if (p.llamada === LL.id){ const antes = LL.gente.get(p.perfil); LL.gente.set(p.perfil, p);
     if (p.mic && !(antes?.mic) && p.perfil !== llYo()) LL.actividad = Date.now();
-    if (p.perfil === llYo() && p.estado === 'salio' && LL.inicio) return llFinRemoto();
-    llRevisarSubs(); llAjustarCalidad(); llPintar(); }
+    if (p.perfil === llYo() && p.estado === 'salio' && LL.inicio && !LL.reconectando) return llReconectar();
+    llRevisarSubs(); llAjustarCalidad(); llPintar(); if (p.cam && !antes?.cam) setTimeout(llReanudar, 500); }
   if (p.perfil === sesion){
     if (p.estado === 'invitado'){ let l = [...LL.activas.values()].find(x => x.id === p.llamada);
       if (!l){ const {data} = await sb.from('llamadas').select('*').eq('id', p.llamada).maybeSingle(); l = data; if (l && l.estado !== 'terminada') LL.activas.set(l.conversacion, l); }
@@ -3692,7 +3746,7 @@ async function llAbrirDesdeAviso(id){
 function llPintarBanner(){ const b = $('#ll-banner'); if (!b) return; const c = chatCon?.conv || chatCon?.g;
   const l = c && LL.activas.get(c.id);
   if (!l || l.id === LL.id || l.estado === 'terminada'){ b.hidden = true; return; }
-  b.hidden = false; b.innerHTML = `<span>${l.video ? '🎥' : '📞'} hay una llamada en curso</span><button class="btn lleno" type="button" data-ll-unirse="${l.id}">unirse</button>`; }
+  b.hidden = false; b.innerHTML = `<span>${l.video ? '<span class="ll-ico ll-ico-cam" aria-hidden="true"></span>' : '<span class="ll-ico ll-ico-tel" aria-hidden="true"></span>'} hay una llamada en curso</span><button class="btn lleno" type="button" data-ll-unirse="${l.id}">unirse</button>`; }
 
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-llamar]');
@@ -3702,6 +3756,7 @@ document.addEventListener('click', e => {
 $('#ll-mic').onclick = () => llMicrofono(); $('#ll-cam').onclick = () => llCamara(); $('#ll-girar').onclick = llGirar; $('#ll-pip').onclick = llFlotante;
 $('#ll-colgar').onclick = llColgar; $('#ll-barra-colgar').onclick = llColgar; $('#ll-min').onclick = llMinimizar; $('#ll-volver').onclick = llVolver;
 $('#ll-seguimos').onclick = llSeguimos;
+$('#ll-pantalla').addEventListener('pointerdown', llReanudar);
 $('#ll-atender').onclick = () => LL.entrante && llEntrar(LL.entrante, false);
 $('#ll-atender-video').onclick = () => LL.entrante && llEntrar(LL.entrante, true);
 $('#ll-rechazar').onclick = llRechazar;
