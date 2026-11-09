@@ -687,6 +687,31 @@ html.en-llamada,html.en-llamada body{overflow:hidden}
   body.editando{padding-right:380px}
 }
 /* "Reducir movimiento" del celu: se frena todo, menos el efecto del nick (lo elige cada uno para su perfil) */
+/* ===== Entrada en blanco y negro (fija, no la cambia la personalización) ===== */
+#entrada{color-scheme:dark;--bg:#000;--bg2:#141414;--ink:#D9D9D9;--link:#FFF;--title:#FFF;--line:#3A3A3A;--box:#0A0A0A;--muted:#8C8C8C;--logofilt:invert(1);--contorno:none;
+  min-height:100dvh;background-color:#000;background-image:radial-gradient(rgba(255,255,255,.08) 1px, transparent 1.4px);background-size:22px 22px;color:#D9D9D9;font-family:Verdana, Tahoma, sans-serif;font-size:14px;text-shadow:none}
+#entrada .entrada{max-width:400px;padding:52px 16px 28px;gap:22px}
+#entrada .ent-cabeza{text-align:center}
+#entrada .logo-grande{width:112px;height:112px;filter:invert(1) drop-shadow(0 0 16px rgba(255,255,255,.22))}
+#entrada h1{font-size:30px;margin-top:10px;font-family:Verdana, Tahoma, sans-serif}
+#entrada .ent-lema{display:flex;align-items:center;justify-content:center;gap:10px;margin:8px 0 0;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#A0A0A0}
+#entrada .ent-lema::before,#entrada .ent-lema::after{content:"";width:26px;height:1px;background:#555}
+#entrada .caja{--ink:#D9D9D9;--title:#FFF;--link:#FFF;--muted:#8C8C8C;background:#0A0A0A;color:#D9D9D9;border:1px solid #FFF;padding:18px 18px 16px;box-shadow:6px 6px 0 #262626}
+#entrada .tabs{border-bottom:1px solid #333;margin-bottom:6px}
+#entrada .tabs button{color:#707070;font-size:12px;letter-spacing:.18em;text-transform:uppercase}
+#entrada .tabs button:hover{color:#BBB}
+#entrada .tabs button[aria-selected="true"]{color:#FFF;box-shadow:inset 0 -2px 0 #FFF}
+#entrada .lbl{color:#9A9A9A;font-size:11px;letter-spacing:.06em}
+#entrada .field{background:#000;border:1px solid #3A3A3A;color:#FFF}
+#entrada .field:focus{border-color:#FFF;outline:none}
+#entrada .field::-webkit-calendar-picker-indicator{filter:invert(1)}
+#entrada .btn.lleno{background:#FFF;color:#000;border:1px solid #FFF;font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+#entrada .btn.lleno:hover{background:#000;color:#FFF}
+#entrada a,#entrada #olvide{color:#FFF}
+#entrada input[type="checkbox"]{accent-color:#FFF}
+#entrada .muted{color:#8C8C8C}
+#entrada .ent-pie{text-align:center;margin:0;font-size:11px;color:#6A6A6A}
+#entrada .ent-pie a{color:#A0A0A0}
 @media (prefers-reduced-motion: reduce){ *:not(.nick):not(.letra):not(#fondo-capa):not(.nombre-rincon):not(.nov-arcoiris){animation:none !important} .frase-marq span{padding-left:0} }
 </style>
 </head>
@@ -701,10 +726,10 @@ html.en-llamada,html.en-llamada body{overflow:hidden}
 <!-- ================= ENTRADA ================= -->
 <section id="entrada" class="screen">
   <div class="entrada">
-    <div style="text-align:center">
+    <div class="ent-cabeza">
       <div class="logo-grande" role="img" aria-label="Logo de RincónAF: una cara con aureola"></div>
-      <h1 style="font-size:26px;margin-top:8px"><span class="nombre-rincon">RincónAF</span></h1>
-      <p class="muted chico" style="margin:4px 0 0">perfiles para la banda · una foto por día</p>
+      <h1><span class="nombre-rincon">RincónAF</span></h1>
+      <p class="ent-lema">tu alterego de la web</p>
     </div>
     <div class="caja">
       <div class="tabs" role="tablist" aria-label="Entrar o registrarse">
@@ -739,7 +764,7 @@ html.en-llamada,html.en-llamada body{overflow:hidden}
         <button class="btn lleno" type="submit">crear mi perfil</button>
       </form>
     </div>
-    <p class="muted chico" style="text-align:center;margin:0">© RincónAF · hecho a mano para los amigos · <a href="#" data-legal="terminos">legal</a></p>
+    <p class="ent-pie">© RincónAF · hecho a mano para los amigos · <a href="#" data-legal="terminos">legal</a></p>
   </div>
 </section>
 
