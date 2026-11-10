@@ -1567,9 +1567,29 @@ function errorNick(v, yo){ if (!v) return 'el nick no puede quedar vacío.';
   if (/^npc\d+$/i.test(v) && v.toLowerCase() !== 'npc' + yo.id) return 'los nicks «npc + número» están reservados. elegí otro.';
   if (miembros().some(x => x.uid !== yo.uid && normNick(x.apodo) === normNick(v))) return 'ese nick ya existe. elegí otro.';
   return ''; }
-function guardar(){ clearTimeout(tGuardar); tGuardar = setTimeout(guardarYa, 700); return true; }
-async function guardarYa(){ clearTimeout(tGuardar); const p = perfil(); if (!p) return;
+function guardar(){ clearTimeout(tGuardar); guardadoPendiente = true; tGuardar = setTimeout(guardarYa, 700); return true; }
+// Varios dispositivos: antes de guardar se traen las fotos que se subieron (o borraron) desde otro lado, así una sesión vieja no las pisa
+let fotosConocidas = new Set(), guardadoPendiente = false, ultRefrescoYo = 0;
+function conocerFotos(p){ fotosConocidas = new Set((p?.fotos || []).map(f => f.cuando)); }
+function unirFotosServidor(p, datosSrv){ const srv = sanearPerfil(datosSrv, p.uid).fotos || [], enSrv = new Set(srv.map(f => f.cuando)), antes = fotosConocidas;
+  const local = new Set(p.fotos.map(f => f.cuando));
+  const nuevas = srv.filter(f => !local.has(f.cuando) && !antes.has(f.cuando));
+  const borradas = p.fotos.filter(f => antes.has(f.cuando) && !enSrv.has(f.cuando));
+  if (borradas.length) p.fotos = p.fotos.filter(f => !borradas.includes(f));
+  if (nuevas.length){ p.fotos.push(...nuevas.map(f => ({...f, firmas:[], likes:[]}))); p.fotos.sort((a, b) => a.cuando - b.cuando); }
+  fotosConocidas = new Set([...enSrv, ...p.fotos.map(f => f.cuando)]);
+  return nuevas.length + borradas.length; }
+async function repintarFotosNuevas(p){ try { await firmar(rutasDePerfil(p)); } catch {} if (document.querySelector('#perfil.screen.activa')) pintar(); }
+async function refrescarMiPerfil(){ const p = perfil(); if (!sb || !p || guardadoPendiente || Date.now() - ultRefrescoYo < 15000) return; ultRefrescoYo = Date.now();
+  try { const {data, error} = await sb.from('profiles').select('datos').eq('id', p.uid).limit(1); const srv = !error && Array.isArray(data) ? data[0] : null;
+    if (!srv || guardadoPendiente) return; if (unirFotosServidor(p, srv.datos)) repintarFotosNuevas(p); } catch (er){ console.warn('fotos de otros dispositivos', er); } }
+document.addEventListener('visibilitychange', () => { if (!document.hidden) refrescarMiPerfil(); });
+window.addEventListener('focus', refrescarMiPerfil);
+async function guardarYa(){ clearTimeout(tGuardar); const p = perfil(); if (!p){ guardadoPendiente = false; return; }
   guardarLeidos();
+  try { const {data, error} = await sb.from('profiles').select('datos').eq('id', p.uid).limit(1); const srv = !error && Array.isArray(data) ? data[0] : null;
+    if (srv && unirFotosServidor(p, srv.datos)) repintarFotosNuevas(p); } catch (er){ console.warn('fotos de otros dispositivos', er); }
+  guardadoPendiente = false;
   const datos = sanearPerfil(p, p.uid);                     // solo claves conocidas y válidas; "leidos" ya no se sube
   const {error} = await sb.from('profiles').update({apodo: p.apodo, datos}).eq('id', p.uid);
   if (error && apodoGuardado != null && p.apodo !== apodoGuardado && /apodo/i.test(`${error.message} ${error.details} ${error.hint}`)){
@@ -1768,7 +1788,7 @@ async function cargarTodo(){
   const nuevo = {};
   pr.forEach(x => { nuevo[x.id] = {perfil: armarPerfil(x)}; });
   const miFila = pr.find(x => x.id === sesion); if (miFila) apodoGuardado = String(miFila.apodo ?? '');
-  usuarios = nuevo;
+  usuarios = nuevo; conocerFotos(perfil());
   if (pr.some(x => x.id === sesion && x.datos && 'leidos' in x.datos)) guardar();   // saca "leidos" del perfil guardado (ahora vive en este navegador)
   const P = uid => usuarios[uid]?.perfil;
   am.forEach(x => { const a = P(x.a), b = P(x.b); if (a && b){ a.ff.push(b.id); b.ff.push(a.id); } });
