@@ -727,8 +727,9 @@ html.en-llamada,html.en-llamada body{overflow:hidden}
 #entrada .ent-pie a{color:#A0A0A0}
 /* ===== Rebranding 2.5: misma estética, más prolija ===== */
 /* 1) "La hoja": cuando hay foto, video o patrón de fondo, el contenido va sobre un panel semitransparente (como una hoja de Fotolog sobre el fondo) para que todo se lea */
-body.fondo-foto main.pagina{background:var(--velo);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--velo-borde);margin-top:18px;margin-bottom:28px;padding:20px 22px 30px}
-@media (max-width:600px){body.fondo-foto main.pagina{margin:10px 6px 20px;padding:14px 12px 24px}}
+body.fondo-foto main.pagina{background:var(--velo);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);border:1px solid var(--velo-borde);margin-top:18px;margin-bottom:28px;padding:20px 22px 30px}
+body.fondo-foto main.pagina{text-shadow:var(--velo-sombra, none)}
+@media (max-width:600px){body.fondo-foto main.pagina{margin:10px 6px 20px;padding:14px 12px 24px;background:var(--velo-cel, var(--velo));-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}}
 body.fondo-foto .pagina > h1:first-child{margin-top:0}
 /* 2) Botones llenos: el texto siempre se lee (blanco o negro según el color) */
 .btn.lleno{color:var(--link-txt, var(--bg))}
@@ -1902,7 +1903,8 @@ function aplicar(p){
   document.body.dataset.cajas = p.cajas;
   r.setProperty('--link-txt', lum(p.link) > .42 ? '#000000' : '#FFFFFF'); r.setProperty('--link-txt-caja', lum(lk) > .42 ? '#000000' : '#FFFFFF');
   { const oscuro = lum(p.ink) > .5, base = esColor(p.bg) && esColor(p.ink) && contraste(p.ink, p.bg) >= 7 ? p.bg : (oscuro ? '#0E0E12' : '#FFFFFF');
-    r.setProperty('--velo', oscuro ? `color-mix(in srgb, color-mix(in srgb, ${base} 30%, #08080B) 84%, transparent)` : `color-mix(in srgb, color-mix(in srgb, ${base} 30%, #FFFFFF) 86%, transparent)`); r.setProperty('--velo-borde', oscuro ? 'rgba(255,255,255,.14)' : 'rgba(0,0,0,.14)'); }
+    const velo = op => oscuro ? `color-mix(in srgb, color-mix(in srgb, ${base} 30%, #08080B) ${op}%, transparent)` : `color-mix(in srgb, color-mix(in srgb, ${base} 30%, #FFFFFF) ${op + 4}%, transparent)`;
+    r.setProperty('--velo', velo(66)); r.setProperty('--velo-cel', velo(56)); r.setProperty('--velo-borde', oscuro ? 'rgba(255,255,255,.14)' : 'rgba(0,0,0,.14)'); r.setProperty('--velo-sombra', oscuro ? '0 1px 3px rgba(0,0,0,.75)' : '0 1px 3px rgba(255,255,255,.8)'); }
   document.body.classList.toggle('fondo-foto', !!p.fondoImg || !!p.fondoLink || (p.patron && patron(p.patron, p.bg2, p.link)[0] !== 'none'));
   document.body.classList.remove(...[...document.body.classList].filter(c => c.startsWith('ef-')));
   if (p.efectoTitulo !== 'ninguno') document.body.classList.add('ef-' + p.efectoTitulo);
