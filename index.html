@@ -212,6 +212,12 @@ span.ins-tile{cursor:help}
 @media (min-width:900px){.galeria{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}}
 .g-item{display:flex;flex-direction:column;gap:4px;background:none;border:0;padding:0;margin:0;color:var(--ink);font:inherit;text-align:left;cursor:pointer;min-width:0}
 .g-img{display:block;width:100%;aspect-ratio:1;border:1px solid var(--line);background:var(--box) center/cover no-repeat}
+.g-vid{position:relative;overflow:hidden;background:#000}
+.g-vid video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.g-vid i{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-style:normal;font-size:14px;display:flex;align-items:center;justify-content:center;padding-left:3px;box-sizing:border-box;pointer-events:none}
+video.foto{background:#000;width:100%}
+#mf-vid{display:block;max-width:100%;max-height:min(70vh, 640px)}
+#mf-vid[hidden],#mf-img[hidden]{display:none}
 .g-item:hover .g-img,.g-item:focus-visible .g-img{outline:2px solid var(--link);outline-offset:1px}
 .g-dato{font-size:11px;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fila-like{display:flex;align-items:center;gap:4px;margin:4px 0 0}
@@ -381,6 +387,9 @@ a.noti:focus-visible{outline:2px dotted #FF9900;outline-offset:2px}
 .posteo{border:1px solid var(--line);background:var(--box);padding:12px;margin-top:14px}
 .posteo.resaltado{outline:2px solid var(--link);outline-offset:2px}
 .posteo-cab{display:flex;align-items:center;gap:10px}
+.post-botones{display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+.posteo.fijado{border-color:var(--link);box-shadow:inset 3px 0 0 var(--link)}
+.fijado-etq{margin:0 0 8px;display:flex;align-items:center;gap:5px;font:bold 11px Verdana, sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--link)}
 .posteo-cab .avatar{width:42px;height:42px}
 .posteo-texto{margin:10px 0 0;white-space:pre-line;word-break:break-word}
 .posteo img.compartida{display:block;max-width:100%;max-height:560px;margin-top:10px;border:1px solid var(--line)}
@@ -727,9 +736,9 @@ html.en-llamada,html.en-llamada body{overflow:hidden}
 #entrada .ent-pie a{color:#A0A0A0}
 /* ===== Rebranding 2.5: misma estética, más prolija ===== */
 /* 1) "La hoja": cuando hay foto, video o patrón de fondo, el contenido va sobre un panel semitransparente (como una hoja de Fotolog sobre el fondo) para que todo se lea */
-body.fondo-foto main.pagina{background:var(--velo);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);border:1px solid var(--velo-borde);margin-top:18px;margin-bottom:28px;padding:20px 22px 30px}
+body.fondo-foto main.pagina{background:var(--velo);-webkit-backdrop-filter:blur(var(--velo-blur, 5px));backdrop-filter:blur(var(--velo-blur, 5px));border:1px solid var(--velo-marco, var(--velo-borde));margin-top:18px;margin-bottom:28px;padding:20px 22px 30px}
 body.fondo-foto main.pagina{text-shadow:var(--velo-sombra, none)}
-@media (max-width:600px){body.fondo-foto main.pagina{margin:10px 6px 20px;padding:14px 12px 24px;background:var(--velo-cel, var(--velo));-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}}
+@media (max-width:600px){body.fondo-foto main.pagina{margin:10px 6px 20px;padding:14px 12px 24px;background:var(--velo-cel, var(--velo));-webkit-backdrop-filter:blur(var(--velo-blur-cel, 3px));backdrop-filter:blur(var(--velo-blur-cel, 3px))}}
 body.fondo-foto .pagina > h1:first-child{margin-top:0}
 /* 2) Botones llenos: el texto siempre se lee (blanco o negro según el color) */
 .btn.lleno{color:var(--link-txt, var(--bg))}
@@ -750,7 +759,7 @@ body.cajas-ajustadas .btn.lleno{color:var(--link-txt-caja, var(--link-txt, var(-
 /* 5) Subir foto: zona para elegir la foto, más clara */
 #subir-form .file-btn{min-height:110px;flex-direction:column;gap:4px;border:2px dashed color-mix(in srgb, var(--ink-caja, var(--ink)) 30%, transparent);background:color-mix(in srgb, var(--link-caja, var(--link)) 5%, transparent);color:var(--link-caja, var(--link));font-weight:bold}
 #subir-form .file-btn::before{content:"+";font:300 40px/1 Verdana, sans-serif}
-#subir-form .file-btn::after{content:"jpg, png o gif";font-weight:normal;font-size:11px;color:var(--muted)}
+#subir-form .file-btn::after{content:"jpg, png, gif o video de hasta 30 s";font-weight:normal;font-size:11px;color:var(--muted)}
 #subir-form .file-btn:hover{border-color:var(--link-caja, var(--link))}
 #subir-form .lbl{font-weight:bold}
 /* 6) Chat: acciones juntas arriba y pantalla vacía con indicaciones */
@@ -800,6 +809,34 @@ body.cajas-ajustadas .sol-cab .num{color:var(--link-txt-caja, #FFF)}
 .top-fila .cuantos.rad{color:var(--ink);display:inline-flex;align-items:center;gap:6px}
 .top-fila .cuantos.rad .rad-ico{width:22px;height:22px}
 .n-ico .rad-ico{width:100%;height:100%}
+/* ===== Redes sociales del perfil (solo el ícono) ===== */
+.redes{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.redes[hidden]{display:none}
+.redes{gap:12px}
+.redes a{display:inline-flex;align-items:center;justify-content:center;transition:transform .15s, opacity .15s;opacity:.92}
+.redes a:hover,.redes a:focus-visible{transform:translateY(-2px);opacity:1}
+.redes img{width:22px;height:22px;display:block;filter:drop-shadow(0 0 1px rgba(255,255,255,.45))}
+.redes .red-gen{width:20px;height:20px;color:var(--text, #ddd);display:block}
+/* ===== Compartir perfil ===== */
+.compartir-btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px;border:1px solid var(--velo-borde, var(--line));border-radius:999px;background:transparent;color:var(--link);font:bold 12px Verdana, sans-serif;cursor:pointer;align-self:center;flex:none}
+.compartir-btn:hover,.compartir-btn:focus-visible{background:var(--link);color:var(--link-txt, #000)}
+/* ===== Posteo de la semana ===== */
+.sem-modal{max-width:620px;width:100%}
+.sem-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(170px, 1fr));gap:12px;margin-top:10px}
+.sem-card{border:1px solid var(--line);background:var(--box);display:flex;flex-direction:column}
+.sem-card.votada{outline:3px solid var(--link);outline-offset:-1px}
+.sem-media{aspect-ratio:1;background:#000;overflow:hidden}
+.sem-media img,.sem-media video{width:100%;height:100%;object-fit:cover;display:block}
+.sem-info{padding:8px;display:flex;flex-direction:column;gap:4px;font-size:13px;flex:1}
+.sem-info a{font-weight:bold;color:var(--title)}
+.sem-info .btn{margin-top:auto}
+.sem-gan{display:flex;gap:12px;align-items:center;border:1px solid var(--line);background:var(--box);padding:10px;margin-top:10px}
+.sem-gan .sem-media{width:92px;flex:none}
+.sem-gan.grande{flex-direction:column;align-items:stretch;text-align:center}
+.sem-gan.grande .sem-media{width:100%;max-width:340px;margin:0 auto}
+.sem-tit{margin:18px 0 0;font-size:16px;color:var(--title)}
+.sem-oculto{width:92px;flex:none;aspect-ratio:1;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;padding:6px;border:1px dashed var(--line);color:var(--muted)}
+.sem-gan.grande .sem-oculto{width:100%;aspect-ratio:auto;padding:18px}
 /* ===== Cartel de insignia nueva ===== */
 .modal.ins-nueva{max-width:360px;text-align:center;align-items:center;border:3px solid #E8B923 !important;box-shadow:0 0 0 1px #6B4E00, 0 0 28px rgba(232,185,35,.55);animation:insbrillo 2.4s ease-in-out infinite}
 @keyframes insbrillo{0%,100%{box-shadow:0 0 0 1px #6B4E00, 0 0 18px rgba(232,185,35,.35)}50%{box-shadow:0 0 0 1px #6B4E00, 0 0 36px rgba(232,185,35,.75)}}
@@ -954,7 +991,7 @@ html.pc-pausa *:not(#ll-pantalla, #ll-pantalla *),html.pc-pausa *:not(#ll-pantal
     <div style="position:relative"><label class="lbl" for="post-texto" id="post-texto-lbl">¿qué estás pensando?</label><textarea class="field" id="post-texto" maxlength="1000" aria-describedby="post-etq-ayuda" aria-autocomplete="list" aria-controls="post-etq-sug"></textarea>
       <div class="etq-sug" id="post-etq-sug" role="listbox" aria-label="amigos para etiquetar"></div>
       <span class="chico muted" id="post-etq-ayuda">escribí @ y el nick de un amigo para etiquetarlo (le llega un aviso).</span></div>
-    <div id="post-img-b" hidden><label class="btn file-btn" style="display:flex;justify-content:center">elegir imagen<input type="file" accept="image/*" id="post-img" aria-label="Elegir imagen"></label>
+    <div id="post-img-b" hidden><label class="btn file-btn" style="display:flex;justify-content:center">elegir imagen o GIF<input type="file" accept="image/*,image/gif" id="post-img" aria-label="Elegir imagen o GIF"></label>
       <span class="chico muted" id="post-img-nombre">ninguna imagen elegida</span></div>
     <div id="post-url-b" hidden><label class="btn file-btn" style="display:flex;justify-content:center">subir video (hasta 25 MB)<input type="file" accept="video/*" id="post-vid" aria-label="Elegir video"></label>
       <span class="chico muted" id="post-vid-nombre">ningún video elegido</span>
@@ -974,6 +1011,7 @@ html.pc-pausa *:not(#ll-pantalla, #ll-pantalla *),html.pc-pausa *:not(#ll-pantal
       <div style="min-width:0;flex:1">
         <div class="nick-fila"><h1 class="nick" id="p-nick"></h1><span class="insignias" id="p-insignias"></span></div>
         <div class="muted chico" id="p-meta"></div>
+        <div class="redes" id="p-redes" hidden></div>
       </div>
       <button class="btn" type="button" id="abrir-editor">editar mi perfil</button>
       <div id="p-amistad" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end"></div>
@@ -991,12 +1029,13 @@ html.pc-pausa *:not(#ll-pantalla, #ll-pantalla *),html.pc-pausa *:not(#ll-pantal
             <li>en <b>top</b> está el ranking de radiación.</li>
           </ul>
         </div></div>
+      <button type="button" class="compartir-btn" id="p-compartir" title="compartir este perfil" aria-label="Compartir este perfil"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg><span>compartir</span></button>
     </div>
     <p class="chico frase-marq" id="p-frase" style="margin:-6px 0 16px"><span></span></p>
 
     <nav class="p-secs" aria-label="Secciones del perfil">
       <button type="button" data-psec="perfil" aria-current="true">perfil</button>
-      <button type="button" data-psec="fotos" aria-current="false" id="psec-fotos">fotos anteriores</button>
+      <button type="button" data-psec="fotos" aria-current="false" id="psec-fotos">posteos anteriores</button>
       <button type="button" data-psec="posts" aria-current="false" id="psec-posts">publicaciones</button>
       <button type="button" data-psec="insignias" aria-current="false" id="psec-insignias">insignias</button>
     </nav>
@@ -1025,20 +1064,20 @@ html.pc-pausa *:not(#ll-pantalla, #ll-pantalla *),html.pc-pausa *:not(#ll-pantal
         </div>
       </aside>
 
-      <!-- Centro: foto del día + libro de visitas -->
+      <!-- Centro: posteo del día + libro de visitas -->
       <div class="col-centro">
         <div class="caja bloque" id="p-subir" hidden>
           <form id="subir-form" style="display:flex;flex-direction:column;gap:10px">
-            <p style="margin:0;font-weight:bold;color:var(--title)">subí tu foto de hoy</p>
-            <label class="btn file-btn" style="justify-content:center">elegir foto<input type="file" accept="image/*" id="subir-img" aria-label="Elegir foto de hoy"></label>
-            <span class="chico muted" id="subir-nombre">ninguna foto elegida</span>
+            <p style="margin:0;font-weight:bold;color:var(--title)">subí tu posteo del día</p>
+            <label class="btn file-btn" style="justify-content:center">elegir foto, GIF o video<input type="file" accept="image/*,image/gif,video/*" id="subir-img" aria-label="Elegir foto, GIF o video para tu posteo del día"></label>
+            <span class="chico muted" id="subir-nombre">nada elegido todavía · video de hasta 30 segundos</span>
             <div><label class="lbl" for="subir-titulo">título</label><input class="field" id="subir-titulo" maxlength="60"></div>
             <div><label class="lbl" for="subir-texto">texto (opcional)</label><textarea class="field" id="subir-texto" maxlength="500"></textarea></div>
             <p class="msg" id="subir-msg" role="alert"></p>
             <button class="btn lleno" type="submit">publicar</button>
           </form>
         </div>
-        <p class="aviso bloque" id="p-yasubiste" hidden>ya subiste tu foto de hoy. la próxima, mañana.</p>
+        <p class="aviso bloque" id="p-yasubiste" hidden>ya subiste tu posteo de hoy. el próximo, mañana.</p>
 
         <div class="foto-wrap" id="p-foto"></div>
         <div class="pie" id="p-pie"></div>
@@ -1091,8 +1130,9 @@ html.pc-pausa *:not(#ll-pantalla, #ll-pantalla *),html.pc-pausa *:not(#ll-pantal
     <div class="r-filtros" role="group" aria-label="Qué ranking ver">
       <button type="button" data-trank="likes" aria-pressed="true">♥ likes</button>
       <button type="button" data-trank="radiacion" aria-pressed="false"><span class="rad-ico" style="width:16px;height:16px;vertical-align:-3px" aria-hidden="true"></span> radiación</button>
+      <button type="button" data-trank="semana" aria-pressed="false">★ posteo de la semana</button>
     </div>
-    <div class="r-filtros" role="group" aria-label="Ranking de" style="margin-top:6px">
+    <div class="r-filtros" role="group" aria-label="Ranking de" style="margin-top:6px" id="t-filtros">
       <button type="button" data-tfiltro="todos" aria-pressed="true">todos</button>
       <button type="button" data-tfiltro="amigos" aria-pressed="false">mis amigos</button>
     </div>
@@ -1136,12 +1176,12 @@ html.pc-pausa *:not(#ll-pantalla, #ll-pantalla *),html.pc-pausa *:not(#ll-pantal
   </form>
 </div>
 
-<!-- Una foto anterior, más grande, con likes y libro de visitas -->
+<!-- Un posteo anterior, más grande, con likes y libro de visitas -->
 <div class="modal-fondo" id="modal-foto" hidden>
   <div class="modal" role="dialog" aria-labelledby="mf-titulo" aria-modal="true">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="muted chico" id="mf-pos"></span>
       <button type="button" class="btn" id="mf-cerrar" aria-label="Cerrar">×</button></div>
-    <div class="mf-img"><img id="mf-img" alt="">
+    <div class="mf-img"><img id="mf-img" alt=""><video id="mf-vid" controls playsinline loop preload="metadata" hidden></video>
       <button type="button" class="mf-flecha" id="mf-ant" aria-label="Foto más nueva">‹</button><button type="button" class="mf-flecha der" id="mf-sig" aria-label="Foto más vieja">›</button></div>
     <div class="fila-like"><button type="button" class="like-perfil" id="mf-like" aria-pressed="false"></button><span class="chico" id="mf-like-cuenta"></span></div>
     <div><h2 id="mf-titulo"></h2><p class="texto" id="mf-texto" style="margin:6px 0;white-space:pre-line;word-break:break-word"></p><p class="muted chico" id="mf-fecha" style="margin:0"></p></div>
@@ -1216,6 +1256,14 @@ html.pc-pausa *:not(#ll-pantalla, #ll-pantalla *),html.pc-pausa *:not(#ll-pantal
     <div class="ll-entra-btns"><button class="btn ll-colgar" type="button" id="ll-rechazar">rechazar</button><button class="btn lleno" type="button" id="ll-atender">atender</button><button class="btn lleno" type="button" id="ll-atender-video"><span class="ll-ico ll-ico-cam" aria-hidden="true"></span> con video</button></div>
   </div>
 </div>
+<div class="modal-fondo" id="modal-semana" hidden>
+  <div class="modal sem-modal" role="dialog" aria-labelledby="sem-t" aria-modal="true">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 id="sem-t" style="font-size:18px;margin:0"></h2>
+      <button type="button" class="btn" id="sem-cerrar" aria-label="Cerrar">×</button></div>
+    <div id="sem-cont"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap"><button type="button" class="btn" id="sem-ir">ver ganadores</button><button type="button" class="btn lleno" id="sem-ok">listo</button></div>
+  </div>
+</div>
 <div class="modal-fondo" id="modal-ins-nueva" hidden>
   <div class="modal ins-nueva" role="dialog" aria-labelledby="insn-t" aria-modal="true">
     <p class="insn-sub">nueva insignia para vos</p>
@@ -1234,12 +1282,12 @@ html.pc-pausa *:not(#ll-pantalla, #ll-pantalla *),html.pc-pausa *:not(#ll-pantal
     <h2 id="nov-titulo" style="margin:0;font-size:18px;color:var(--title)">✨ novedades de RincónAF</h2>
     <p class="muted chico" style="margin:-6px 0 0" id="nov-version"></p>
     <ul class="nov-lista">
-      <li><b><span class="rad-ico" style="width:16px;height:16px;vertical-align:-3px" aria-hidden="true"></span> radiación.</b> es nueva: cada día tenés 2 puntos para darle a quien quieras desde el botón de radiación de su perfil. si alguien pasa 3 días sin recibir, pierde 2 puntos. tocá el <b>?</b> que está al lado para ver cómo funciona, y en <b>top</b> mirá el ranking.</li>
-      <li><b>tu nick, aparte.</b> en «editar mi perfil» hay una pestaña nueva, <b>nick</b>, para elegirle fuente, tamaño, color, contorno y efecto sin tocar el resto de los títulos.</li>
-      <li><b>más fuentes.</b> sumamos 12 fuentes para los títulos y 4 para los textos.</li>
-      <li><b>fondos desde un link.</b> podés poner de fondo una imagen, un GIF o un video de Pinterest, Giphy o Imgur pegando el link. si el archivo se borra, te avisamos para que lo cambies.</li>
-      <li><b>fotos del día de tus amigos.</b> cuando un amigo sube su foto del día, te llega un aviso. si no lo querés, lo apagás en <b>ajustes → notificaciones</b>.</li>
-      <li><b>retoques visuales.</b> con fondo de foto o de video el perfil se lee mejor, los botones se leen siempre, y se ordenaron las solicitudes, el chat y la zona para subir fotos.</li>
+      <li><b>posteo del día.</b> la foto del día ahora es el posteo del día: podés subir una foto, un GIF o un video de hasta 30 segundos.</li>
+      <li><b>GIFs en todos lados.</b> en el chat, en el inicio, en el rincón, en tu foto de perfil y en la de los grupos podés subir GIFs desde tu galería, y se mueven.</li>
+      <li><b>posteo de la semana.</b> cada domingo elegís 2 de tus posteos del día de esa semana, el lunes se vota entre los de tus amigos y el martes sale el ganador, que se lleva una insignia. la primera votación es el lunes 23/11. está en <b>top</b>.</li>
+      <li><b>tu link con tu nick.</b> ahora el link de cada perfil lleva el nick, por ejemplo rinconaf.vercel.app/#perfil/aruanai, y hay un botón <b>compartir</b> para mandarlo por otras redes.</li>
+      <li><b>tus redes en el perfil.</b> en «editar mi perfil → datos» podés poner tus links de instagram, youtube, soundcloud, tiktok y más: se ven como logos debajo de tu nick.</li>
+      <li><b>opacidad de la hoja.</b> en «editar mi perfil → fondo e imágenes» hay una barra para elegir cuánto tapa la hoja oscura tu fondo, de 0 a 100.</li>
     </ul>
     <button type="button" class="btn lleno" id="nov-ok">¡dale!</button>
   </div>
@@ -1323,7 +1371,7 @@ html.pc-pausa *:not(#ll-pantalla, #ll-pantalla *),html.pc-pausa *:not(#ll-pantal
         <label class="aj-switch"><span><b>sonido</b><span class="muted chico" style="display:block">suena cuando llega algo con RincónAF abierto</span></span><input type="checkbox" id="aj-sonido"></label>
       </div>
       <div class="caja bloque">
-        <label class="aj-switch"><span><b>fotos del día de tus amigos</b><span class="muted chico" style="display:block">te avisa cuando un amigo sube su foto del día (en notificaciones y en el celular)</span></span><input type="checkbox" id="aj-avisofotos"></label>
+        <label class="aj-switch"><span><b>posteos del día de tus amigos</b><span class="muted chico" style="display:block">te avisa cuando un amigo sube su posteo del día (en notificaciones y en el celular)</span></span><input type="checkbox" id="aj-avisofotos"></label>
       </div>
       <div class="caja bloque" id="push-b">
         <p style="margin:0 0 4px;font-weight:bold;color:var(--title)">📲 avisos en este celular</p>
@@ -1404,7 +1452,7 @@ html.pc-pausa *:not(#ll-pantalla, #ll-pantalla *),html.pc-pausa *:not(#ll-pantal
         <button type="button" data-rtipo="video" aria-pressed="false">video</button>
       </div>
       <div id="r-url-b"><label class="lbl" for="r-url" id="r-url-lbl">link de la canción (youtube, spotify, soundcloud…)</label><input class="field" id="r-url" type="url" placeholder="https://…"></div>
-      <div id="r-img-b" hidden><label class="btn file-btn" style="justify-content:center;display:flex">elegir imagen<input type="file" accept="image/*" id="r-img" aria-label="Elegir imagen para compartir"></label>
+      <div id="r-img-b" hidden><label class="btn file-btn" style="justify-content:center;display:flex">elegir imagen o GIF<input type="file" accept="image/*,image/gif" id="r-img" aria-label="Elegir imagen o GIF para compartir"></label>
         <span class="chico muted" id="r-img-nombre">ninguna imagen elegida</span>
         <p class="muted chico" style="margin:10px 0 6px;text-align:center">— o —</p>
         <label class="lbl" for="r-pin">pegá un link de pinterest</label>
@@ -1477,10 +1525,10 @@ const FUENTES_B = {verdana:['Verdana, Tahoma, sans-serif','Verdana'], tahoma:['T
 const STICKERS = ['✝','☆','★','✦','♥','☾','✿','♪','∞','天','愛','夢','☠','⚡'];
 
 function base(){ return {
-  apodo:'', frase:'', bio:'', ciudad:'', cumple:'', escuchando:'', musica:'', favoritos:'',
+  apodo:'', frase:'', bio:'', ciudad:'', cumple:'', escuchando:'', musica:'', favoritos:'', redes:'',
   avatar:'', avatarForma:'cuadrado', fondoImg:'', fondoModo:'mosaico', fondoLink:'', fondoLinkTipo:'imagen', fondoFuente:'',
   tema:'clasico', ...pick(TEMAS.clasico, [...COLS,'patron','fuenteTitulo','fuenteTexto']),
-  puestas:null, insVistas:[], equipos:[], tamano:14, nickFuente:'igual', nickColor:'', nickTamano:26, nickContorno:'igual', nickColorContorno:'#000000', efectoTitulo:'ninguno', colorEfecto:'#FF3DCB', contorno:'no', colorContorno:'#000000', cajas:'simple', marco:1, stickers:[],
+  puestas:null, insVistas:[], semanaVista:'', ganVisto:'', postVista:'', equipos:[], tamano:14, nickFuente:'igual', nickColor:'', nickTamano:26, velo:66, nickContorno:'igual', nickColorContorno:'#000000', efectoTitulo:'ninguno', colorEfecto:'#FF3DCB', contorno:'no', colorContorno:'#000000', cajas:'simple', marco:1, stickers:[],
   marquesina:false, estela:false, avisoFotos:true, anteriores:true, sobre:true, ff_ver:true, favs:true, contador:true,
   visitas:0, creado:Date.now(), nuevo:true, novedades:'', fotos:[], ff:[], id:0, recibidas:[], notis:[], leidos:{}, fans:[]
 }; }
@@ -1492,7 +1540,7 @@ function pick(o, ks){ const r = {}; ks.forEach(k => r[k] = o[k]); return r; }
 const OPC = {tema:[...Object.keys(TEMAS),'propio'], patron:['liso','puntos','cuadrille','rayas','grilla','estrellas','corazones','estatica','diagonales','zigzag','circulos','estrellasmov','corazonesmov','puntosmov','rayasmov','grillamov','lluvia','nieve','burbujas','estaticamov','degrade'],
   fuenteTitulo:Object.keys(FUENTES_T), fuenteTexto:Object.keys(FUENTES_B), nickFuente:['igual', ...Object.keys(FUENTES_T)], nickContorno:['igual','no','fino','grueso'],
   efectoTitulo:['ninguno','sombra','glitch','brillo','arcoiris','ola','olacolor','arcoirismov','neon','latido','flotar','temblor','interferencia','brillocolor','neoncolor','olamicolor','destellos','degradecolor'], contorno:['no','fino','grueso'], cajas:['simple','punteada','sin','win98'], avatarForma:['cuadrado','circulo'], fondoModo:['mosaico','cubrir']};
-const LARGOS = {frase:90, bio:400, ciudad:40, escuchando:100, musica:300, favoritos:400};
+const LARGOS = {frase:90, bio:400, ciudad:40, escuchando:100, musica:300, favoritos:400, redes:1200};
 const BOOLS = ['anteriores','sobre','ff_ver','favs','contador','marquesina','estela','nuevo','avisoFotos'];
 const esColor = v => typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v);
 // Imágenes: solo del bucket "media" de este Supabase y de la carpeta del dueño del perfil
@@ -1520,6 +1568,7 @@ function sanearPerfil(d, uid){ const b = base(), r = {}; d = d && typeof d === '
   r.escuchandoTipo = ['tema','artista','álbum','playlist','podcast'].includes(d.escuchandoTipo) ? d.escuchandoTipo : 'tema';
   r.escuchandoImg = typeof d.escuchandoImg === 'string' && TAPA_OK.test(d.escuchandoImg) ? d.escuchandoImg : '';   // portada: solo de Spotify, YouTube o SoundCloud
   // Insignias que se pone al lado del nick (hasta 3) y equipos de fútbol (hasta 2, escudos de TheSportsDB)
+  r.semanaVista = /^\d{4}-\d{2}-\d{2}$/.test(d.semanaVista) ? d.semanaVista : ''; r.ganVisto = /^\d{4}-\d{2}-\d{2}$/.test(d.ganVisto) ? d.ganVisto : ''; r.postVista = /^\d{4}-\d{2}-\d{2}$/.test(d.postVista) ? d.postVista : '';
   r.insVistas = Array.isArray(d.insVistas) ? [...new Set(d.insVistas.filter(x => typeof x === 'string' && /^[a-z0-9-]{2,40}$/.test(x)))].slice(-60) : [];
   r.puestas = Array.isArray(d.puestas) ? [...new Set(d.puestas.filter(x => typeof x === 'string' && /^(mod:(fundador|beta)|ins:[a-z0-9-]{2,40}|fut:\d{1,10})$/.test(x)))].slice(0, MAX_PUESTAS) : null;
   r.equipos = (Array.isArray(d.equipos) ? d.equipos : []).filter(e => e && typeof e === 'object' && typeof e.id === 'string' && /^\d{1,10}$/.test(e.id) && typeof e.escudo === 'string' && ESCUDO_OK.test(e.escudo))
@@ -1527,6 +1576,7 @@ function sanearPerfil(d, uid){ const b = base(), r = {}; d = d && typeof d === '
   r.cumple = typeof d.cumple === 'string' ? (/^\d{2}-\d{2}$/.test(d.cumple) ? d.cumple : /^\d{4}-\d{2}-\d{2}$/.test(d.cumple) ? d.cumple.slice(5) : '') : '';   // solo día y mes: nunca el año
   r.tamano = Number.isInteger(d.tamano) && d.tamano >= 12 && d.tamano <= 19 ? d.tamano : b.tamano;
   r.marco = [0,1,4,10].includes(d.marco) ? d.marco : b.marco;
+  r.velo = Number.isInteger(d.velo) && d.velo >= 0 && d.velo <= 100 ? d.velo : b.velo;
   r.nickTamano = Number.isInteger(d.nickTamano) && d.nickTamano >= 18 && d.nickTamano <= 44 ? d.nickTamano : b.nickTamano;
   r.nickColor = esColor(d.nickColor) ? d.nickColor : '';
   r.nickColorContorno = esColor(d.nickColorContorno) ? d.nickColorContorno : b.nickColorContorno;
@@ -1564,6 +1614,7 @@ let tGuardar = null, apodoGuardado = null;              // el último nick que a
 const normNick = t => String(t ?? '').trim().toLowerCase();
 // Nick: no vacío, que no lo use otra persona (sin importar mayúsculas) y sin tomar los "npc + número" de otros
 function errorNick(v, yo){ if (!v) return 'el nick no puede quedar vacío.';
+  if (/\.$/.test(v)) return 'el nick no puede terminar en punto.';
   if (/^npc\d+$/i.test(v) && v.toLowerCase() !== 'npc' + yo.id) return 'los nicks «npc + número» están reservados. elegí otro.';
   if (miembros().some(x => x.uid !== yo.uid && normNick(x.apodo) === normNick(v))) return 'ese nick ya existe. elegí otro.';
   return ''; }
@@ -1773,7 +1824,15 @@ async function subirArchivo(blob, ext){
   const {error} = await sb.storage.from(BUCKET).upload(path, blob, {contentType: blob.type || undefined, upsert:false});
   if (error) throw error; return path; }
 // Fotos: se achican en el celu antes de subir (JPEG, lado máximo según el uso)
-async function subirImagen(file, max){ const blob = await achicarBlob(file, max, .82); const path = await subirArchivo(blob, 'jpg'); await firmar([path]); return urlPublica(path); }
+async function subirImagen(file, max){ const {blob, ext} = await prepararImagen(file, max, .82); const path = await subirArchivo(blob, ext); await firmar([path]); return urlPublica(path); }
+// GIFs: se suben tal cual (si se pasaran a JPG perderían la animación)
+const MAX_GIF_MB = 10, MAX_GIF_PERFIL_MB = 5;
+const esGif = f => !!f && (f.type === 'image/gif' || /\.gif$/i.test(f.name || ''));
+const comoGif = f => f.type === 'image/gif' ? f : new Blob([f], {type:'image/gif'});
+const avisoGif = (f, max = MAX_GIF_MB) => f.size > max * 1048576 ? `Ese GIF pesa ${mb(f.size)}. El máximo es ${max} MB.` : '';
+function revisarGif(f, max = MAX_GIF_MB){ const a = avisoGif(f, max); if (a) throw Object.assign(new Error('gif pesado'), {aviso:a}); }
+async function prepararImagen(f, lado, q){ if (esGif(f)){ revisarGif(f); return {blob:comoGif(f), ext:'gif'}; } return {blob:await achicarBlob(f, lado, q), ext:'jpg'}; }
+const esVideoUrl = u => typeof u === 'string' && /\.(mp4|webm|mov|m4v)(\?|$)/i.test(u);
 
 // Trae todo lo que el usuario puede ver (la seguridad del servidor ya filtra lo ajeno)
 async function cargarTodo(){
@@ -1823,8 +1882,13 @@ let viendo = null;                                   // el perfil que se está m
 const miembros = () => Object.values(usuarios).map(u => u.perfil);
 const porId = id => miembros().find(x => x.id === id);
 const esMio = () => !!(viendo && perfil() && viendo.id === perfil().id);
-const linkPerfil = x => '#perfil/' + x.id;
-const miniatura = x => { const f = x.fotos[x.fotos.length - 1]; return f ? f.img : x.avatar; };
+// Link de cada perfil con su nick: #perfil/aruanai (si el nick es solo números, se usa su número para no confundirlo)
+const slugNick = n => String(n || '').trim().toLowerCase();
+const linkPerfil = x => { const s = slugNick(x.apodo); return '#perfil/' + (s && !/^\d+$/.test(s) ? encodeURIComponent(s) : x.id); };
+function perfilDeLink(arg){ if (!arg) return null; let t = arg; try { t = decodeURIComponent(arg); } catch {}
+  if (/^\d+$/.test(t)) return porId(+t);                                     // links viejos (#perfil/12) siguen andando
+  const s = slugNick(t); return miembros().find(x => slugNick(x.apodo) === s) || null; }
+const miniatura = x => { const f = x.fotos.findLast(f => !esVideoUrl(f.img)); return f ? f.img : x.avatar; };
 const sonAmigos = (a,b) => a.ff.includes(b.id) && b.ff.includes(a.id);
 const amigosDe = x => x.ff.map(porId).filter(a => a && a.ff.includes(x.id));
 function estadoAmistad(yo, p){ if (sonAmigos(yo,p)) return 'amigos'; if (p.recibidas.some(r => r.de === yo.id)) return 'enviada';
@@ -1923,8 +1987,9 @@ function aplicar(p){
   document.body.dataset.cajas = p.cajas;
   r.setProperty('--link-txt', lum(p.link) > .42 ? '#000000' : '#FFFFFF'); r.setProperty('--link-txt-caja', lum(lk) > .42 ? '#000000' : '#FFFFFF');
   { const oscuro = lum(p.ink) > .5, base = esColor(p.bg) && esColor(p.ink) && contraste(p.ink, p.bg) >= 7 ? p.bg : (oscuro ? '#0E0E12' : '#FFFFFF');
-    const velo = op => oscuro ? `color-mix(in srgb, color-mix(in srgb, ${base} 30%, #08080B) ${op}%, transparent)` : `color-mix(in srgb, color-mix(in srgb, ${base} 30%, #FFFFFF) ${op + 4}%, transparent)`;
-    r.setProperty('--velo', velo(66)); r.setProperty('--velo-cel', velo(56)); r.setProperty('--velo-borde', oscuro ? 'rgba(255,255,255,.14)' : 'rgba(0,0,0,.14)'); r.setProperty('--velo-sombra', oscuro ? '0 1px 3px rgba(0,0,0,.75)' : '0 1px 3px rgba(255,255,255,.8)'); }
+    const velo = op => oscuro ? `color-mix(in srgb, color-mix(in srgb, ${base} 30%, #08080B) ${op}%, transparent)` : `color-mix(in srgb, color-mix(in srgb, ${base} 30%, #FFFFFF) ${Math.min(100, op + 4)}%, transparent)`;
+    const vo = Number.isInteger(p.velo) ? p.velo : 66; r.setProperty('--velo', velo(vo)); r.setProperty('--velo-cel', velo(Math.max(0, vo - 10)));
+    r.setProperty('--velo-blur', (vo / 100 * 5).toFixed(1) + 'px'); r.setProperty('--velo-blur-cel', (Math.max(0, vo - 10) / 100 * 3).toFixed(1) + 'px'); r.setProperty('--velo-borde', oscuro ? 'rgba(255,255,255,.14)' : 'rgba(0,0,0,.14)'); r.setProperty('--velo-marco', vo === 0 ? 'transparent' : 'var(--velo-borde)'); r.setProperty('--velo-sombra', oscuro ? '0 1px 3px rgba(0,0,0,.75)' : '0 1px 3px rgba(255,255,255,.8)'); }
   document.body.classList.toggle('fondo-foto', !!p.fondoImg || !!p.fondoLink || (p.patron && patron(p.patron, p.bg2, p.link)[0] !== 'none'));
   document.body.classList.remove(...[...document.body.classList].filter(c => c.startsWith('ef-')));
   if (p.efectoTitulo !== 'ninguno') document.body.classList.add('ef-' + p.efectoTitulo);
@@ -1971,7 +2036,8 @@ function pintar(){
   lb.hidden = mio;   // en tu propio perfil solo se ve la cantidad
   if ($('#p-rad').dataset.uid !== p.uid){ $('#p-rad').dataset.uid = p.uid; cerrarRadPop(); } pintarRad(); if (!radCargada) cargarRadiacion();
   if (!mio){ lb.setAttribute('aria-pressed', dio); lb.textContent = dio ? '♥' : '♡'; lb.setAttribute('aria-label', dio ? 'Sacar like a este perfil' : 'Dar like a este perfil'); }
-  $('#p-meta').textContent = [`perfil de ${p.apodo}`, `desde ${fechaLarga(p.creado)}`, (p.fotos.length === 1 ? '1 foto' : `${p.fotos.length} fotos`), p.contador && `${p.visitas} visitas`].filter(Boolean).join(' · ');
+  $('#p-meta').textContent = [`perfil de ${p.apodo}`, `desde ${fechaLarga(p.creado)}`, (p.fotos.length === 1 ? '1 posteo' : `${p.fotos.length} posteos`), p.contador && `${p.visitas} visitas`].filter(Boolean).join(' · ');
+  pintarRedes(p);
   $('#abrir-editor').hidden = !mio;
   const am = $('#p-amistad'); am.hidden = mio; am.innerHTML = '';
   if (!mio){ const st = estadoAmistad(yo, p);
@@ -1985,12 +2051,14 @@ function pintar(){
   $('#p-subir').hidden = !mio || subioHoy; $('#p-yasubiste').hidden = !mio || !subioHoy;
   // Foto que se está viendo
   const idx = verFoto ?? p.fotos.length - 1, f = p.fotos[idx];
-  const caja = $('#p-foto'); caja.innerHTML = '';
-  if (f){ const im = new Image(); im.className = 'foto'; im.src = ver(f.img); im.alt = f.titulo || 'foto del ' + fechaLarga(f.cuando); caja.appendChild(im); }
-  else caja.innerHTML = `<div class="foto-vacia"><i aria-hidden="true"></i><span>${mio ? 'todavía no subiste ninguna foto.<br>la primera va arriba ↑' : esc(p.apodo) + ' todavía no subió ninguna foto.'}</span></div>`;
+  const caja = $('#p-foto'), vPrev = caja.querySelector('video.foto');
+  const mantener = !!(vPrev && f && esVideoUrl(f.img) && vPrev.dataset.foto === `${p.uid}:${f.cuando}`);   // el video que se está viendo no se reinicia al repintar
+  [...caja.childNodes].forEach(n => { if (!(mantener && n === vPrev)) n.remove(); });
+  if (f && !mantener) caja.appendChild(mediaDelDia(f, `${p.uid}:${f.cuando}`));
+  else if (!f) caja.innerHTML = `<div class="foto-vacia"><i aria-hidden="true"></i><span>${mio ? 'todavía no subiste ningún posteo del día.<br>el primero va arriba ↑' : esc(p.apodo) + ' todavía no subió ningún posteo del día.'}</span></div>`;
   p.stickers.forEach((st,i) => { const [x,y,t] = POS[i % POS.length]; const e = document.createElement('span'); e.className = 'sticker'; e.textContent = st; e.setAttribute('aria-hidden','true');
     e.style.left = x + '%'; e.style.top = y + '%'; e.style.fontSize = t + 'px'; caja.appendChild(e); });
-  $('#p-pie').innerHTML = f ? `<h2>${esc(f.titulo || 'sin título')}</h2>${filaLike(f, mio)}${f.texto ? `<p class="texto">${esc(f.texto)}</p>` : ''}<p class="subida">foto subida el ${fechaLarga(f.cuando)} a las ${hora(f.cuando)}</p>` : '';
+  $('#p-pie').innerHTML = f ? `<h2>${esc(f.titulo || 'sin título')}</h2>${filaLike(f, mio)}${f.texto ? `<p class="texto">${esc(f.texto)}</p>` : ''}<p class="subida">${queEs(f)} el ${fechaLarga(f.cuando)} a las ${hora(f.cuando)}</p>` : '';
   // Libro de visitas de esa foto (firman todos, también en perfiles ajenos)
   $('#p-libro').hidden = !f;
   if (f){ $('#p-libro-t').textContent = `libro de visitas (${f.firmas.length}/${MAX_FIRMAS})`;
@@ -2000,7 +2068,7 @@ function pintar(){
   // Secciones: perfil / fotos anteriores (todas menos la última)
   const ant = anteriores(p); if (!p.anteriores) seccionPerfil = 'perfil';
   const verAnt = mio || sonAmigos(yo, p);                   // fotos anteriores: solo vos y tus amigos
-  const bf = $('#psec-fotos'); bf.hidden = !p.anteriores; bf.textContent = verAnt ? `fotos anteriores (${ant.length})` : 'fotos anteriores';
+  const bf = $('#psec-fotos'); bf.hidden = !p.anteriores; bf.textContent = verAnt ? `posteos anteriores (${ant.length})` : 'posteos anteriores';
   $$('.p-secs [data-psec]').forEach(b => b.setAttribute('aria-current', b.dataset.psec === seccionPerfil));
   $('#p-cols').hidden = seccionPerfil !== 'perfil'; $('#p-galeria-sec').hidden = seccionPerfil !== 'fotos'; $('#p-posts-sec').hidden = seccionPerfil !== 'posts'; $('#p-insignias-sec').hidden = seccionPerfil !== 'insignias';
   if (seccionPerfil === 'insignias') pintarInsignias(p, mio);
@@ -2012,13 +2080,15 @@ function pintar(){
     else if (!pubs.length) c.innerHTML = `<p class="muted chico" style="margin:0">${mio ? 'todavía no publicaste nada en el inicio. tocá el + para publicar.' : esc(p.apodo) + ' todavía no publicó nada en el inicio.'}</p>`;
     else pubs.forEach(x => c.appendChild(posteoEl(x, yo))); }
   const g = $('#p-galeria'); g.innerHTML = '';
-  if (!verAnt) g.innerHTML = `<p class="muted chico" style="margin:0;grid-column:1/-1">solo los amigos de ${esc(p.apodo)} ven sus fotos anteriores. mandale una solicitud.</p>`;
+  if (!verAnt) g.innerHTML = `<p class="muted chico" style="margin:0;grid-column:1/-1">solo los amigos de ${esc(p.apodo)} ven sus posteos anteriores. mandale una solicitud.</p>`;
   else { const sinFirma = ant.map(x => rutaMedia(x.img)).filter(r => r && !firmadas.has(r) && !pedidasAnt.has(r)); sinFirma.forEach(r => pedidasAnt.add(r));   // se hicieron amigos hace poco: se piden los links que faltan
     if (sinFirma.length && !g.dataset.firmando){ g.dataset.firmando = '1'; firmar(sinFirma).finally(() => { delete g.dataset.firmando; pintar(); }); } }
-  if (verAnt && !ant.length) g.innerHTML = `<p class="muted chico" style="margin:0;grid-column:1/-1">${mio ? 'todavía no tenés fotos anteriores. cuando subas la foto de mañana, la de hoy pasa acá.' : esc(p.apodo) + ' todavía no tiene fotos anteriores.'}</p>`;
+  if (verAnt && !ant.length) g.innerHTML = `<p class="muted chico" style="margin:0;grid-column:1/-1">${mio ? 'todavía no tenés posteos anteriores. cuando subas el de mañana, el de hoy pasa acá.' : esc(p.apodo) + ' todavía no tiene posteos anteriores.'}</p>`;
   if (verAnt) ant.forEach(x => { const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'g-item'; bt.dataset.foto = x.cuando;
-    bt.setAttribute('aria-label', `abrir foto del ${fechaLarga(x.cuando)}${x.titulo ? ': ' + x.titulo : ''}, ${x.likes.length} likes, ${x.firmas.length} firmas`);
-    bt.innerHTML = `<span class="g-img" style="background-image:url(&quot;${esc(ver(x.img))}&quot;)"></span><span class="g-dato">${fecha(x.cuando)} · ♥ ${x.likes.length} · ✎ ${x.firmas.length}</span>`;
+    bt.setAttribute('aria-label', `abrir ${esVideoUrl(x.img) ? 'video' : 'posteo'} del ${fechaLarga(x.cuando)}${x.titulo ? ': ' + x.titulo : ''}, ${x.likes.length} likes, ${x.firmas.length} firmas`);
+    bt.innerHTML = esVideoUrl(x.img)
+      ? `<span class="g-img g-vid"><video src="${esc(ver(x.img))}#t=0.1" muted playsinline preload="metadata" tabindex="-1" aria-hidden="true"></video><i aria-hidden="true">▶</i></span><span class="g-dato">${fecha(x.cuando)} · ♥ ${x.likes.length} · ✎ ${x.firmas.length}</span>`
+      : `<span class="g-img" style="background-image:url(&quot;${esc(ver(x.img))}&quot;)"></span><span class="g-dato">${fecha(x.cuando)} · ♥ ${x.likes.length} · ✎ ${x.firmas.length}</span>`;
     g.appendChild(bt); });
   if (!$('#modal-foto').hidden) pintarModalFoto();
   // Sobre mí
@@ -2128,9 +2198,9 @@ function listaFirmas(l, f){ l.innerHTML = '';
     d.append(av, c); l.appendChild(d); }); }
 const textoLikes = n => `${n} ${n === 1 ? 'like' : 'likes'}`;
 function ponerLike(b, cuenta, f, mio){ const dio = f.likes.includes(perfil().id); b.hidden = mio;   // en tus fotos solo ves la cantidad
-  b.setAttribute('aria-pressed', dio); b.textContent = dio ? '♥' : '♡'; b.setAttribute('aria-label', dio ? 'Sacar like a esta foto' : 'Dar like a esta foto'); cuenta.textContent = textoLikes(f.likes.length); }
+  b.setAttribute('aria-pressed', dio); b.textContent = dio ? '♥' : '♡'; b.setAttribute('aria-label', dio ? 'Sacar like a este posteo' : 'Dar like a este posteo'); cuenta.textContent = textoLikes(f.likes.length); }
 const filaLike = (f, mio) => { const dio = f.likes.includes(perfil().id);
-  return `<p class="fila-like">${mio ? '' : `<button type="button" class="like-perfil" data-like-foto="${f.cuando}" aria-pressed="${dio}" aria-label="${dio ? 'Sacar like a esta foto' : 'Dar like a esta foto'}">${dio ? '♥' : '♡'}</button>`}<span class="chico">${mio ? '♥ ' : ''}${textoLikes(f.likes.length)}</span></p>`; };
+  return `<p class="fila-like">${mio ? '' : `<button type="button" class="like-perfil" data-like-foto="${f.cuando}" aria-pressed="${dio}" aria-label="${dio ? 'Sacar like a este posteo' : 'Dar like a este posteo'}">${dio ? '♥' : '♡'}</button>`}<span class="chico">${mio ? '♥ ' : ''}${textoLikes(f.likes.length)}</span></p>`; };
 function likeFoto(p, f){ const yo = perfil(); if (!yo || !p || !f || p.uid === yo.uid) return;
   const vuelta = () => { pintar(); };
   if (f.likes.includes(yo.id)){ f.likes = f.likes.filter(i => i !== yo.id);
@@ -2143,15 +2213,17 @@ function firmarFoto(p, f, t){ const yo = perfil(); if (!t || !p || !f || f.firma
   sb.from('firmas').insert({perfil:p.uid, foto:f.cuando, texto:t}).then(({error}) => falla('firmar', error)); return true; }
 // Foto anterior abierta
 function abrirFoto(p, cuando){ const yo = perfil(); if (!yo || (p.uid !== yo.uid && !sonAmigos(yo, p) && cuando !== p.fotos.at(-1)?.cuando)) return; mf = {p, cuando}; $('#mf-txt').value = ''; $('#modal-foto').hidden = false; pintarModalFoto(); $('#modal-foto .modal').scrollTop = 0; $('#mf-cerrar').focus({preventScroll:true}); }
-function cerrarFoto(){ $('#modal-foto').hidden = true; mf = null; }
+function cerrarFoto(){ $('#modal-foto').hidden = true; mf = null; const vi = $('#mf-vid'); if (vi.dataset.foto){ vi.pause(); vi.removeAttribute('src'); vi.load(); vi.dataset.foto = ''; } }
 function pintarModalFoto(){ if (!mf) return; mf.p = porId(mf.p.id) || mf.p; const p = mf.p, lista = anteriores(p), i = lista.findIndex(x => x.cuando === mf.cuando), f = lista[i];
   if (!f) return cerrarFoto(); const mio = !!(perfil() && p.uid === perfil().uid);
-  const im = $('#mf-img'); if (im.dataset.foto !== String(f.cuando)){ im.src = ver(f.img); im.dataset.foto = f.cuando; }
-  im.alt = f.titulo || 'foto del ' + fechaLarga(f.cuando);
+  const im = $('#mf-img'), vi = $('#mf-vid'), esV = esVideoUrl(f.img); im.hidden = esV; vi.hidden = !esV;
+  if (esV){ if (vi.dataset.foto !== String(f.cuando)){ vi.src = ver(f.img); vi.dataset.foto = f.cuando; } im.removeAttribute('src'); im.dataset.foto = ''; }
+  else { if (im.dataset.foto !== String(f.cuando)){ im.src = ver(f.img); im.dataset.foto = f.cuando; } if (vi.dataset.foto){ vi.pause(); vi.removeAttribute('src'); vi.load(); vi.dataset.foto = ''; } }
+  im.alt = f.titulo || 'posteo del ' + fechaLarga(f.cuando); vi.setAttribute('aria-label', f.titulo || 'video del ' + fechaLarga(f.cuando));
   $('#mf-pos').textContent = `${i + 1} de ${lista.length}`; $('#mf-ant').hidden = i <= 0; $('#mf-sig').hidden = i >= lista.length - 1;
   ponerLike($('#mf-like'), $('#mf-like-cuenta'), f, mio); if (mio) $('#mf-like-cuenta').textContent = '♥ ' + textoLikes(f.likes.length);
   $('#mf-titulo').textContent = f.titulo || 'sin título'; $('#mf-texto').textContent = f.texto; $('#mf-texto').hidden = !f.texto;
-  $('#mf-fecha').textContent = `foto subida el ${fechaLarga(f.cuando)} a las ${hora(f.cuando)}`;
+  $('#mf-fecha').textContent = `${queEs(f)} el ${fechaLarga(f.cuando)} a las ${hora(f.cuando)}`;
   $('#mf-libro-t').textContent = `libro de visitas (${f.firmas.length}/${MAX_FIRMAS})`;
   $('#mf-firmar-lbl').textContent = mio ? 'firmá tu libro' : `firmale el libro a ${p.apodo}`;
   listaFirmas($('#mf-firmas'), f); const lleno = f.firmas.length >= MAX_FIRMAS; $('#mf-firmar').hidden = lleno; $('#mf-lleno').hidden = !lleno; }
@@ -2179,17 +2251,101 @@ function pintarInicio(){
   otros.forEach(x => { const u = x.fotos.at(-1); cont.appendChild(tile(x, u && mismoDia(u.cuando, Date.now()) ? ' · hoy' : '')); });
 }
 
-/* ---------- Subir la foto del día ---------- */
-let fotoNueva = null;
-$('#subir-img').onchange = e => { const f = e.target.files[0]; if (!f) return; fotoNueva = f; $('#subir-nombre').textContent = 'lista: ' + f.name; };
+/* ---------- Redes sociales: cada link se muestra solo con el ícono de su red (el ícono lo da la propia red) ---------- */
+const REDES = [
+  [/(^|\.)instagram\.com$/, 'instagram', 'www.instagram.com'], [/(^|\.)(youtube\.com|youtu\.be)$/, 'youtube', 'www.youtube.com'],
+  [/(^|\.)soundcloud\.com$|^on\.soundcloud\.com$/, 'soundcloud', 'soundcloud.com'], [/(^|\.)tiktok\.com$/, 'tiktok', 'www.tiktok.com'],
+  [/(^|\.)(twitter\.com|x\.com)$/, 'x', 'x.com'], [/(^|\.)spotify\.com$|^spotify\.link$/, 'spotify', 'open.spotify.com'],
+  [/(^|\.)twitch\.tv$/, 'twitch', 'www.twitch.tv'], [/(^|\.)kick\.com$/, 'kick', 'kick.com'], [/(^|\.)(facebook\.com|fb\.com)$/, 'facebook', 'www.facebook.com'],
+  [/(^|\.)threads\.(net|com)$/, 'threads', 'www.threads.net'], [/(^|\.)bsky\.app$/, 'bluesky', 'bsky.app'], [/(^|\.)pinterest\.[a-z.]+$|^pin\.it$/, 'pinterest', 'www.pinterest.com'],
+  [/(^|\.)github\.com$/, 'github', 'github.com'], [/(^|\.)(discord\.gg|discord\.com)$/, 'discord', 'discord.com'], [/(^|\.)steamcommunity\.com$/, 'steam', 'steamcommunity.com'],
+  [/(^|\.)linkedin\.com$/, 'linkedin', 'www.linkedin.com'], [/(^|\.)reddit\.com$/, 'reddit', 'www.reddit.com'], [/(^|\.)bandcamp\.com$/, 'bandcamp', 'bandcamp.com'],
+  [/(^|\.)music\.apple\.com$/, 'apple music', 'music.apple.com'], [/(^|\.)deezer\.com$/, 'deezer', 'www.deezer.com'], [/^t\.me$|(^|\.)telegram\.me$/, 'telegram', 'telegram.org'],
+  [/(^|\.)tumblr\.com$/, 'tumblr', 'www.tumblr.com'], [/(^|\.)linktr\.ee$/, 'linktree', 'linktr.ee'], [/(^|\.)vimeo\.com$/, 'vimeo', 'vimeo.com'],
+  [/(^|\.)letterboxd\.com$/, 'letterboxd', 'letterboxd.com'], [/(^|\.)vsco\.co$/, 'vsco', 'vsco.co'], [/(^|\.)snapchat\.com$/, 'snapchat', 'www.snapchat.com']];
+function redesDe(texto){ const vistas = new Set(), r = [];
+  for (const l of String(texto || '').split('\n').map(t => t.trim()).filter(Boolean)){
+    let u; try { u = new URL(/^https?:\/\//i.test(l) ? l : 'https://' + l); } catch { continue; }
+    if (!/^https?:$/.test(u.protocol) || !u.hostname.includes('.') || l.length > 300) continue;
+    u.protocol = 'https:'; const h = u.hostname.toLowerCase().replace(/^www\./, '');
+    const red = REDES.find(([re]) => re.test(h)); const nombre = red ? red[1] : h, dom = red ? red[2] : u.hostname.toLowerCase();
+    if (vistas.has(u.href)) continue; vistas.add(u.href);
+    r.push({url:u.href, nombre, dom, conocida:!!red}); if (r.length >= 8) break; }
+  return r; }
+const ayudaRedes = t => { const l = redesDe(t), n = String(t || '').split('\n').filter(x => x.trim()).length;
+  if (!n) return 'se ven como íconos debajo de tu nick. pegá el link completo de tu perfil en cada red.';
+  return `se van a ver ${l.length} ${l.length === 1 ? 'ícono' : 'íconos'}: ${l.map(x => x.nombre).join(', ') || 'ninguno'}${n > l.length ? ' (algún renglón no es un link válido o pasaste los 8)' : ''}.`; };
+const iconoRed = r => `https://${r.dom}/favicon.ico`;
+const iconoRedAlt = r => `https://www.google.com/s2/favicons?domain=${encodeURIComponent(r.dom)}&sz=64`;
+function pintarRedes(p){ const c = $('#p-redes'), l = redesDe(p.redes); c.hidden = !l.length; c.innerHTML = '';
+  l.forEach(r => { const a = document.createElement('a'); a.href = r.url; a.target = '_blank'; a.rel = 'noopener noreferrer me'; a.title = r.nombre;
+    a.setAttribute('aria-label', `${r.nombre} de ${p.apodo}`);
+    const im = new Image(); im.alt = ''; im.width = 20; im.height = 20; im.referrerPolicy = 'no-referrer'; im.loading = 'lazy'; im.src = iconoRedAlt(r);
+    im.onerror = () => { if (!im.dataset.fallo){ im.dataset.fallo = '1'; im.src = iconoRed(r); return; }
+      im.replaceWith(Object.assign(document.createElement('span'), {innerHTML:'<svg class="red-gen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>'})); };
+    a.appendChild(im); c.appendChild(a); }); }
+
+/* ---------- Compartir el link del perfil: en el celu abre el menú para compartir; si no, lo copia ---------- */
+const linkCompleto = p => location.origin + location.pathname + linkPerfil(p);
+async function copiarTexto(t){ try { await navigator.clipboard.writeText(t); return true; } catch {}
+  try { const a = document.createElement('textarea'); a.value = t; a.setAttribute('readonly', ''); a.style.position = 'fixed'; a.style.opacity = '0'; document.body.appendChild(a); a.select(); const ok = document.execCommand('copy'); a.remove(); return ok; } catch { return false; } }
+$('#p-compartir').onclick = async () => { const p = viendo || perfil(); if (!p) return; const url = linkCompleto(p), mio = perfil() && p.uid === perfil().uid;
+  const datos = {title:`${p.apodo} en RincónAF`, text: mio ? 'mirá mi perfil en RincónAF' : `mirá el perfil de ${p.apodo} en RincónAF`, url};
+  if (navigator.share && (!navigator.canShare || navigator.canShare(datos)) && matchMedia('(pointer: coarse)').matches){
+    try { await navigator.share(datos); return; } catch (er){ if (er && er.name === 'AbortError') return; } }
+  llToast(await copiarTexto(url) ? 'link copiado: ' + url.replace(/^https?:\/\//, '') : 'no se pudo copiar. el link es: ' + url); };
+
+/* ---------- Posteo del día: foto, GIF o video corto ---------- */
+const MAX_DIA_SEG = 30;
+const queEs = f => esVideoUrl(f.img) ? 'video subido' : /\.gif$/i.test(f.img) ? 'GIF subido' : 'foto subida';
+function mediaDelDia(f, clave){
+  if (esVideoUrl(f.img)){ const v = document.createElement('video'); v.className = 'foto'; v.dataset.foto = clave;
+    v.src = ver(f.img); v.controls = true; v.loop = true; v.muted = true; v.autoplay = true; v.playsInline = true; v.preload = 'metadata';
+    v.setAttribute('playsinline', ''); v.setAttribute('muted', ''); v.setAttribute('aria-label', f.titulo || 'video del ' + fechaLarga(f.cuando));
+    v.play().catch(() => {}); return v; }
+  const im = new Image(); im.className = 'foto'; im.src = ver(f.img); im.alt = f.titulo || 'posteo del ' + fechaLarga(f.cuando); return im; }
+let fotoNueva = null, diaVid = null;                                          // diaVid = {convertir, achicar, dur} si lo elegido es un video
+const NADA_ELEGIDO = 'nada elegido todavía · video de hasta 30 segundos';
+$('#subir-img').onchange = async e => { const f = e.target.files[0]; if (!f) return; fotoNueva = null; diaVid = null; $('#subir-msg').className = 'msg';
+  const nombre = $('#subir-nombre'), cancelar = t => { e.target.value = ''; nombre.textContent = NADA_ELEGIDO; msg('#subir-msg', t); };
+  const esVid = f.type.startsWith('video/') || /\.(mp4|mov|webm|m4v)$/i.test(f.name);
+  if (esVid){
+    if (f.size > MAX_VIDEO_MB * 1048576) return cancelar(`Ese video pesa ${mb(f.size)}. El máximo es ${MAX_VIDEO_MB} MB.`);
+    nombre.textContent = 'revisando el video…';
+    const dur = await duracionVideo(f);
+    if (!(dur > 0)) return cancelar('No se pudo leer ese video. Probá con otro (mp4 anda en todos los celus).');
+    if (dur > MAX_DIA_SEG + .5) return cancelar(`Ese video dura ${Math.round(dur)} segundos. El posteo del día puede durar hasta ${MAX_DIA_SEG} segundos: recortalo y probá de nuevo.`);
+    const r = await revisarVideo(f); if (r.bloquear) return cancelar(AYUDA_HEVC);
+    diaVid = {convertir:r.convertir, achicar:!!r.achicar, dur};
+    fotoNueva = f; nombre.textContent = `video listo: ${f.name} (${Math.round(dur)} s, ${mb(f.size)})`;
+    if (r.achicar) msg('#subir-msg', `El video pesa ${mb(f.size)}: al publicarlo lo achicamos para que cargue rápido (no cierres la página).`, 'ok');
+    else if (r.convertir) msg('#subir-msg', 'Este video está en HEVC, un formato que muchos celulares no pueden mostrar. Al publicarlo lo convertimos para que lo vean todos (no cierres la página).', 'ok');
+    return; }
+  if (!f.type.startsWith('image/') && !esGif(f)) return cancelar('Elegí una foto, un GIF o un video.');
+  if (esGif(f) && avisoGif(f)) return cancelar(avisoGif(f));
+  fotoNueva = f; nombre.textContent = (esGif(f) ? 'GIF listo: ' : 'foto lista: ') + f.name; };
+async function subirVideoDelDia(f, info){
+  let vid = f, ext = (f.name.split('.').pop() || 'mp4').toLowerCase(); if (!['mp4','mov','webm','m4v'].includes(ext)) ext = 'mp4';
+  if (info.convertir){ const ac = nuevoAudio(), que = info.achicar ? 'achicando el video para que cargue rápido' : 'convirtiendo el video para que lo vean todos';
+    msg('#subir-msg', `${que}… 0% (no cierres la página)`, 'ok');
+    try { const nuevo = await convertirVideo(f, ac, n => msg('#subir-msg', `${que}… ${n}% (no cierres la página)`, 'ok'));
+      if (!info.achicar || nuevo.size < f.size){ vid = nuevo; ext = 'mp4'; } }
+    catch (er){ console.error('convertir', er); if (!info.achicar) throw Object.assign(new Error('hevc'), {aviso:AYUDA_HEVC}); }
+    finally { if (ac) ac.close().catch(() => {}); }
+    if (vid.size > MAX_VIDEO_MB * 1048576) throw Object.assign(new Error('pesado'), {aviso:`Convertido pesa ${mb(vid.size)} y el máximo es ${MAX_VIDEO_MB} MB: probá con uno más corto.`}); }
+  msg('#subir-msg', `subiendo el video (${mb(vid.size)})…`, 'ok');
+  const path = await subirArchivo(await indiceAdelante(await limpiarUbicacion(vid)), ext); await firmar([path]); return urlPublica(path); }
 $('#subir-form').onsubmit = async e => { e.preventDefault(); const p = perfil();
-  if (!fotoNueva) return msg('#subir-msg', 'Elegí una foto primero.');
-  const btn = e.target.querySelector('[type=submit]'); btn.disabled = true; msg('#subir-msg', 'subiendo la foto…', 'ok');
-  let img; try { img = await subirImagen(fotoNueva, 1000); } catch (er){ btn.disabled = false; console.error(er); return msg('#subir-msg', 'No se pudo subir la foto. Probá de nuevo.'); }
+  if (!fotoNueva) return msg('#subir-msg', 'Elegí una foto, un GIF o un video primero.');
+  const btn = e.target.querySelector('[type=submit]'); btn.disabled = true;
+  let img; try {
+    if (diaVid) img = await subirVideoDelDia(fotoNueva, diaVid);
+    else { msg('#subir-msg', esGif(fotoNueva) ? 'subiendo el GIF…' : 'subiendo la foto…', 'ok'); img = await subirImagen(fotoNueva, 1000); } }
+  catch (er){ btn.disabled = false; console.error(er); return msg('#subir-msg', er.aviso || 'No se pudo subir. Probá de nuevo.'); }
   btn.disabled = false;
   p.fotos.push({img, titulo:$('#subir-titulo').value.trim(), texto:$('#subir-texto').value.trim(), cuando:Date.now(), firmas:[], likes:[]}); p.nuevo = false;
   await guardarYa();
-  fotoNueva = null; verFoto = null; e.target.reset(); $('#subir-nombre').textContent = 'ninguna foto elegida'; $('#subir-msg').className = 'msg'; pintar(); };
+  fotoNueva = null; diaVid = null; verFoto = null; e.target.reset(); $('#subir-nombre').textContent = NADA_ELEGIDO; $('#subir-msg').className = 'msg'; pintar(); };
 
 /* ---------- Firmar ---------- */
 $('#firmar-form').onsubmit = e => { e.preventDefault(); const yo = perfil(), p = viendo, t = $('#firmar-txt').value.trim(); if (!t || !p) return;
@@ -2231,6 +2387,8 @@ function pintarEd(){
     h += campo('bio','sobre mí',{area:true, max:400}) + campo('ciudad','de dónde sos',{max:40}) + campoCumple();
     h += campo('escuchando','escuchando ahora',{max:100, ph:'artista – tema'}) + campo('musica','tema de tu perfil (link)',{tipo:'url', max:300, ph:'https://…'});
     h += campo('favoritos','favoritos (nicks de gente de RincónAF o links, uno por renglón)',{area:true, max:400});
+    h += campo('redes','mis redes (un link por renglón, hasta 8: instagram, youtube, soundcloud, tiktok, x, spotify…)',{area:true, max:1200, ph:'https://instagram.com/tu_usuario'});
+    h += `<p class="muted" style="font-size:11px;margin:-6px 0 8px" id="redes-ayuda">${ayudaRedes(perfil().redes)}</p>`;
   }
   if (pest === 'colores'){
     h += `<div class="ed-grupo"><h3>colores listos</h3><div class="temas">${Object.entries(TEMAS).map(([k,t]) =>
@@ -2251,13 +2409,15 @@ function pintarEd(){
       ${p.fondoLink ? '<button type="button" class="ed-btn" id="ed-fondolink-quitar" style="margin-top:6px">quitar el fondo del link</button>' : ''}
       <p class="muted" style="font-size:11px;margin:6px 0 0">sirve para fotos, GIFs y videos. si tenés un fondo subido, el del link va primero. si lo borran de la página original, te avisamos.</p></div>`;
     if ((p.fondoLink && p.fondoLinkTipo !== 'video') || (!p.fondoLink && p.fondoImg && !esVideoFondo(p.fondoImg))) h += ops('fondoModo','cómo se ve',[['mosaico','mosaico'],['cubrir','pantalla completa']]);
+    h += `<div class="ed-grupo"><label class="lbl" for="ed-velo">opacidad de la hoja sobre el fondo: <span id="v-velo">${p.velo}</span>%</label><input class="rango" id="ed-velo" type="range" min="0" max="100" step="1" value="${p.velo}" data-num="velo">
+      <p class="muted" style="font-size:11px;margin:4px 0 0">la hoja oscura detrás del texto cuando tenés una foto, video o patrón de fondo. 0 = totalmente transparente, 100 = tapa el fondo.</p></div>`;
     h += ops('patron','patrón de fondo (si no hay imagen)',[['liso','liso'],['puntos','puntos'],['cuadrille','cuadrillé'],['rayas','rayas'],['grilla','grilla'],['estrellas','estrellas'],['corazones','corazones'],['estatica','estática'],
       ['diagonales','diagonales'],['zigzag','zigzag'],['circulos','círculos'],
       ['estrellasmov','estrellas ~'],['corazonesmov','corazones que suben ~'],['puntosmov','puntos ~'],['rayasmov','rayas que corren ~'],['grillamov','grilla que avanza ~'],
       ['lluvia','lluvia ~'],['nieve','nieve ~'],['burbujas','burbujas ~'],['estaticamov','estática de tele ~'],['degrade','degradé de tus colores ~']]);
     h += '<p class="muted" style="font-size:11px;margin:-4px 0 0">~ = se mueve · usan tus colores (fondo 2 y links)</p>';
-    h += ops('marco','borde de la foto',[[0,'sin borde'],[1,'fino'],[4,'grueso'],[10,'muy grueso']]);
-    h += `<div class="ed-grupo"><h3 id="h-stk">stickers sobre tu foto (hasta 8)</h3><div class="ops" role="group" aria-labelledby="h-stk">${STICKERS.map(s =>
+    h += ops('marco','borde del posteo del día',[[0,'sin borde'],[1,'fino'],[4,'grueso'],[10,'muy grueso']]);
+    h += `<div class="ed-grupo"><h3 id="h-stk">stickers sobre tu posteo del día (hasta 8)</h3><div class="ops" role="group" aria-labelledby="h-stk">${STICKERS.map(s =>
       `<button type="button" class="op grande" data-stk="${s}" aria-pressed="${p.stickers.includes(s)}">${s}</button>`).join('')}</div></div>`;
   }
   if (pest === 'letras'){
@@ -2293,7 +2453,7 @@ function pintarEd(){
   }
   if (pest === 'partes'){
     h += ops('cajas','estilo de las cajas',[['simple','simple'],['punteada','punteada'],['sin','sin cajas'],['win98','windows 98']]);
-    h += `<div class="ed-grupo"><h3>qué se muestra</h3>${sw('anteriores','fotos anteriores')}${sw('sobre','sobre mí')}${sw('ff_ver','amigos')}${sw('favs','favoritos')}${sw('contador','contador de visitas')}</div>`;
+    h += `<div class="ed-grupo"><h3>qué se muestra</h3>${sw('anteriores','posteos anteriores')}${sw('sobre','sobre mí')}${sw('ff_ver','amigos')}${sw('favs','favoritos')}${sw('contador','contador de visitas')}</div>`;
     h += `<div class="ed-grupo"><h3>efectos</h3>${sw('marquesina','frase en marquesina')}${sw('estela','estela de estrellitas con el mouse')}</div>`;
   }
   h += '<p class="ed-aviso" id="ed-aviso" hidden></p>';
@@ -2337,7 +2497,8 @@ ed.addEventListener('input', e => { const t = e.target;
     if (v !== perfil().apodo) cambiar('apodo', v); return; }
   if (t.dataset.key === 'escuchando'){ const p = perfil(); p.escuchandoUrl = ''; p.escuchandoArtista = ''; p.escuchandoImg = ''; p.escuchandoTipo = 'tema'; p.escuchandoCuando = t.value.trim() ? Date.now() : 0; }   // escrito a mano: sin link
   if (t.dataset.cumple){ const g = t.closest('[role=group]'), d = g.querySelector('[data-cumple=d]').value, m = g.querySelector('[data-cumple=m]').value; cambiar('cumple', d && m ? m + '-' + d : ''); }
-  if (t.dataset.key){ cambiar(t.dataset.key, t.value); const c = $('#cont-' + t.dataset.key); if (c) c.textContent = t.value.length + '/' + t.maxLength; }
+  if (t.dataset.key){ cambiar(t.dataset.key, t.value); const c = $('#cont-' + t.dataset.key); if (c) c.textContent = t.value.length + '/' + t.maxLength;
+    if (t.dataset.key === 'redes'){ const a = $('#redes-ayuda'); if (a) a.textContent = ayudaRedes(t.value); } }
   if (t.dataset.color){ perfil().tema = 'propio'; cambiar(t.dataset.color, t.value); }
   if (t.dataset.num){ cambiar(t.dataset.num, +t.value); const lab = $('#v-' + t.dataset.num) || $('#tam-v'); if (lab) lab.textContent = t.value; } });
 ed.addEventListener('change', e => { const t = e.target;
@@ -2347,7 +2508,7 @@ ed.addEventListener('change', e => { const t = e.target;
   if (t.dataset.img === 'avatar' && t.files[0]){ abrirRecorte(t.files[0]); t.value = ''; return; }      // el avatar se acomoda antes de subirlo
   if (t.dataset.img === 'fondoImg' && t.files[0] && (t.files[0].type === 'image/gif' || t.files[0].type.startsWith('video/') || /\.(gif|mp4|mov|webm|m4v)$/i.test(t.files[0].name))){
     const f = t.files[0]; t.value = ''; subirFondoAnimado(f); return; }                                  // GIF o video: se sube aparte (sin pasarlo a JPG)
-  if (t.dataset.img && t.files[0]){ alertaEd('subiendo imagen…'); subirImagen(t.files[0], +t.dataset.max).then(u => cambiar(t.dataset.img, u, true)).catch(er => { console.error(er); alertaEd('No se pudo subir la imagen.'); }); } });
+  if (t.dataset.img && t.files[0]){ alertaEd(esGif(t.files[0]) ? 'subiendo el GIF…' : 'subiendo imagen…'); subirImagen(t.files[0], +t.dataset.max).then(u => cambiar(t.dataset.img, u, true)).catch(er => { console.error(er); alertaEd(er.aviso || 'No se pudo subir la imagen.'); }); } });
 // Fondos animados: GIF tal cual; video corto, se achica a 720p y se le saca el sonido
 const MAX_FONDO_GIF_MB = 6, MAX_FONDO_SEG = 15, MAX_FONDO_VIDEO_MB = 12;
 const duracionVideo = f => new Promise(ok => { const v = document.createElement('video'), u = URL.createObjectURL(f); v.preload = 'metadata'; v.muted = true;
@@ -2373,7 +2534,7 @@ function abrirEd(){ if (!esMio()) return; pintarEd(); ed.hidden = false; documen
 function cerrarEd(){ ed.hidden = true; document.body.classList.remove('editando'); }
 $('#abrir-editor').onclick = abrirEd; $('#cerrar-editor').onclick = cerrarEd; $('#ed-listo').onclick = cerrarEd;
 $('#ed-reset').onclick = () => { if (!confirm('¿Volver los colores, letras y fondo a como estaban al principio? Tus fotos y firmas no se tocan.')) return;
-  const p = perfil(); const keep = pick(p, ['apodo','frase','bio','ciudad','cumple','escuchando','musica','favoritos','avatar','visitas','creado','fotos','novedades']);
+  const p = perfil(); const keep = pick(p, ['apodo','frase','bio','ciudad','cumple','escuchando','musica','favoritos','redes','avatar','visitas','creado','fotos','novedades']);
   usuarios[sesion].perfil = {...base(), ...keep, ...pick(p, ['uid','id','ff','recibidas','notis','fans','leidos']), nuevo:false}; guardar(); viendo = perfil(); aplicar(viendo); pintar(); pintarEd(); };
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !ed.hidden) cerrarEd(); });
 
@@ -2387,7 +2548,11 @@ function recPintar(){ const L = recLado(), e = REC.esc;                         
 function recZoom(z){ const L = recLado(), cx = (L / 2 - REC.x) / REC.esc, cy = (L / 2 - REC.y) / REC.esc;   // acerca o aleja sin mover el centro
   REC.esc = REC.base * z; REC.x = L / 2 - cx * REC.esc; REC.y = L / 2 - cy * REC.esc; recPintar(); }
 // Sirve para el avatar y para la foto de los grupos: o.redondo (vista previa redonda), o.listo(blob) (qué hacer con el recorte), o.error(texto)
-function abrirRecorte(file, o = {}){ const error = o.error || alertaEd; if (!file.type.startsWith('image/')) return error('Elegí una imagen.');
+function abrirRecorte(file, o = {}){ const error = o.error || alertaEd; if (!file.type.startsWith('image/') && !esGif(file)) return error('Elegí una imagen.');
+  if (esGif(file) && !o.sticker){                                                // GIF: no se recorta (perdería la animación), se usa entero
+    const a = avisoGif(file, MAX_GIF_PERFIL_MB); if (a) return error(a.replace('El máximo', 'Para foto de perfil o de grupo, el máximo'));
+    if (!o.listo) alertaEd('subiendo tu GIF…');
+    Promise.resolve((o.listo || subirAvatar)(comoGif(file))).catch(er => { console.error(er); error('No se pudo subir el GIF. Probá de nuevo.'); }); return; }
   REC.listo = o.listo || subirAvatar; REC.textoSubiendo = o.subiendo || 'subiendo tu foto…'; REC.sticker = !!o.sticker;
   $('#rec-formas').hidden = !REC.sticker; ['f-circulo','f-cuadrado','f-corazon'].forEach(k => $('#rec-area').classList.remove(k));
   if (REC.sticker) ponerForma(REC.forma || 'circulo');
@@ -2400,7 +2565,7 @@ function abrirRecorte(file, o = {}){ const error = o.error || alertaEd; if (!fil
     $('#modal-recorte').hidden = false; const L = recLado(); REC.base = L / Math.min(REC.w, REC.h); REC.esc = REC.base;
     REC.x = (L - REC.w * REC.esc) / 2; REC.y = (L - REC.h * REC.esc) / 2; $('#rec-zoom').value = 1; recPintar(); $('#rec-usar').focus(); };
   im.onerror = () => error('No se pudo abrir esa imagen.'); im.src = REC.url; }
-async function subirAvatar(blob){ const path = await subirArchivo(blob, 'jpg'); await firmar([path]); cambiar('avatar', urlPublica(path), true); }
+async function subirAvatar(blob){ const path = await subirArchivo(blob, blob.type === 'image/gif' ? 'gif' : 'jpg'); await firmar([path]); cambiar('avatar', urlPublica(path), true); }
 function cerrarRecorte(){ $('#modal-recorte').hidden = true; if (REC.url){ URL.revokeObjectURL(REC.url); REC.url = ''; } $('#rec-img').removeAttribute('src'); }
 $('#rec-area').addEventListener('pointerdown', e => { e.preventDefault(); $('#rec-area').setPointerCapture(e.pointerId); $('#rec-area').classList.add('agarrando');
   REC.arrastre = {px:e.clientX, py:e.clientY, x:REC.x, y:REC.y}; });
@@ -2696,9 +2861,10 @@ function armarComposer(c){
   $('#chat-adj').onchange = async e => { const f = e.target.files[0]; if (!f) return; const est = $('#chat-estado'), esVideo = f.type.startsWith('video/'); e.target.value = '';
     const ac = esVideo ? nuevoAudio() : null;                                  // por si hay que convertirlo (se prepara en el toque)
     if (esVideo && f.size > MAX_VIDEO_MB * 1048576){ est.textContent = `ese video pesa ${mb(f.size)}. el máximo es ${MAX_VIDEO_MB} MB: probá con uno más corto.`; return; }
-    if (!esVideo && !f.type.startsWith('image/')){ est.textContent = 'por ahora se pueden mandar fotos y videos.'; return; }
+    if (!esVideo && !f.type.startsWith('image/') && !esGif(f)){ est.textContent = 'por ahora se pueden mandar fotos, GIFs y videos.'; return; }
+    if (esGif(f) && avisoGif(f)){ est.textContent = avisoGif(f); return; }
     try {
-      let vid = f, ext = esVideo ? ((f.name.split('.').pop() || 'mp4').toLowerCase()) : 'jpg';
+      let vid = f, ext = esVideo ? ((f.name.split('.').pop() || 'mp4').toLowerCase()) : esGif(f) ? 'gif' : 'jpg';
       if (esVideo){ est.textContent = 'revisando el video…'; const r = await revisarVideo(f);
         if (r.bloquear){ est.textContent = AYUDA_HEVC; return; }
         if (r.convertir){ const que = r.achicar ? 'achicando el video para que cargue rápido' : 'el video está en HEVC: lo convierto para que se vea en todos los celus';
@@ -2707,8 +2873,8 @@ function armarComposer(c){
             if (!r.achicar || nuevo.size < f.size){ vid = nuevo; ext = 'mp4'; } }
           catch (er){ if (!r.achicar) throw er; console.warn('achicar', er); }
           if (vid.size > MAX_VIDEO_MB * 1048576){ est.textContent = `convertido pesa ${mb(vid.size)} y el máximo es ${MAX_VIDEO_MB} MB: probá con uno más corto.`; return; } } }
-      est.textContent = esVideo ? `subiendo video (${mb(vid.size)})…` : 'achicando y subiendo la foto…';
-      const blob = esVideo ? await indiceAdelante(await limpiarUbicacion(vid)) : await achicarBlob(f, MAX_FOTO_LADO, .8);
+      est.textContent = esVideo ? `subiendo video (${mb(vid.size)})…` : esGif(f) ? `subiendo el GIF (${mb(f.size)})…` : 'achicando y subiendo la foto…';
+      const blob = esVideo ? await indiceAdelante(await limpiarUbicacion(vid)) : esGif(f) ? comoGif(f) : await achicarBlob(f, MAX_FOTO_LADO, .8);
       const path = `${c.id}/${sesion}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
       const {error} = await sb.storage.from(BUCKET_CHAT).upload(path, blob, {contentType: blob.type || undefined, upsert:false}); if (error) throw error;
       const texto = $('#chat-txt').value.trim(); $('#chat-txt').value = ''; est.textContent = '';
@@ -2762,7 +2928,7 @@ function pintarChat(){
       <div class="lineas" id="lineas"></div>
       <form class="composer" id="chat-form"><label class="sr" for="chat-txt">Mensaje para ${esc(nombre)}</label>
         <input class="field" id="chat-txt" placeholder="escribile a ${esc(nombre)}…" autocomplete="off" maxlength="500" style="flex:1;min-width:0">
-        <label class="btn file-btn" style="display:inline-flex;align-items:center" title="mandar foto o video">+ foto/video<input type="file" accept="image/*,video/*" id="chat-adj" aria-label="Mandar foto o video"></label>
+        <label class="btn file-btn" style="display:inline-flex;align-items:center" title="mandar foto, GIF o video">+ foto/GIF/video<input type="file" accept="image/*,image/gif,video/*" id="chat-adj" aria-label="Mandar foto, GIF o video"></label>
         <button class="btn" type="button" id="ch-stickers" title="stickers" aria-label="Stickers" style="font-size:18px;padding:0 10px">🎭</button><button class="btn" type="button" id="zumbido">zumbido</button><button class="btn lleno" type="submit">enviar</button></form>
       <p class="subiendo" id="chat-estado" role="status"></p><p class="subiendo" id="chat-rt" role="status"></p>`;
     ponerAvatar(conv.querySelector('.conv-cab .avatar'), c.otro);
@@ -2852,7 +3018,7 @@ function pintarGrupo(yo){
       <div class="lineas" id="lineas"></div>
       <form class="composer" id="chat-form"><label class="sr" for="chat-txt" id="g-lbl"></label>
         <input class="field" id="chat-txt" placeholder="escribile al grupo…" autocomplete="off" maxlength="500" style="flex:1;min-width:0">
-        <label class="btn file-btn" style="display:inline-flex;align-items:center" title="mandar foto o video">+ foto/video<input type="file" accept="image/*,video/*" id="chat-adj" aria-label="Mandar foto o video"></label>
+        <label class="btn file-btn" style="display:inline-flex;align-items:center" title="mandar foto, GIF o video">+ foto/GIF/video<input type="file" accept="image/*,image/gif,video/*" id="chat-adj" aria-label="Mandar foto, GIF o video"></label>
         <button class="btn" type="button" id="ch-stickers" title="stickers" aria-label="Stickers" style="font-size:18px;padding:0 10px">🎭</button><button class="btn" type="button" id="zumbido">zumbido</button><button class="btn lleno" type="submit">enviar</button></form>
       <p class="subiendo" id="chat-estado" role="status"></p><p class="subiendo" id="chat-rt" role="status"></p>`;
     $('#info-btn').onclick = () => { infoAbierta = !infoAbierta; pintarChat(); };
@@ -2872,8 +3038,8 @@ function pintarGrupo(yo){
   pintarMensajesPriv(g); pintarEstadoChat(); llPintarBanner();
 }
 const salirDeLaVista = g => { delete msgsPriv[g.id]; grupos = grupos.filter(q => q.id !== g.id); chatCon = null; infoAbierta = false; location.hash = '#chat'; pintarChat(); };
-async function subirFotoGrupo(g, f){ const blob = await achicarBlob(f, 300, .85), path = `${g.id}/${sesion}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.jpg`;
-  const {error} = await sb.storage.from(BUCKET_CHAT).upload(path, blob, {contentType:'image/jpeg', upsert:false}); if (error) throw error; return path; }
+async function subirFotoGrupo(g, f){ const gif = esGif(f), blob = gif ? comoGif(f) : await achicarBlob(f, 300, .85), path = `${g.id}/${sesion}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${gif ? 'gif' : 'jpg'}`;
+  const {error} = await sb.storage.from(BUCKET_CHAT).upload(path, blob, {contentType: gif ? 'image/gif' : 'image/jpeg', upsert:false}); if (error) throw error; return path; }
 
 /* Info del grupo: el admin cambia nombre y foto, suma amigos suyos y saca gente; todos pueden salir */
 function pintarInfoGrupo(g, yo){
@@ -2989,7 +3155,7 @@ function pintarNotis(){
     if (n.tipo === 'comentario'){ txt = `${quien} comentó tu posteo:`; cita = txtSeguro(n.texto, 160); ir = post && '#inicio/' + post; }
     if (n.tipo === 'etiqueta'){ if (n.enCom){ txt = `${quien} te etiquetó en un comentario:`; cita = txtSeguro(n.texto, 160); } else txt = `${quien} te etiquetó en un posteo.`; ir = post && '#inicio/' + post; }
     if (n.tipo === 'radiacion'){ txt = `${quien} te dio ${n.puntos === 2 ? '2 puntos' : 'un punto'} de radiación.`; ir = '#perfil'; }
-    if (n.tipo === 'foto'){ txt = `${quien} subió su foto del día.`; cita = txtSeguro(n.titulo, 60); ir = linkPerfil(x); }
+    if (n.tipo === 'foto'){ txt = `${quien} subió su posteo del día.`; cita = txtSeguro(n.titulo, 60); ir = linkPerfil(x); }
     if (n.tipo === 'respuesta'){ txt = `${quien} respondió tu comentario:`; cita = txtSeguro(n.texto, 160); ir = post && '#inicio/' + post; }
     const d = document.createElement(ir || xid ? 'a' : 'div'); d.className = 'noti' + (n.leida ? '' : ' nueva');
     if (d.tagName === 'A') d.href = ir || linkPerfil(x);                                  // toda la tarjeta lleva a lo que se avisa
@@ -3086,7 +3252,7 @@ const pintarTiposReco = () => { $('#reco-tipos').innerHTML = TIPOS_RECO.map(([k,
 pintarTiposReco();
 $('#reco-tipos').addEventListener('click', e => { const b = e.target.closest('[data-reco-tipo]'); if (b){ recoTipo = b.dataset.recoTipo; pintarTiposReco(); } });
 // Versión de RincónAF: se sube en cada actualización (1.1, 1.2… cambios chicos; 2.0 cambios grandes)
-const VERSION_RINCON = '2.5';
+const VERSION_RINCON = '3.0';
 $('#aj-version').textContent = 'versión ' + VERSION_RINCON;
 // Cartel de novedades: sale una sola vez por versión y por cuenta (queda anotado en el perfil, sirve en todos los dispositivos)
 function mostrarNovedades(){ const p = perfil(); if (!p) return; if (p.novedades === VERSION_RINCON) return avisarInsigniaNueva();
@@ -3097,7 +3263,7 @@ function cerrarNovedades(){ if ($('#modal-novedades').hidden) return; $('#modal-
 const INICIO_AVISO_INS = Date.parse('2026-11-10T00:00:00-03:00');
 let insAvisando = null;
 function avisarInsigniaNueva(){ const p = perfil(); if (!p || !$('#modal-novedades').hidden || !$('#modal-ins-nueva').hidden) return;
-  const g = (p.ganadas || []).find(x => x.cuando >= INICIO_AVISO_INS && CATALOGO[x.id] && !(p.insVistas || []).includes(x.id)); if (!g) return;
+  const g = (p.ganadas || []).find(x => x.cuando >= INICIO_AVISO_INS && CATALOGO[x.id] && !(p.insVistas || []).includes(x.id)); if (!g) return avisarSemana();
   const c = CATALOGO[g.id], d = datosInsignia(p, 'ins:' + g.id); insAvisando = g.id;
   $('#insn-t').textContent = p.apodo; $('#insn-nombre').textContent = c.nombre; $('#insn-desc').textContent = c.desc || '';
   $('#insn-nivel').textContent = (NIVELES.find(n => n[0] === c.nivel) || [, c.nivel])[1];
@@ -3360,7 +3526,9 @@ $('#rincon').addEventListener('click', e => { const b = e.target.closest('button
       if (falla('borrar del rincón', error)){ rposts.push(x); pintarRincon(); return; }
       if (x.media_path) sb.storage.from(BUCKET).remove([x.media_path]); }); } });
 $('#r-img').onchange = e => { const f = e.target.files[0]; if (!f) return;
-  if (!f.type.startsWith('image/')) return msg('#r-msg','Elegí una imagen.'); rImg = f; $('#r-img-nombre').textContent = 'lista: ' + f.name; };
+  if (!f.type.startsWith('image/') && !esGif(f)) return msg('#r-msg','Elegí una imagen o un GIF.');
+  if (esGif(f) && avisoGif(f)){ e.target.value = ''; return msg('#r-msg', avisoGif(f)); }
+  rImg = f; $('#r-img-nombre').textContent = (esGif(f) ? 'GIF listo: ' : 'lista: ') + f.name; };
 $('#r-form').onsubmit = async e => { e.preventDefault(); const texto = $('#r-texto').value.trim(), btn = e.target.querySelector('[type=submit]');
   let url = null, archivo = null;
   if (rTipo === 'imagen'){ const pin = $('#r-pin').value.trim();
@@ -3370,7 +3538,7 @@ $('#r-form').onsubmit = async e => { e.preventDefault(); const texto = $('#r-tex
   if (url && url.length > 500) return msg('#r-msg','Ese link es demasiado largo.');
   btn.disabled = true; msg('#r-msg', 'compartiendo…', 'ok');
   let media_path = null;
-  try { if (archivo){ media_path = await subirArchivo(await achicarBlob(archivo, 1000, .8), 'jpg'); }
+  try { if (archivo){ const pi = await prepararImagen(archivo, 1000, .8); media_path = await subirArchivo(pi.blob, pi.ext); }
     const {error} = await sb.from('rincon').insert({tipo:rTipo, texto:texto || null, url, media_path});
     if (error) throw error; }
   catch (er){ console.error(er); btn.disabled = false; if (media_path) sb.storage.from(BUCKET).remove([media_path]);
@@ -3465,11 +3633,25 @@ setInterval(() => { if (sesion && !document.hidden && location.hash.startsWith('
 let feed = [], pTipo = 'texto', pImg = null, pVid = null, pVidConvertir = false, pVidAchicar = false, vistos = 0, resaltar = null;
 const hace = t => { const m = Math.floor((Date.now() - t) / 60000); if (m < 1) return 'recién'; if (m < 60) return `hace ${m} min`; const h = Math.floor(m / 60);
   if (h < 24) return `hace ${h} h`; return `el ${fecha(t)} a las ${hora(t)}`; };
-const visiblesFeed = yo => feed.filter(x => { const a = porId(x.de); return a && (a.id === yo.id || sonAmigos(yo, a)); }).sort((a,b) => b.cuando - a.cuando);
+// Fijados (solo el moderador fija sus posteos): van primero; los "para todos" los ve cualquiera, aunque no sea su amigo
+const fijados = new Map(); let soyMod = false;
+const visiblesFeed = yo => feed.filter(x => { const a = porId(x.de); return a && (a.id === yo.id || sonAmigos(yo, a) || fijados.get(x.id)?.alcance === 'todos'); })
+  .sort((a,b) => (fijados.has(b.id) - fijados.has(a.id)) || (fijados.has(a.id) ? fijados.get(b.id).fijado - fijados.get(a.id).fijado : b.cuando - a.cuando));
+async function cargarFijados(){ if (!sb || !perfil()) return;
+  const [m, f] = await Promise.all([sb.rpc('es_moderador'), sb.rpc('posteos_fijados_ver')]);
+  soyMod = !m.error && m.data === true;
+  if (f.error){ console.warn('fijados', f.error); return; }
+  fijados.clear(); const P = u => porUid(u);
+  for (const x of f.data || []){ fijados.set(x.id, {alcance:x.alcance, fijado:Date.parse(x.fijado)});
+    if (!feed.some(q => q.id === x.id) && P(x.autor)) feed.push({id:x.id, de:P(x.autor).id, tipo:x.tipo, texto:x.texto || '', media_path:x.media_path || '',
+      img: x.tipo === 'imagen' && x.media_path ? x.media_path : '', video: x.tipo === 'video' && x.media_path ? x.media_path : '', url: x.video_url || '',
+      cuando:Date.parse(x.creado), likes:[], comentarios:[], etiq:(Array.isArray(x.etiquetados) ? x.etiquetados : []).map(u => P(u)?.id).filter(i => i != null), ajeno:true}); }
+  const rutas = (f.data || []).map(x => x.media_path).filter(Boolean); if (rutas.length) try { await firmar(rutas); } catch {}
+  if (document.querySelector('#inicio.screen.activa')) pintarFeed(); }
 // Todos los avisos (likes, comentarios, solicitudes y grupos) los crea la base de datos
 function pintarFeed(){
   const yo = perfil(); if (!yo) return; const lista = visiblesFeed(yo), cont = $('#feed'); cont.innerHTML = '';
-  vistos = lista.length ? lista[0].cuando : 0; $('#hay-nuevos').hidden = true;
+  vistos = lista.length ? Math.max(...lista.map(x => x.cuando)) : 0; $('#hay-nuevos').hidden = true;
   if (!lista.length){ cont.innerHTML = `<p class="muted" style="margin-top:20px">${amigosDe(yo).length ? 'todavía nadie posteó nada. tocá el + para ser el primero.' : 'acá vas a ver lo que postean tus amigos. buscá gente con la lupa de arriba y mandales solicitud. mientras tanto, podés postear con el +.'}</p>`; return; }
   lista.forEach(x => cont.appendChild(posteoEl(x, yo)));
   if (resaltar){ const el = $(`#post-${resaltar}`); if (el){ el.classList.add('resaltado'); el.scrollIntoView({block:'center'}); } resaltar = null; }
@@ -3477,20 +3659,26 @@ function pintarFeed(){
 function posteoEl(x, yo){
   const a = porId(x.de), d = document.createElement('article'); d.className = 'posteo'; d.id = 'post-' + x.id;
   const yaLike = x.likes.includes(yo.id), u = x.url && (/^https?:\/\//.test(x.url) ? x.url : 'https://' + x.url);
-  d.innerHTML = `<div class="posteo-cab"><span class="avatar"></span><div style="flex:1;min-width:0"><a href="${linkPerfil(a)}"><b>${esc(a.apodo)}</b></a>${miniInsignias(a)}<br><span class="muted chico">${hace(x.cuando)}</span></div>
-      ${a.id === yo.id ? `<button class="borrar" type="button" data-pacc="borrar">borrar</button>` : ''}</div>
+  const fj = fijados.get(x.id), soloVer = a.id !== yo.id && !sonAmigos(yo, a);              // fijado para todos por alguien que no es tu amigo: solo se lee
+  if (fj) d.classList.add('fijado');
+  const accMod = soyMod && a.id === yo.id ? (fj ? `<button class="borrar" type="button" data-pacc="desfijar">desfijar</button>`
+    : `<button class="borrar" type="button" data-pacc="fijar-amigos">fijar para amigos</button><button class="borrar" type="button" data-pacc="fijar-todos">fijar para todos</button>`) : '';
+  d.innerHTML = `${fj ? `<p class="fijado-etq"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 3l5 5-3 1-4 4 1 5-2 2-4-4-5 5-1-1 5-5-4-4 2-2 5 1 4-4z"/></svg>${fj.alcance === 'todos' ? 'fijado para todos' : 'fijado'}</p>` : ''}
+    <div class="posteo-cab"><span class="avatar"></span><div style="flex:1;min-width:0"><a href="${linkPerfil(a)}"><b>${esc(a.apodo)}</b></a>${miniInsignias(a)}<br><span class="muted chico">${hace(x.cuando)}</span></div>
+      <div class="post-botones">${accMod}${a.id === yo.id ? `<button class="borrar" type="button" data-pacc="borrar">borrar</button>` : ''}</div></div>
     ${x.texto ? `<p class="posteo-texto">${textoConMenciones(x)}</p>` : ''}
     ${x.texto && x.etiq?.length ? '' : etiquetasHTML(x)}
     ${x.img ? `<img class="compartida" src="${esc(ver(x.img))}" alt="${esc(x.texto || 'imagen de ' + a.apodo)}" loading="lazy">` : ''}
     ${x.video ? `<video class="compartida" data-path="${esc(x.video)}" data-src="${esc(ver(x.video))}" controls playsinline preload="none" aria-label="video de ${esc(a.apodo)}" style="display:block;max-width:100%;max-height:560px;margin-top:10px;border:1px solid var(--line);background:#000"></video>` : ''}
     ${u ? `<a class="media-link" href="${esc(u)}" target="_blank" rel="noopener"><span class="play" aria-hidden="true">►</span><span><b>ver video</b><span class="sitio">${esc(sitioDe(u))}</span></span></a>` : ''}
-    <div class="acciones-post">
+    ${soloVer ? `<p class="muted chico" style="margin:10px 0 0">solo los amigos de ${esc(a.apodo)} pueden dar like y comentar.</p>` : ''}
+    <div class="acciones-post"${soloVer ? ' hidden' : ''}>
       <button type="button" data-pacc="like" aria-pressed="${yaLike}" aria-label="${yaLike ? 'Sacar like' : 'Dar like'} (${x.likes.length})">${yaLike ? '♥' : '♡'} ${x.likes.length}</button>
       <button type="button" data-pacc="comentar">comentar (${x.comentarios.length})</button>
     </div>
     <div class="comentarios"></div>
     ${respondiendo && respondiendo.post === x.id ? `<div class="resp-chip">↪ respondiendo a <b>${esc(porId(x.comentarios.find(c => c.id === respondiendo.com)?.de)?.apodo || 'un comentario')}</b><button type="button" data-pacc="no-responder">cancelar</button></div>` : ''}
-    <form class="form-com" data-pacc="enviar-com"><label class="sr" for="com-${x.id}">Comentar el posteo de ${esc(a.apodo)}</label>
+    <form class="form-com" data-pacc="enviar-com"${soloVer ? ' hidden' : ''}><label class="sr" for="com-${x.id}">Comentar el posteo de ${esc(a.apodo)}</label>
       <input class="field" id="com-${x.id}" data-post="${x.id}" autocomplete="off" aria-autocomplete="list" aria-controls="com-sug-${x.id}" maxlength="300" placeholder="${respondiendo && respondiendo.post === x.id ? 'escribí tu respuesta…' : 'comentá…'}" style="flex:1;min-width:0">
       <button class="btn" type="button" data-pacc="stk-com" title="responder con un sticker" aria-label="Comentar con un sticker" style="font-size:16px;padding:0 10px">🎭</button><button class="btn" type="submit">enviar</button></form>
     <div class="etq-sug com-sug" id="com-sug-${x.id}" role="listbox" aria-label="amigos para etiquetar"></div>`;
@@ -3524,7 +3712,12 @@ function accionPosteo(e){ const b = e.target.closest('button[data-pacc]'); if (!
   if (b.dataset.pacc === 'responder'){ respondiendo = {post:x.id, com:+b.dataset.com}; const n = posteoEl(x, yo); art.replaceWith(n); n.querySelector('.form-com input').focus(); }
   if (b.dataset.pacc === 'no-responder'){ respondiendo = null; const n = posteoEl(x, yo); art.replaceWith(n); }
   if (b.dataset.pacc === 'stk-com') abrirStickers(null, x);
-  if (b.dataset.pacc === 'borrar' && confirm('¿Borrar este posteo?')){ feed = feed.filter(q => q.id !== id); pintarFeed(); if (viendo) pintar();
+  if (['fijar-amigos', 'fijar-todos', 'desfijar'].includes(b.dataset.pacc)){ const accion = b.dataset.pacc; b.disabled = true;
+    const r = accion === 'desfijar' ? sb.rpc('desfijar_posteo', {p_posteo:x.id}) : sb.rpc('fijar_posteo', {p_posteo:x.id, p_alcance: accion === 'fijar-todos' ? 'todos' : 'amigos'});
+    r.then(({error}) => { if (falla('fijar el posteo', error)){ b.disabled = false; return; }
+      if (accion === 'desfijar') fijados.delete(x.id); else fijados.set(x.id, {alcance: accion === 'fijar-todos' ? 'todos' : 'amigos', fijado:Date.now()});
+      pintarFeed(); if (viendo) pintar(); llToast(accion === 'desfijar' ? 'posteo desfijado.' : accion === 'fijar-todos' ? 'posteo fijado arriba para todos.' : 'posteo fijado arriba para tus amigos.'); }); }
+  if (b.dataset.pacc === 'borrar' && confirm('¿Borrar este posteo?')){ feed = feed.filter(q => q.id !== id); fijados.delete(id); pintarFeed(); if (viendo) pintar();
     sb.from('posteos').delete().eq('id', id).then(({error}) => { if (!falla('borrar el posteo', error) && x.media_path) sb.storage.from(BUCKET).remove([x.media_path]); }); } }
 // Etiquetas: "con X y Y", resaltados y con link a sus perfiles
 function etiquetasHTML(x){ const l = (x.etiq || []).map(porId).filter(Boolean); if (!l.length) return '';
@@ -3600,7 +3793,7 @@ function comentarPosteo(e){ e.preventDefault(); const f = e.target, art = f.clos
 let recargando = false;
 async function recargar(){ if (recargando || !perfil()) return; recargando = true; const y = window.scrollY;
   $$('[data-recargar]').forEach(b => { b.disabled = true; b.classList.add('girando'); b.setAttribute('aria-label', 'Recargando…'); });
-  try { await guardarYa(); if (!ed.hidden) cerrarEd(); await cargarTodo(); cargarConvs(); cargarRadiacion(); mostrar(); window.scrollTo(0, y); }
+  try { await guardarYa(); if (!ed.hidden) cerrarEd(); await cargarTodo(); cargarConvs(); cargarRadiacion(); cargarSemana(); await cargarFijados(); mostrar(); window.scrollTo(0, y); }
   catch (er){ falla('recargar', er); }
   finally { recargando = false; $$('[data-recargar]').forEach(b => { b.disabled = false; b.classList.remove('girando'); b.setAttribute('aria-label', 'Recargar'); }); } }
 document.addEventListener('click', e => { if (e.target.closest('[data-recargar]')) recargar(); });
@@ -3613,7 +3806,9 @@ const cerrarPost = () => { $('#modal-post').hidden = true; $('#post-form').reset
 $('#post-cerrar').onclick = cerrarPost;
 $('#modal-post').addEventListener('click', e => { if (e.target.id === 'modal-post') cerrarPost(); const b = e.target.closest('[data-ptipo]'); if (b) pTipoSet(b.dataset.ptipo); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal-post').hidden) cerrarPost(); });
-$('#post-img').onchange = e => { const f = e.target.files[0]; if (!f) return; pImg = f; $('#post-img-nombre').textContent = 'lista: ' + f.name; };
+$('#post-img').onchange = e => { const f = e.target.files[0]; if (!f) return; $('#post-msg').className = 'msg';
+  if (esGif(f) && avisoGif(f)){ e.target.value = ''; return msg('#post-msg', avisoGif(f)); }
+  pImg = f; $('#post-img-nombre').textContent = (esGif(f) ? 'GIF listo: ' : 'lista: ') + f.name; };
 $('#post-vid').onchange = async e => { const f = e.target.files[0]; if (!f) return; pVid = null; pVidConvertir = false; pVidAchicar = false;
   if (f.size > MAX_VIDEO_MB * 1048576){ e.target.value = ''; return msg('#post-msg', `Ese video pesa ${mb(f.size)}. El máximo es ${MAX_VIDEO_MB} MB: probá con uno más corto.`); }
   $('#post-vid-nombre').textContent = 'revisando el video…'; $('#post-msg').className = 'msg';
@@ -3630,7 +3825,7 @@ $('#post-form').onsubmit = async e => { e.preventDefault(); const yo = perfil(),
   if (pTipo === 'video' && !pVid){ const u = $('#post-url').value.trim(); if (!/^(https?:\/\/)?[^\s.]+\.[^\s]+$/.test(u)) return msg('#post-msg','Subí un video o pegá un link válido.'); fila.video_url = u; }
   const btn = e.target.querySelector('[type=submit]'); btn.disabled = true;
   try {
-    if (pTipo === 'imagen'){ msg('#post-msg','subiendo la imagen…','ok'); fila.media_path = await subirArchivo(await achicarBlob(pImg, 1280, .82), 'jpg'); }
+    if (pTipo === 'imagen'){ msg('#post-msg', esGif(pImg) ? 'subiendo el GIF…' : 'subiendo la imagen…','ok'); const pi = await prepararImagen(pImg, 1280, .82); fila.media_path = await subirArchivo(pi.blob, pi.ext); }
     if (pTipo === 'video' && pVid){ let vid = pVid, ext = (pVid.name.split('.').pop() || 'mp4').toLowerCase();
       if (pVidConvertir){ const que = pVidAchicar ? 'achicando el video para que cargue rápido' : 'convirtiendo el video para que lo vean todos';
         msg('#post-msg', `${que}… 0%`, 'ok');
@@ -3643,7 +3838,7 @@ $('#post-form').onsubmit = async e => { e.preventDefault(); const yo = perfil(),
     const r = data[0]; if (r.media_path) await firmar([r.media_path]);
     feed.push({id:r.id, de:yo.id, tipo:r.tipo, texto:r.texto || '', media_path:r.media_path || '', img: r.tipo === 'imagen' && r.media_path ? r.media_path : '',
       video: r.tipo === 'video' && r.media_path ? r.media_path : '', url:r.video_url || '', cuando:Date.parse(r.creado) || Date.now(), likes:[], comentarios:[], etiq:[...postEtq]});
-  } catch (er){ console.error(er); btn.disabled = false; return msg('#post-msg','No se pudo publicar. Revisá tu conexión y probá de nuevo.'); }
+  } catch (er){ console.error(er); btn.disabled = false; return msg('#post-msg', er.aviso || 'No se pudo publicar. Revisá tu conexión y probá de nuevo.'); }
   if (ac) ac.close().catch(() => {}); btn.disabled = false; pVidConvertir = false; pVidAchicar = false; cerrarPost(); pintarFeed(); window.scrollTo({top:0, behavior:'smooth'}); };
 
 /* ---------- Top perfiles ---------- */
@@ -3653,6 +3848,8 @@ function pintarTop(){
   const yo = perfil(); if (!yo) return;
   $$('[data-tfiltro]').forEach(b => b.setAttribute('aria-pressed', b.dataset.tfiltro === tFiltro));
   $$('[data-trank]').forEach(b => b.setAttribute('aria-pressed', b.dataset.trank === tRank));
+  $('#t-filtros').style.display = tRank === 'semana' ? 'none' : '';
+  if (tRank === 'semana') return pintarSemanaTop();
   const rad = tRank === 'radiacion', MIN_TOP = 2;                // likes: solo entran los perfiles con 2 ♥ o más
   $('#t-expl').textContent = rad ? 'los perfiles con más radiación. cada uno tiene 2 puntos por día para dar, y si alguien pasa 3 días sin recibir, pierde 2.' : 'los perfiles con 2 ♥ o más. entrá a uno que te guste y dale ♥.';
   const valor = x => rad ? (radMapa.get(x.uid) || 0) : x.fans.length;
@@ -3671,7 +3868,139 @@ function pintarTop(){
   if (!gente.length) l.innerHTML = `<p class="muted chico">${rad ? (tFiltro === 'amigos' ? 'ninguno de tus amigos (ni vos) tiene radiación todavía.' : 'todavía nadie tiene radiación. ¡andá repartiendo tus 2 puntos de hoy!') : tFiltro === 'amigos' ? 'ninguno de tus amigos (ni vos) tiene 2 ♥ todavía.' : 'todavía nadie tiene 2 ♥ o más. ¡andá repartiendo ♥!'}</p>`;
 }
 $('#top').addEventListener('click', e => { const b = e.target.closest('[data-tfiltro]'); if (b){ tFiltro = b.dataset.tfiltro; pintarTop(); }
-  const r = e.target.closest('[data-trank]'); if (r){ tRank = r.dataset.trank; if (tRank === 'radiacion') cargarRadiacion().then(pintarTop); pintarTop(); } });
+  const r = e.target.closest('[data-trank]'); if (r){ tRank = r.dataset.trank; if (tRank === 'radiacion') cargarRadiacion().then(pintarTop); if (tRank === 'semana') cargarSemana(); pintarTop(); } });
+
+/* ---------- Posteo de la semana: los lunes cada uno vota (1 voto) entre los posteos del día de sus amigos
+   de lunes a domingo de la semana anterior; los votos de todos se suman y gana uno solo (lo decide la base de datos) ---------- */
+const ZONA_AR = 'America/Argentina/Buenos_Aires';
+function hoyAR(t = Date.now()){ const q = {}; new Intl.DateTimeFormat('en-CA', {timeZone:ZONA_AR, year:'numeric', month:'2-digit', day:'2-digit', weekday:'short'}).formatToParts(new Date(t)).forEach(x => q[x.type] = x.value);
+  const ymd = `${q.year}-${q.month}-${q.day}`;
+  return {ymd, lunes:q.weekday === 'Mon' && ymd >= PRIMER_LUNES, domingo:q.weekday === 'Sun' && ymdMas(ymd, 1) >= PRIMER_LUNES}; }
+const PRIMER_LUNES = '2026-11-23';                                             // cuentan los posteos desde el lunes 16/11; la primera votación es el 23/11
+const msAR = ymd => Date.parse(ymd + 'T00:00:00-03:00');
+const ymdMas = (ymd, d) => new Date(msAR(ymd) + d * 86400000).toISOString().slice(0, 10);
+const dm = ymd => `${ymd.slice(8, 10)}/${ymd.slice(5, 7)}`;
+const proximoLunes = () => { const h = hoyAR().ymd; for (let i = 1; i <= 14; i++){ const x = ymdMas(h, i); if (hoyAR(msAR(x) + 12 * 3600000).lunes) return x; } return h; };
+// postulados: los que eligieron tus amigos el domingo (lunes); misPost: los tuyos elegidos (domingo); sel: lo que vas marcando
+const sem = {voto:null, ganadores:[], cargado:false, enviando:false, postulados:new Set(), misPost:[], sel:null};
+function candidatosSemana(){ const yo = perfil(), L = hoyAR().ymd; if (!yo) return [];
+  const desde = msAR(ymdMas(L, -7)), hasta = msAR(L);
+  return amigosDe(yo).flatMap(a => a.fotos.filter(f => f.cuando >= desde && f.cuando < hasta && sem.postulados.has(`${a.uid}|${f.cuando}`)).map(f => ({p:a, f}))).sort((x, y) => x.f.cuando - y.f.cuando); }
+// El domingo: tus posteos del día de esta semana (de lunes a hoy), para elegir 2
+function misPosteosSemana(){ const yo = perfil(), h = hoyAR().ymd; if (!yo) return [];
+  const L = ymdMas(h, 1), desde = msAR(ymdMas(L, -7)), hasta = msAR(L);
+  return yo.fotos.filter(f => f.cuando >= desde && f.cuando < hasta); }
+async function cargarSemana(){ if (!sb || !perfil()) return;
+  try { await sb.rpc('cerrar_semanas_posteo'); } catch {}
+  const {lunes, domingo} = hoyAR(), nada = Promise.resolve({data:[]});
+  const [g, v, pa, mp] = await Promise.all([sb.rpc('ganadores_posteo_semana'), lunes ? sb.rpc('mi_voto_posteo_semana') : nada,
+    lunes ? sb.rpc('postulados_amigos_semana') : nada, domingo ? sb.rpc('mis_postulados_semana') : nada]);
+  if (!g.error) sem.ganadores = (g.data || []).map(x => ({semana:String(x.semana).slice(0, 10), uid:x.perfil, foto:Number(x.foto), votos:x.votos, amigo:!!x.es_amigo}));
+  if (!v.error){ const r = (v.data || [])[0]; sem.voto = r ? {uid:r.perfil, foto:Number(r.foto)} : null; }
+  if (!pa.error) sem.postulados = new Set((pa.data || []).map(x => `${x.perfil}|${Number(x.foto)}`));
+  if (!mp.error){ sem.misPost = (mp.data || []).map(x => Number(x.foto)); if (!sem.sel) sem.sel = new Set(sem.misPost); }
+  sem.cargado = true;
+  const rutas = [...candidatosSemana().map(c => c.f.img), ...sem.ganadores.map(x => porUid(x.uid)?.fotos.find(f => f.cuando === x.foto)?.img)].filter(Boolean);
+  if (rutas.length) try { await firmar(rutas.map(rutaMedia).filter(Boolean)); } catch {}
+  if (tRank === 'semana' && document.querySelector('#top.screen.activa')) pintarTop();
+  if (!$('#modal-semana').hidden && semModo === 'votar') pintarVotacion($('#sem-cont'));
+  if (!$('#modal-semana').hidden && semModo === 'postular') pintarPostulacion($('#sem-cont'));
+  avisarSemana(); }
+const mediaSemana = (p, f) => esVideoUrl(f.img)
+  ? `<video src="${esc(ver(f.img))}" muted loop playsinline autoplay preload="metadata" aria-label="${esc(f.titulo || 'video de ' + p.apodo)}"></video>`
+  : `<img src="${esc(ver(f.img))}" alt="${esc(f.titulo || 'posteo de ' + p.apodo)}" loading="lazy">`;
+const DIA_SEM = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const diaDe = t => DIA_SEM[new Date(t - 3 * 3600000).getUTCDay()];
+function pintarVotacion(cont){ const L = hoyAR().ymd, c = candidatosSemana();
+  cont.innerHTML = `<p class="chico" style="margin:6px 0 0">votá el mejor posteo del día de la semana pasada (del lunes ${dm(ymdMas(L, -7))} al domingo ${dm(ymdMas(L, -1))}) entre los que postularon tus amigos (si son muchos, ves los de tus 15 amigos con más radiación). tenés <b>1 voto</b> y lo podés cambiar hasta que termine el lunes. se suman los votos de todos y gana un solo posteo: el resultado sale el martes.</p><p class="msg" id="sem-msg" role="alert"></p>`;
+  if (!c.length){ cont.insertAdjacentHTML('beforeend', '<p class="muted chico">ninguno de tus amigos postuló posteos esta semana, así que esta vez no tenés a quién votar.</p>'); return; }
+  const g = document.createElement('div'); g.className = 'sem-grid';
+  c.forEach(({p, f}) => { const mio = sem.voto && sem.voto.uid === p.uid && sem.voto.foto === f.cuando, el = document.createElement('div');
+    el.className = 'sem-card' + (mio ? ' votada' : '');
+    el.innerHTML = `<div class="sem-media">${mediaSemana(p, f)}</div><div class="sem-info"><a href="${linkPerfil(p)}">${esc(p.apodo)}</a><span class="muted chico">${esc(f.titulo || 'sin título')} · ${diaDe(f.cuando)} ${fecha(f.cuando)}</span>
+      <button type="button" class="btn${mio ? ' lleno' : ''}" data-votar="${esc(p.uid)}|${f.cuando}" aria-pressed="${mio}" ${sem.enviando ? 'disabled' : ''}>${mio ? '✓ tu voto' : 'votar'}</button></div>`;
+    g.appendChild(el); });
+  cont.appendChild(g); }
+function pintarPostulacion(cont){ const yo = perfil(), h = hoyAR().ymd, L = ymdMas(h, 1), mios = misPosteosSemana();
+  if (!sem.sel) sem.sel = new Set(sem.misPost);
+  const listo = sem.misPost.length > 0, max = Math.min(2, mios.length);
+  cont.innerHTML = `<p class="chico" style="margin:6px 0 0">mañana se vota el posteo de la semana. elegí <b>${max === 1 ? 'tu posteo' : '2 de tus posteos'}</b> del día de esta semana (del lunes ${dm(ymdMas(L, -7))} a hoy) para postular. los podés cambiar hasta las 23:59. <b>si no elegís, no participás.</b></p>
+    ${listo ? `<p class="msg ok" style="display:block">ya postulaste ${sem.misPost.length === 1 ? '1 posteo' : '2 posteos'}. si querés, cambialos.</p>` : ''}<p class="msg" id="post-sem-msg" role="alert"></p>`;
+  if (!mios.length){ cont.insertAdjacentHTML('beforeend', '<p class="muted chico">esta semana no subiste posteos del día, así que no participás. ¡la próxima!</p>'); return; }
+  const g = document.createElement('div'); g.className = 'sem-grid';
+  mios.forEach(f => { const on = sem.sel.has(f.cuando), el = document.createElement('div'); el.className = 'sem-card' + (on ? ' votada' : '');
+    el.innerHTML = `<div class="sem-media">${mediaSemana(yo, f)}</div><div class="sem-info"><span class="chico">${esc(f.titulo || 'sin título')}</span><span class="muted chico">${diaDe(f.cuando)} ${fecha(f.cuando)} · ♥ ${f.likes.length}</span>
+      <button type="button" class="btn${on ? ' lleno' : ''}" data-elegir-sem="${f.cuando}" aria-pressed="${on}">${on ? '✓ elegido' : 'elegir'}</button></div>`;
+    g.appendChild(el); });
+  cont.appendChild(g);
+  const iguales = sem.sel.size === sem.misPost.length && sem.misPost.every(x => sem.sel.has(x));
+  cont.insertAdjacentHTML('beforeend', `<div style="display:flex;justify-content:flex-end;margin-top:10px"><button type="button" class="btn lleno" data-postular-sem ${!sem.sel.size || iguales || sem.enviando ? 'disabled' : ''}>postular ${sem.sel.size === 1 ? 'este posteo' : sem.sel.size === 2 ? 'estos 2' : ''}</button></div>`); }
+const repintarPostulacion = () => { if (tRank === 'semana' && document.querySelector('#top.screen.activa')) pintarTop(); if (!$('#modal-semana').hidden && semModo === 'postular') pintarPostulacion($('#sem-cont')); };
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-elegir-sem]');
+  if (b){ const c = Number(b.dataset.elegirSem); if (!sem.sel) sem.sel = new Set(sem.misPost);
+    if (sem.sel.has(c)) sem.sel.delete(c); else { if (sem.sel.size >= 2) sem.sel.delete([...sem.sel][0]); sem.sel.add(c); }
+    repintarPostulacion(); return; }
+  if (!e.target.closest('[data-postular-sem]') || sem.enviando || !sem.sel?.size) return;
+  sem.enviando = true; const elegidos = [...sem.sel];
+  const {error} = await sb.rpc('postular_posteos_semana', {p_fotos:elegidos}); sem.enviando = false;
+  if (!error) sem.misPost = elegidos;
+  repintarPostulacion();
+  const t = error ? (/solo los domingos/.test(error.message || '') ? 'la postulación ya cerró: es solo los domingos.' : /no es tuyo/.test(error.message || '') ? 'ese posteo ya no se puede postular.' : 'no se pudo postular. probá de nuevo.') : '¡listo! ya están postulados para mañana.';
+  $$('#post-sem-msg').forEach(x => { x.textContent = t; x.className = 'msg ' + (error ? 'err' : 'ok'); }); });
+function tarjetaGanador(x, grande){ const yo = perfil(), p = porUid(x.uid), f = p?.fotos.find(q => q.cuando === x.foto), el = document.createElement('div');
+  el.className = 'sem-gan' + (grande ? ' grande' : '');
+  const nick = p ? `<a href="${linkPerfil(p)}"><b>${esc(p.apodo)}</b></a>${miniInsignias(p)}` : '<b>alguien que ya no está</b>';
+  const media = f && (x.amigo || x.uid === yo.uid) ? `<div class="sem-media">${mediaSemana(p, f)}</div>`
+    : `<div class="sem-oculto">${f || !p ? (p ? `solo los amigos de ${esc(p.apodo)} pueden ver su posteo` : 'posteo no disponible') : 'el posteo ya no está'}</div>`;
+  el.innerHTML = `${media}<div class="sem-info"><span class="muted chico">semana del lunes ${dm(ymdMas(x.semana, -7))} al domingo ${dm(ymdMas(x.semana, -1))}</span><span>${nick}${x.uid === yo.uid ? ' <span class="muted chico">(vos)</span>' : ''}</span>
+    ${f && (x.amigo || x.uid === yo.uid) && f.titulo ? `<span class="chico">${esc(f.titulo)}</span>` : ''}<span class="chico">★ ${x.votos} ${x.votos === 1 ? 'voto' : 'votos'}</span></div>`;
+  return el; }
+function pintarSemanaTop(){ const l = $('#t-lista'); l.innerHTML = '';
+  $('#t-expl').textContent = 'el domingo cada uno postula 2 de sus posteos del día de la semana, el lunes se vota entre los de tus amigos y el martes sale el ganador: uno solo para todos.';
+  if (!sem.cargado){ l.innerHTML = '<p class="muted chico">cargando…</p>'; return; }
+  if (hoyAR().lunes){ const v = document.createElement('div'); v.className = 'caja bloque'; v.innerHTML = '<h2 style="margin:0;font-size:16px">¡hoy se vota!</h2>'; const c = document.createElement('div'); v.appendChild(c); l.appendChild(v); pintarVotacion(c); }
+  else if (hoyAR().domingo){ const v = document.createElement('div'); v.className = 'caja bloque'; v.innerHTML = '<h2 style="margin:0;font-size:16px">hoy se postula</h2>'; const c = document.createElement('div'); v.appendChild(c); l.appendChild(v); pintarPostulacion(c); }
+  else l.insertAdjacentHTML('beforeend', `<p class="aviso bloque" style="margin:0">el domingo ${dm(ymdMas(proximoLunes(), -1))} postulás 2 de tus posteos del día de la semana y el lunes ${dm(proximoLunes())} se vota.</p>`);
+  l.insertAdjacentHTML('beforeend', '<h2 class="sem-tit">ganadores del posteo semanal</h2>');
+  if (!sem.ganadores.length) l.insertAdjacentHTML('beforeend', '<p class="muted chico">todavía no hay ganadores. el primero sale el martes después de la primera votación.</p>');
+  sem.ganadores.forEach(x => l.appendChild(tarjetaGanador(x, false))); }
+document.addEventListener('click', async e => { const b = e.target.closest('[data-votar]'); if (!b || sem.enviando) return;
+  const [uid, foto] = b.dataset.votar.split('|'), cuando = Number(foto);
+  if (sem.voto && sem.voto.uid === uid && sem.voto.foto === cuando) return;
+  sem.enviando = true; $$('[data-votar]').forEach(x => x.disabled = true);
+  const {error} = await sb.rpc('votar_posteo_semana', {p_perfil:uid, p_foto:cuando}); sem.enviando = false;
+  if (!error) sem.voto = {uid, foto:cuando};
+  if (tRank === 'semana' && document.querySelector('#top.screen.activa')) pintarTop();
+  if (!$('#modal-semana').hidden && semModo === 'votar') pintarVotacion($('#sem-cont'));
+  if (error){ console.error('votar', error); const t = error.message || '', m = /solo los lunes/.test(t) ? 'la votación ya cerró: es solo los lunes.' : /semana pasada|no existe|postulado|te tocan/.test(t) ? 'ese posteo ya no se puede votar.' : /amigos/.test(t) ? 'solo podés votar posteos de tus amigos.' : 'no se pudo votar. probá de nuevo.';
+    $$('#sem-msg').forEach(x => { x.textContent = m; x.className = 'msg err'; }); } });
+// Carteles: el lunes, la primera vez que entrás, para votar; el martes (o cuando entres después), con el ganador
+let semModo = '';
+function avisarSemana(){ const p = perfil(); if (!p || !sem.cargado) return;
+  if (['#modal-novedades', '#modal-ins-nueva', '#modal-semana'].some(id => !$(id).hidden)) return;
+  const h = hoyAR();
+  if (h.domingo && p.postVista !== h.ymd && misPosteosSemana().length){ semModo = 'postular'; sem.sel = new Set(sem.misPost);
+    $('#sem-t').textContent = '★ postulá tus posteos de la semana'; pintarPostulacion($('#sem-cont')); $('#sem-ir').hidden = true; $('#sem-ok').textContent = 'cerrar'; $('#sem-ok').classList.remove('lleno');
+    $('#modal-semana').hidden = false; $('#sem-ok').focus({preventScroll:true}); return; }
+  if (h.lunes && p.semanaVista !== h.ymd && candidatosSemana().length){ semModo = 'votar';
+    $('#sem-t').textContent = '★ votá el posteo de la semana'; pintarVotacion($('#sem-cont')); $('#sem-ir').hidden = true; $('#sem-ok').textContent = 'listo';
+    $('#modal-semana').hidden = false; $('#sem-ok').focus({preventScroll:true}); return; }
+  const g = sem.ganadores[0];
+  if (g && p.ganVisto !== g.semana && ymdMas(g.semana, 7) > h.ymd){ semModo = 'ganador';
+    const yo = g.uid === p.uid, quien = porUid(g.uid);
+    $('#sem-t').textContent = yo ? '★ ¡ganaste el posteo de la semana!' : '★ posteo de la semana';
+    const c = $('#sem-cont'); c.innerHTML = `<p class="chico" style="margin:6px 0 0">${yo ? 'tu posteo fue el más votado de la semana. ¡felicitaciones!' : `el más votado de la semana fue el de ${esc(quien?.apodo || 'alguien')}.`}</p>`;
+    c.appendChild(tarjetaGanador(g, true)); $('#sem-ir').hidden = false; $('#sem-ok').textContent = 'listo';
+    $('#modal-semana').hidden = false; $('#sem-ok').focus({preventScroll:true}); } }
+function cerrarSemana(){ if ($('#modal-semana').hidden) return; $('#modal-semana').hidden = true; const p = perfil(), h = hoyAR();
+  if (p){ if (semModo === 'votar') p.semanaVista = h.ymd; if (semModo === 'postular') p.postVista = h.ymd; if (semModo === 'ganador' && sem.ganadores[0]) p.ganVisto = sem.ganadores[0].semana; guardar(); }
+  $$('#sem-cont video').forEach(v => v.pause()); semModo = ''; setTimeout(avisarSemana, 350); }
+$('#sem-ok').onclick = cerrarSemana;
+new MutationObserver(() => { if ($('#modal-semana').hidden) $('#sem-ok').classList.add('lleno'); }).observe($('#modal-semana'), {attributes:true, attributeFilter:['hidden']}); $('#sem-cerrar').onclick = cerrarSemana;
+$('#sem-ir').onclick = () => { cerrarSemana(); tRank = 'semana'; location.hash = '#top'; setTimeout(pintarTop, 50); };
+$('#modal-semana').addEventListener('click', e => { if (e.target.id === 'modal-semana') cerrarSemana(); if (e.target.closest('#sem-cont a')) cerrarSemana(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarSemana(); });
 
 /* ---------- Radiación: 2 puntos por día para dar; si pasás 3 días sin recibir, perdés 2 (lo calcula la base de datos) ---------- */
 const radMapa = new Map(); let radQuedan = null, radCargada = false;
@@ -3786,7 +4115,7 @@ function seguirEntrando(){
   conectarRealtime(); cargarConvs().then(llCargarActivas).catch(() => {}); rposts = []; rEstado = 'nada'; pasarRinconViejo(); reafirmarPush();
   const llPend = location.hash.match(/^#llamada\/(\d+)$/); if (llPend){ history.replaceState(null, '', '#chat'); setTimeout(() => llAbrirDesdeAviso(+llPend[1]), 1500); }
   if (perfil().nuevo) setTimeout(() => { if (esMio()) abrirEd(); }, 300);   // la primera vez se abre el editor
-  setTimeout(mostrarNovedades, 600);
+  setTimeout(mostrarNovedades, 600); cargarSemana(); cargarFijados();
   const sec = location.hash.slice(1).split('/')[0];   // si recargaste la página, te quedás donde estabas
   if (!perfil().nuevo && PANT.includes(sec) && sec !== 'entrada') mostrar();
   else if (location.hash === '#perfil') mostrar(); else location.hash = '#perfil'; }
@@ -3826,7 +4155,7 @@ $('#aceptar-form').onsubmit = async e => { e.preventDefault(); const btn = e.tar
 $('#aceptar-salir').onclick = () => { $('#aceptar-form').reset(); $('#modal-aceptar').hidden = true; salir(); };
 
 // Lector de documentos legales
-const DOCS_LEGALES = {"terminos": "<h2>TÉRMINOS Y CONDICIONES DE RINCÓNAF</h2><p><b>Última actualización: noviembre de 2026</b></p><h3>1. Aceptación</h3><p>Al crear una cuenta o utilizar RincónAF, el usuario declara haber leído y aceptado estos Términos y Condiciones y la Política de Privacidad.</p><p>La aceptación de ambos documentos es obligatoria para completar el registro.</p><h3>2. Descripción del servicio</h3><p>RincónAF es una red social que permite crear perfiles, compartir fotografías y publicaciones, interactuar con otros usuarios y utilizar funciones de comunicación privada.</p><p>Las funciones pueden modificarse, ampliarse o suspenderse por razones técnicas, de seguridad o de evolución del proyecto.</p><h3>3. Edad mínima</h3><p>RincónAF está destinado exclusivamente a personas de <b>18 años cumplidos o más</b>.</p><p>No se permite registrarse ni utilizar la plataforma a personas menores de 18 años.</p><p>Durante el registro, el usuario deberá proporcionar su fecha de nacimiento para que el sistema calcule si cumple con la edad mínima.</p><p>El usuario declara que la información proporcionada es verdadera.</p><p>La fecha de nacimiento se utilizará exclusivamente para calcular el cumplimiento de la edad mínima y no deberá conservarse en la base de datos de RincónAF.</p><p>La plataforma podrá suspender o cancelar cuentas cuando existan indicios razonables de incumplimiento de este requisito.</p><h3>4. Registro y cuentas</h3><p>El usuario debe proporcionar información válida y mantener la confidencialidad de sus credenciales.</p><p>Cada usuario es responsable de la actividad realizada desde su cuenta y debe comunicar cualquier acceso no autorizado que detecte.</p><p>Está prohibido suplantar identidades o crear cuentas con información ajena sin autorización.</p><h3>5. Conductas prohibidas</h3><p>No está permitido:</p><ul><li>Acosar, amenazar o intimidar a otros usuarios.</li><li>Suplantar identidades.</li><li>Publicar información privada de terceros sin autorización.</li><li>Compartir contenido ilegal.</li><li>Difundir material íntimo sin consentimiento.</li><li>Realizar fraudes, extorsiones o engaños.</li><li>Intentar acceder a cuentas, conversaciones o archivos ajenos.</li><li>Interferir deliberadamente con la seguridad o funcionamiento de RincónAF.</li><li>Distribuir código malicioso.</li><li>Utilizar la plataforma para actividades ilícitas.</li></ul><h3>6. Publicaciones y fotografías</h3><p>Cada usuario conserva la responsabilidad por el contenido que publica.</p><p>El usuario declara contar con los derechos y autorizaciones necesarios para compartir sus fotografías, textos y demás materiales.</p><p>Al publicar contenido, autoriza a RincónAF a almacenarlo, reproducirlo técnicamente y mostrarlo dentro de la plataforma, de acuerdo con las funciones de visibilidad disponibles.</p><p>Esta autorización no implica una transferencia de propiedad intelectual.</p><p>Las fotografías de perfil y publicaciones podrán ser visibles para los usuarios de RincónAF según los permisos y opciones de visibilidad correspondientes.</p><h3>7. Conversaciones privadas</h3><p>Las conversaciones privadas están destinadas a sus participantes.</p><p>Los archivos compartidos en conversaciones deben estar protegidos mediante controles de acceso que impidan su consulta por personas ajenas a ellas.</p><p>La expresión \"privado\" no significa que exista cifrado de extremo a extremo.</p><p>Los usuarios deben evitar compartir contraseñas, datos financieros u otra información especialmente delicada.</p><h3>8. Grupos</h3><p>Las funciones de grupos pueden permitir compartir mensajes y archivos entre sus integrantes.</p><p>Los permisos y la disponibilidad de estas funciones dependerán de la implementación técnica vigente.</p><p>Los mensajes, fotografías y archivos de los grupos se almacenan en el servidor y solo pueden acceder a ellos sus integrantes actuales. Quien sale de un grupo o es quitado pierde el acceso.</p><h3>9. Moderación</h3><p>RincónAF podrá retirar contenido, restringir funciones o suspender cuentas ante incumplimientos de estos términos o de las Normas de Comunidad.</p><p>Las medidas dependerán de la gravedad y circunstancias del caso.</p><p>No se garantiza la supervisión permanente de todas las publicaciones y conversaciones.</p><h3>10. Disponibilidad</h3><p>No se garantiza disponibilidad ininterrumpida ni ausencia total de errores.</p><p>Podrán realizarse tareas de mantenimiento, actualizaciones e interrupciones técnicas.</p><h3>11. Servicios de terceros</h3><p>RincónAF utiliza proveedores externos para su funcionamiento, incluyendo Supabase, Vercel y GitHub.</p><p>Los servicios de estos proveedores están sujetos a sus propias condiciones y políticas.</p><h3>12. Eliminación de cuentas</h3><p>El usuario podrá solicitar la eliminación de su cuenta y de sus datos personales mediante el correo de contacto.</p><p>La eliminación podrá estar sujeta a obligaciones legales o necesidades legítimas de conservación.</p><h3>13. Legislación aplicable</h3><p>Estos términos se interpretarán conforme a la legislación de la República Argentina y las normas imperativas que resulten aplicables.</p><h3>14. Contacto</h3><p>Titular del proyecto: Ignacio Jeremías Gabriel Toscani.</p><p>Ubicación declarada: Neuquén, Argentina.</p><p>Correo de contacto: <a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a>.</p>", "privacidad": "<h2>POLÍTICA DE PRIVACIDAD DE RINCÓNAF</h2><p><b>Última actualización: noviembre de 2026</b></p><h3>1. Responsable</h3><p>RincónAF es un proyecto administrado por Ignacio Jeremías Gabriel Toscani.</p><p>Ubicación declarada: Neuquén, Argentina.</p><p>Correo de contacto y privacidad: <a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a>.</p><h3>2. Información recopilada</h3><p>Para prestar sus servicios, RincónAF puede tratar:</p><ul><li>Dirección de correo electrónico.</li><li>Identificador de cuenta.</li><li>Nombre de usuario y apodo.</li><li>Fotografía de perfil.</li><li>Información de personalización del perfil.</li><li>Publicaciones, fotografías, comentarios y reacciones.</li><li>Mensajes y archivos adjuntos de conversaciones.</li><li>Información técnica necesaria para el funcionamiento y seguridad del servicio.</li><li>Si activás los avisos en un dispositivo: un identificador técnico de ese navegador (suscripción de notificaciones) para poder enviarte avisos de mensajes y actividad. Se borra al desactivarlos o al cerrar sesión en ese dispositivo.</li><li>Registros de aceptación de documentos legales.</li><li>Registro interno de visitas a perfiles (qué cuenta visitó qué perfil y en qué día), que no es visible para otros usuarios y se usa únicamente para contar una visita por persona por día.</li></ul><p>Las publicaciones de la sección Rincón (canciones, imágenes y videos) se almacenan en el servidor y solo pueden verlas su autor y sus amigos.</p><h3>3. Información sobre mayoría de edad</h3><p>RincónAF es exclusivamente para personas mayores de 18 años.</p><p>Durante el registro se solicita la fecha de nacimiento para calcular si el usuario cumple con la edad mínima.</p><p>La fecha de nacimiento se utiliza únicamente para esa validación y no debe almacenarse ni conservarse en la base de datos de RincónAF.</p><p>La plataforma conserva únicamente la confirmación de mayoría de edad, el identificador de cuenta, la fecha y hora de la declaración, las versiones de los documentos aceptados y si la aceptación se realizó al registrarse o al iniciar sesión.</p><p>Esta declaración no constituye una verificación documental de identidad.</p><h3>4. Aceptación de documentos</h3><p>Al registrarse, el usuario debe aceptar expresamente los Términos y Condiciones y la Política de Privacidad.</p><p>Para dejar constancia de la aceptación se conserva:</p><ul><li>Identificador del usuario.</li><li>Fecha y hora de aceptación.</li><li>Versión de los documentos aceptados.</li><li>Confirmación de mayoría de edad.</li></ul><p>Esta información se utiliza para mantener un registro de las condiciones aceptadas por cada cuenta.</p><h3>5. Finalidad del tratamiento</h3><p>Los datos se utilizan para:</p><ul><li>Crear y administrar cuentas.</li><li>Permitir la autenticación.</li><li>Mostrar perfiles y publicaciones.</li><li>Facilitar interacciones entre usuarios.</li><li>Gestionar conversaciones privadas.</li><li>Almacenar fotografías y archivos.</li><li>Mantener la seguridad.</li><li>Atender consultas y denuncias.</li><li>Cumplir obligaciones legales.</li></ul><p>Los datos personales no se venden a terceros.</p><h3>6. Fotografías de perfil y publicaciones</h3><p>Las fotografías de perfil y las imágenes publicadas en RincónAF pueden ser visibles para otros usuarios de la plataforma, de acuerdo con las opciones de visibilidad y los permisos correspondientes.</p><p>La visibilidad dentro de RincónAF no debe confundirse con la publicación abierta en Internet.</p><p>La plataforma busca restringir el acceso directo a los archivos mediante controles de autenticación y permisos adecuados.</p><p>Las imágenes se muestran mediante enlaces temporales que vencen a la hora; mientras están vigentes, cualquier persona que reciba uno de esos enlaces puede abrirlo.</p><p>Los usuarios deben tener en cuenta que otros usuarios pueden guardar o capturar contenido que tengan permitido visualizar.</p><h3>7. Mensajes y archivos privados</h3><p>Los mensajes privados y sus archivos adjuntos están destinados exclusivamente a los participantes de cada conversación.</p><p>Los archivos deben almacenarse mediante mecanismos privados de acceso y controles que permitan consultar el contenido únicamente a participantes autorizados.</p><p>La privacidad de las conversaciones no equivale a cifrado de extremo a extremo.</p><p>Los proveedores tecnológicos utilizados pueden procesar información necesaria para prestar el servicio.</p><h3>8. Grupos</h3><p>Las funciones de grupos pueden incluir mensajes, fotografías y archivos compartidos entre integrantes.</p><p>Los mensajes, fotografías y archivos de los grupos se almacenan en el servidor y solo pueden acceder a ellos sus integrantes actuales. Quien sale de un grupo o es quitado pierde el acceso.</p><h3>9. Proveedores tecnológicos</h3><p>RincónAF utiliza servicios externos:</p><ul><li><b>Supabase:</b> autenticación, base de datos y almacenamiento.</li><li><b>Vercel:</b> alojamiento de la aplicación.</li><li><b>GitHub:</b> alojamiento y control de versiones del código.</li></ul><p>El proyecto de Supabase se encuentra configurado en la región East US (Ohio), Estados Unidos.</p><p>Por ello, determinados datos pueden almacenarse o procesarse fuera de Argentina.</p><p>Estos proveedores pueden tratar información conforme a sus propias condiciones y políticas.</p><p>Si un usuario elige como fondo de su perfil una imagen, un GIF o un video de Pinterest, Giphy o Imgur, ese archivo no se copia a RincónAF: cuando alguien visita ese perfil, su navegador lo descarga directamente desde ese sitio, que puede registrar esa descarga (por ejemplo, la dirección IP) según sus propias políticas.</p><p>Los avisos en el celular se entregan a través del servicio de notificaciones del navegador o del sistema (por ejemplo, Apple, Google o Mozilla). El contenido de cada aviso viaja cifrado y solo lo puede leer el dispositivo destinatario.</p><h3>10. Conservación de la información</h3><p>Los datos se conservarán durante el tiempo necesario para prestar el servicio, mantener la seguridad y cumplir obligaciones legales.</p><p>Ante una solicitud de eliminación de cuenta, se evaluará la supresión de los datos asociados, salvo aquellos que deban conservarse por obligaciones legales o motivos legítimos.</p><p>La eliminación de una cuenta no implica necesariamente la desaparición inmediata de todas las copias técnicas y respaldos.</p><h3>11. Derechos de los usuarios</h3><p>Los usuarios pueden solicitar acceso, rectificación, actualización y supresión de sus datos personales conforme a la legislación aplicable.</p><p>Las solicitudes pueden enviarse a:</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p><p>Podrá solicitarse una verificación razonable de identidad para proteger la información.</p><h3>12. Seguridad</h3><p>RincónAF utiliza medidas técnicas disponibles en su infraestructura, como autenticación, políticas de acceso y almacenamiento diferenciado.</p><p>Ningún sistema conectado a Internet puede garantizar seguridad absoluta.</p><p>En caso de detectar un incidente que comprometa información personal, se evaluarán las medidas y comunicaciones que correspondan.</p><h3>13. Modificaciones</h3><p>Esta política podrá actualizarse cuando cambien las funciones, proveedores o prácticas de tratamiento de datos.</p><p>La versión vigente estará disponible en la sección Legal de RincónAF.</p><h3>14. Contacto</h3><p>Responsable: Ignacio Jeremías Gabriel Toscani.</p><p>Ubicación declarada: Neuquén, Argentina.</p><p>Correo de privacidad: <a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a>.</p>", "normas": "<h2>NORMAS DE COMUNIDAD DE RINCÓNAF</h2><p><b>Última actualización: noviembre de 2026</b></p><p>RincónAF busca ser un espacio de interacción respetuosa entre personas adultas.</p><h3>Respeto</h3><p>No se permite acosar, amenazar, intimidar, perseguir ni discriminar a otros usuarios.</p><h3>Privacidad</h3><p>No publiques información personal, fotografías privadas ni datos de terceros sin autorización.</p><h3>Identidad</h3><p>No suplantes a otras personas ni utilices perfiles para engañar a otros usuarios.</p><h3>Contenido</h3><p>No compartas contenido ilegal, amenazas, fraudes ni material íntimo sin consentimiento.</p><h3>Seguridad</h3><p>No intentes acceder a cuentas, conversaciones o archivos ajenos ni comprometer el funcionamiento de RincónAF.</p><h3>Edad</h3><p>RincónAF es exclusivamente para personas de 18 años cumplidos o más.</p><h3>Denuncias</h3><p>Si encontrás contenido o conductas que incumplan estas normas, podés comunicarlo a:</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p><p>Las infracciones podrán dar lugar a la eliminación de contenido, restricciones o suspensión de cuentas.</p>", "denuncias": "<h2>POLÍTICA DE DENUNCIAS Y MODERACIÓN</h2><p><b>Última actualización: noviembre de 2026</b></p><h3>1. Objetivo</h3><p>Esta política explica cómo comunicar situaciones que puedan incumplir las normas de RincónAF.</p><h3>2. Qué se puede denunciar</h3><ul><li>Acoso o amenazas.</li><li>Suplantación de identidad.</li><li>Publicaciones ilegales.</li><li>Difusión de información privada sin autorización.</li><li>Fraudes o intentos de engaño.</li><li>Cuentas que incumplan la edad mínima.</li><li>Vulneraciones de seguridad.</li><li>Otras infracciones de las Normas de Comunidad.</li></ul><h3>3. Cómo denunciar</h3><p>Las denuncias pueden enviarse a:</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p><p>Se recomienda incluir el usuario involucrado, una descripción del problema y enlaces o capturas pertinentes, evitando compartir información innecesaria.</p><h3>4. Revisión</h3><p>Las denuncias serán evaluadas según la información disponible, la gravedad y las posibilidades operativas del servicio.</p><p>El envío de una denuncia no garantiza una resolución inmediata.</p><h3>5. Medidas posibles</h3><p>Según el caso, podrán retirarse publicaciones, restringirse funciones o suspenderse cuentas.</p><h3>6. Denuncias falsas</h3><p>No deben presentarse denuncias deliberadamente falsas ni utilizar este mecanismo para hostigar a otros usuarios.</p><h3>7. Contacto</h3><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p>", "eliminacion": "<h2>ELIMINACIÓN DE CUENTAS Y DATOS PERSONALES</h2><p>Los usuarios de RincónAF pueden solicitar la eliminación de su cuenta y la supresión de sus datos personales cuando corresponda conforme a la legislación aplicable.</p><h3>Cómo solicitarlo</h3><p>Enviar un correo a:</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p><p>Asunto: Solicitud de eliminación de cuenta de RincónAF.</p><p>Incluir el nombre de usuario, el correo asociado a la cuenta y la solicitud expresa de eliminación.</p><p>Por seguridad, podrá solicitarse una verificación razonable de identidad.</p><h3>Qué sucede después</h3><p>Una vez verificada la solicitud, se evaluará la eliminación de los datos personales asociados a la cuenta.</p><p>Determinados datos podrán conservarse cuando exista una obligación legal o una razón legítima que justifique su conservación.</p><p>La eliminación de una cuenta no implica necesariamente la eliminación inmediata de todas las copias técnicas o respaldos de los proveedores.</p><h3>Contacto</h3><p>Ignacio Jeremías Gabriel Toscani</p><p>Neuquén, Argentina</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p>"};
+const DOCS_LEGALES = {"terminos": "<h2>TÉRMINOS Y CONDICIONES DE RINCÓNAF</h2><p><b>Última actualización: noviembre de 2026</b></p><h3>1. Aceptación</h3><p>Al crear una cuenta o utilizar RincónAF, el usuario declara haber leído y aceptado estos Términos y Condiciones y la Política de Privacidad.</p><p>La aceptación de ambos documentos es obligatoria para completar el registro.</p><h3>2. Descripción del servicio</h3><p>RincónAF es una red social que permite crear perfiles, compartir fotografías y publicaciones, interactuar con otros usuarios y utilizar funciones de comunicación privada.</p><p>Las funciones pueden modificarse, ampliarse o suspenderse por razones técnicas, de seguridad o de evolución del proyecto.</p><h3>3. Edad mínima</h3><p>RincónAF está destinado exclusivamente a personas de <b>18 años cumplidos o más</b>.</p><p>No se permite registrarse ni utilizar la plataforma a personas menores de 18 años.</p><p>Durante el registro, el usuario deberá proporcionar su fecha de nacimiento para que el sistema calcule si cumple con la edad mínima.</p><p>El usuario declara que la información proporcionada es verdadera.</p><p>La fecha de nacimiento se utilizará exclusivamente para calcular el cumplimiento de la edad mínima y no deberá conservarse en la base de datos de RincónAF.</p><p>La plataforma podrá suspender o cancelar cuentas cuando existan indicios razonables de incumplimiento de este requisito.</p><h3>4. Registro y cuentas</h3><p>El usuario debe proporcionar información válida y mantener la confidencialidad de sus credenciales.</p><p>Cada usuario es responsable de la actividad realizada desde su cuenta y debe comunicar cualquier acceso no autorizado que detecte.</p><p>Está prohibido suplantar identidades o crear cuentas con información ajena sin autorización.</p><h3>5. Conductas prohibidas</h3><p>No está permitido:</p><ul><li>Acosar, amenazar o intimidar a otros usuarios.</li><li>Suplantar identidades.</li><li>Publicar información privada de terceros sin autorización.</li><li>Compartir contenido ilegal.</li><li>Difundir material íntimo sin consentimiento.</li><li>Realizar fraudes, extorsiones o engaños.</li><li>Intentar acceder a cuentas, conversaciones o archivos ajenos.</li><li>Interferir deliberadamente con la seguridad o funcionamiento de RincónAF.</li><li>Distribuir código malicioso.</li><li>Utilizar la plataforma para actividades ilícitas.</li></ul><h3>6. Publicaciones y fotografías</h3><p>Cada usuario conserva la responsabilidad por el contenido que publica.</p><p>El usuario declara contar con los derechos y autorizaciones necesarios para compartir sus fotografías, textos y demás materiales.</p><p>Al publicar contenido, autoriza a RincónAF a almacenarlo, reproducirlo técnicamente y mostrarlo dentro de la plataforma, de acuerdo con las funciones de visibilidad disponibles.</p><p>Esta autorización no implica una transferencia de propiedad intelectual.</p><p>Las fotografías de perfil y publicaciones podrán ser visibles para los usuarios de RincónAF según los permisos y opciones de visibilidad correspondientes.</p><h3>7. Conversaciones privadas</h3><p>Las conversaciones privadas están destinadas a sus participantes.</p><p>Los archivos compartidos en conversaciones deben estar protegidos mediante controles de acceso que impidan su consulta por personas ajenas a ellas.</p><p>La expresión \"privado\" no significa que exista cifrado de extremo a extremo.</p><p>Los usuarios deben evitar compartir contraseñas, datos financieros u otra información especialmente delicada.</p><h3>8. Grupos</h3><p>Las funciones de grupos pueden permitir compartir mensajes y archivos entre sus integrantes.</p><p>Los permisos y la disponibilidad de estas funciones dependerán de la implementación técnica vigente.</p><p>Los mensajes, fotografías y archivos de los grupos se almacenan en el servidor y solo pueden acceder a ellos sus integrantes actuales. Quien sale de un grupo o es quitado pierde el acceso.</p><h3>9. Moderación</h3><p>RincónAF podrá retirar contenido, restringir funciones o suspender cuentas ante incumplimientos de estos términos o de las Normas de Comunidad.</p><p>Las medidas dependerán de la gravedad y circunstancias del caso.</p><p>No se garantiza la supervisión permanente de todas las publicaciones y conversaciones.</p><h3>10. Disponibilidad</h3><p>No se garantiza disponibilidad ininterrumpida ni ausencia total de errores.</p><p>Podrán realizarse tareas de mantenimiento, actualizaciones e interrupciones técnicas.</p><h3>11. Servicios de terceros</h3><p>RincónAF utiliza proveedores externos para su funcionamiento, incluyendo Supabase, Vercel y GitHub.</p><p>Los servicios de estos proveedores están sujetos a sus propias condiciones y políticas.</p><h3>12. Eliminación de cuentas</h3><p>El usuario podrá solicitar la eliminación de su cuenta y de sus datos personales mediante el correo de contacto.</p><p>La eliminación podrá estar sujeta a obligaciones legales o necesidades legítimas de conservación.</p><h3>13. Legislación aplicable</h3><p>Estos términos se interpretarán conforme a la legislación de la República Argentina y las normas imperativas que resulten aplicables.</p><h3>14. Contacto</h3><p>Titular del proyecto: Ignacio Jeremías Gabriel Toscani.</p><p>Ubicación declarada: Neuquén, Argentina.</p><p>Correo de contacto: <a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a>.</p>", "privacidad": "<h2>POLÍTICA DE PRIVACIDAD DE RINCÓNAF</h2><p><b>Última actualización: noviembre de 2026</b></p><h3>1. Responsable</h3><p>RincónAF es un proyecto administrado por Ignacio Jeremías Gabriel Toscani.</p><p>Ubicación declarada: Neuquén, Argentina.</p><p>Correo de contacto y privacidad: <a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a>.</p><h3>2. Información recopilada</h3><p>Para prestar sus servicios, RincónAF puede tratar:</p><ul><li>Dirección de correo electrónico.</li><li>Identificador de cuenta.</li><li>Nombre de usuario y apodo.</li><li>Fotografía de perfil.</li><li>Información de personalización del perfil.</li><li>Publicaciones, fotografías, comentarios y reacciones.</li><li>Mensajes y archivos adjuntos de conversaciones.</li><li>Información técnica necesaria para el funcionamiento y seguridad del servicio.</li><li>Si activás los avisos en un dispositivo: un identificador técnico de ese navegador (suscripción de notificaciones) para poder enviarte avisos de mensajes y actividad. Se borra al desactivarlos o al cerrar sesión en ese dispositivo.</li><li>Registros de aceptación de documentos legales.</li><li>Registro interno de visitas a perfiles (qué cuenta visitó qué perfil y en qué día), que no es visible para otros usuarios y se usa únicamente para contar una visita por persona por día.</li></ul><p>Las publicaciones de la sección Rincón (canciones, imágenes y videos) se almacenan en el servidor y solo pueden verlas su autor y sus amigos.</p><h3>3. Información sobre mayoría de edad</h3><p>RincónAF es exclusivamente para personas mayores de 18 años.</p><p>Durante el registro se solicita la fecha de nacimiento para calcular si el usuario cumple con la edad mínima.</p><p>La fecha de nacimiento se utiliza únicamente para esa validación y no debe almacenarse ni conservarse en la base de datos de RincónAF.</p><p>La plataforma conserva únicamente la confirmación de mayoría de edad, el identificador de cuenta, la fecha y hora de la declaración, las versiones de los documentos aceptados y si la aceptación se realizó al registrarse o al iniciar sesión.</p><p>Esta declaración no constituye una verificación documental de identidad.</p><h3>4. Aceptación de documentos</h3><p>Al registrarse, el usuario debe aceptar expresamente los Términos y Condiciones y la Política de Privacidad.</p><p>Para dejar constancia de la aceptación se conserva:</p><ul><li>Identificador del usuario.</li><li>Fecha y hora de aceptación.</li><li>Versión de los documentos aceptados.</li><li>Confirmación de mayoría de edad.</li></ul><p>Esta información se utiliza para mantener un registro de las condiciones aceptadas por cada cuenta.</p><h3>5. Finalidad del tratamiento</h3><p>Los datos se utilizan para:</p><ul><li>Crear y administrar cuentas.</li><li>Permitir la autenticación.</li><li>Mostrar perfiles y publicaciones.</li><li>Facilitar interacciones entre usuarios.</li><li>Gestionar conversaciones privadas.</li><li>Almacenar fotografías y archivos.</li><li>Mantener la seguridad.</li><li>Atender consultas y denuncias.</li><li>Cumplir obligaciones legales.</li></ul><p>Los datos personales no se venden a terceros.</p><h3>6. Fotografías de perfil y publicaciones</h3><p>Las fotografías de perfil y las imágenes publicadas en RincónAF pueden ser visibles para otros usuarios de la plataforma, de acuerdo con las opciones de visibilidad y los permisos correspondientes.</p><p>La visibilidad dentro de RincónAF no debe confundirse con la publicación abierta en Internet.</p><p>La plataforma busca restringir el acceso directo a los archivos mediante controles de autenticación y permisos adecuados.</p><p>Las imágenes se muestran mediante enlaces temporales que vencen a la hora; mientras están vigentes, cualquier persona que reciba uno de esos enlaces puede abrirlo.</p><p>Los usuarios deben tener en cuenta que otros usuarios pueden guardar o capturar contenido que tengan permitido visualizar.</p><h3>7. Mensajes y archivos privados</h3><p>Los mensajes privados y sus archivos adjuntos están destinados exclusivamente a los participantes de cada conversación.</p><p>Los archivos deben almacenarse mediante mecanismos privados de acceso y controles que permitan consultar el contenido únicamente a participantes autorizados.</p><p>La privacidad de las conversaciones no equivale a cifrado de extremo a extremo.</p><p>Los proveedores tecnológicos utilizados pueden procesar información necesaria para prestar el servicio.</p><h3>8. Grupos</h3><p>Las funciones de grupos pueden incluir mensajes, fotografías y archivos compartidos entre integrantes.</p><p>Los mensajes, fotografías y archivos de los grupos se almacenan en el servidor y solo pueden acceder a ellos sus integrantes actuales. Quien sale de un grupo o es quitado pierde el acceso.</p><h3>9. Proveedores tecnológicos</h3><p>RincónAF utiliza servicios externos:</p><ul><li><b>Supabase:</b> autenticación, base de datos y almacenamiento.</li><li><b>Vercel:</b> alojamiento de la aplicación.</li><li><b>GitHub:</b> alojamiento y control de versiones del código.</li></ul><p>El proyecto de Supabase se encuentra configurado en la región East US (Ohio), Estados Unidos.</p><p>Por ello, determinados datos pueden almacenarse o procesarse fuera de Argentina.</p><p>Estos proveedores pueden tratar información conforme a sus propias condiciones y políticas.</p><p>Si un usuario elige como fondo de su perfil una imagen, un GIF o un video de Pinterest, Giphy o Imgur, ese archivo no se copia a RincónAF: cuando alguien visita ese perfil, su navegador lo descarga directamente desde ese sitio, que puede registrar esa descarga (por ejemplo, la dirección IP) según sus propias políticas.</p><p>Si un usuario agrega links a sus redes sociales, en su perfil se muestran los íconos de esas redes. Para mostrarlos, el navegador de quien visita el perfil pide cada ícono a un servicio de íconos de Google o al sitio de esa red, indicando solo el nombre del sitio (por ejemplo, instagram.com) y no el link del perfil; ese servicio puede registrar la dirección IP según sus propias políticas.</p><p>Los avisos en el celular se entregan a través del servicio de notificaciones del navegador o del sistema (por ejemplo, Apple, Google o Mozilla). El contenido de cada aviso viaja cifrado y solo lo puede leer el dispositivo destinatario.</p><h3>10. Conservación de la información</h3><p>Los datos se conservarán durante el tiempo necesario para prestar el servicio, mantener la seguridad y cumplir obligaciones legales.</p><p>Ante una solicitud de eliminación de cuenta, se evaluará la supresión de los datos asociados, salvo aquellos que deban conservarse por obligaciones legales o motivos legítimos.</p><p>La eliminación de una cuenta no implica necesariamente la desaparición inmediata de todas las copias técnicas y respaldos.</p><h3>11. Derechos de los usuarios</h3><p>Los usuarios pueden solicitar acceso, rectificación, actualización y supresión de sus datos personales conforme a la legislación aplicable.</p><p>Las solicitudes pueden enviarse a:</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p><p>Podrá solicitarse una verificación razonable de identidad para proteger la información.</p><h3>12. Seguridad</h3><p>RincónAF utiliza medidas técnicas disponibles en su infraestructura, como autenticación, políticas de acceso y almacenamiento diferenciado.</p><p>Ningún sistema conectado a Internet puede garantizar seguridad absoluta.</p><p>En caso de detectar un incidente que comprometa información personal, se evaluarán las medidas y comunicaciones que correspondan.</p><h3>13. Modificaciones</h3><p>Esta política podrá actualizarse cuando cambien las funciones, proveedores o prácticas de tratamiento de datos.</p><p>La versión vigente estará disponible en la sección Legal de RincónAF.</p><h3>14. Contacto</h3><p>Responsable: Ignacio Jeremías Gabriel Toscani.</p><p>Ubicación declarada: Neuquén, Argentina.</p><p>Correo de privacidad: <a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a>.</p>", "normas": "<h2>NORMAS DE COMUNIDAD DE RINCÓNAF</h2><p><b>Última actualización: noviembre de 2026</b></p><p>RincónAF busca ser un espacio de interacción respetuosa entre personas adultas.</p><h3>Respeto</h3><p>No se permite acosar, amenazar, intimidar, perseguir ni discriminar a otros usuarios.</p><h3>Privacidad</h3><p>No publiques información personal, fotografías privadas ni datos de terceros sin autorización.</p><h3>Identidad</h3><p>No suplantes a otras personas ni utilices perfiles para engañar a otros usuarios.</p><h3>Contenido</h3><p>No compartas contenido ilegal, amenazas, fraudes ni material íntimo sin consentimiento.</p><h3>Seguridad</h3><p>No intentes acceder a cuentas, conversaciones o archivos ajenos ni comprometer el funcionamiento de RincónAF.</p><h3>Edad</h3><p>RincónAF es exclusivamente para personas de 18 años cumplidos o más.</p><h3>Denuncias</h3><p>Si encontrás contenido o conductas que incumplan estas normas, podés comunicarlo a:</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p><p>Las infracciones podrán dar lugar a la eliminación de contenido, restricciones o suspensión de cuentas.</p>", "denuncias": "<h2>POLÍTICA DE DENUNCIAS Y MODERACIÓN</h2><p><b>Última actualización: noviembre de 2026</b></p><h3>1. Objetivo</h3><p>Esta política explica cómo comunicar situaciones que puedan incumplir las normas de RincónAF.</p><h3>2. Qué se puede denunciar</h3><ul><li>Acoso o amenazas.</li><li>Suplantación de identidad.</li><li>Publicaciones ilegales.</li><li>Difusión de información privada sin autorización.</li><li>Fraudes o intentos de engaño.</li><li>Cuentas que incumplan la edad mínima.</li><li>Vulneraciones de seguridad.</li><li>Otras infracciones de las Normas de Comunidad.</li></ul><h3>3. Cómo denunciar</h3><p>Las denuncias pueden enviarse a:</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p><p>Se recomienda incluir el usuario involucrado, una descripción del problema y enlaces o capturas pertinentes, evitando compartir información innecesaria.</p><h3>4. Revisión</h3><p>Las denuncias serán evaluadas según la información disponible, la gravedad y las posibilidades operativas del servicio.</p><p>El envío de una denuncia no garantiza una resolución inmediata.</p><h3>5. Medidas posibles</h3><p>Según el caso, podrán retirarse publicaciones, restringirse funciones o suspenderse cuentas.</p><h3>6. Denuncias falsas</h3><p>No deben presentarse denuncias deliberadamente falsas ni utilizar este mecanismo para hostigar a otros usuarios.</p><h3>7. Contacto</h3><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p>", "eliminacion": "<h2>ELIMINACIÓN DE CUENTAS Y DATOS PERSONALES</h2><p>Los usuarios de RincónAF pueden solicitar la eliminación de su cuenta y la supresión de sus datos personales cuando corresponda conforme a la legislación aplicable.</p><h3>Cómo solicitarlo</h3><p>Enviar un correo a:</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p><p>Asunto: Solicitud de eliminación de cuenta de RincónAF.</p><p>Incluir el nombre de usuario, el correo asociado a la cuenta y la solicitud expresa de eliminación.</p><p>Por seguridad, podrá solicitarse una verificación razonable de identidad.</p><h3>Qué sucede después</h3><p>Una vez verificada la solicitud, se evaluará la eliminación de los datos personales asociados a la cuenta.</p><p>Determinados datos podrán conservarse cuando exista una obligación legal o una razón legítima que justifique su conservación.</p><p>La eliminación de una cuenta no implica necesariamente la eliminación inmediata de todas las copias técnicas o respaldos de los proveedores.</p><h3>Contacto</h3><p>Ignacio Jeremías Gabriel Toscani</p><p>Neuquén, Argentina</p><p><b><a href=\"mailto:toscaninacho@gmail.com\">toscaninacho@gmail.com</a></b></p>"};
 const NOMBRES_LEGALES = {terminos:'Términos y Condiciones', privacidad:'Política de Privacidad', normas:'Normas de Comunidad', denuncias:'Denuncias y Moderación', eliminacion:'Eliminación de cuenta y datos'};
 function abrirLegal(k){ if (!DOCS_LEGALES[k]) k = 'terminos';
   $('#legal-tabs').innerHTML = Object.entries(NOMBRES_LEGALES).map(([c, n]) => `<button type="button" class="btn${c === k ? ' lleno' : ''}" data-doc="${c}" aria-pressed="${c === k}">${n}</button>`).join('');
@@ -3849,7 +4178,9 @@ function mostrar(){
   if (!perfil()) id = 'entrada'; else if (id === 'entrada') id = 'perfil';
   if (id === 'entrada' && reproUrl) cerrarRepro();
   if (id === 'chat' && reproUrl && innerWidth < 760 && !$('#repro').classList.contains('chico')) $('#repro-min').click();
-  if (id === 'perfil'){ const nuevo = (arg && porId(+arg)) || perfil();
+  if (id === 'perfil'){ const buscado = perfilDeLink(arg), nuevo = buscado || perfil();
+    if (arg && !buscado) llToast('no hay ningún perfil con ese nombre. puede que haya cambiado su nick.');
+    const bueno = linkPerfil(nuevo); if (arg && location.hash !== bueno) history.replaceState(null, '', bueno);   // un link viejo con número pasa a mostrar el nick
     if (viendo !== nuevo){ const mismo = recargando && viendo && viendo.id === nuevo.id;   // al recargar: mismo perfil, misma pestaña y sin sumar otra visita
       viendo = nuevo; verFoto = null; if (!mismo) seccionPerfil = 'perfil'; cerrarFoto(); if (!esMio() && !mismo){ viendo.visitas++; sb.rpc('sumar_visita', {p:viendo.uid}).then(({error}) => { if (error) console.error(error); }); } }
     aplicar(viendo); pintar();                          // cada perfil se ve con el estilo de su dueño
