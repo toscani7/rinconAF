@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
 <meta name="robots" content="noindex, nofollow">
+<script>
+(function(){ try { var q = new URLSearchParams(location.search).get('perfil'), m = decodeURIComponent(location.pathname).match(/#perfil\/([^\/?#]+)/);
+  var n = q || (m && m[1]); for (var i = 0; n && i < 3 && /%[0-9a-f]{2}/i.test(n); i++) { try { n = decodeURIComponent(n); } catch (e) { break; } } if (n) history.replaceState(null, '', '/#perfil/' + encodeURIComponent(n.trim().toLowerCase())); } catch (e) {} })();
+</script>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="RincónAF">
@@ -2345,7 +2349,7 @@ async function abrirVisita(arg){ if (visitaArg === arg && $('#vis-cont').dataset
   c.dataset.listo = '1'; }
 
 /* ---------- Compartir el link del perfil: en el celu abre el menú para compartir; si no, lo copia ---------- */
-const linkCompleto = p => location.origin + location.pathname + linkPerfil(p);
+const linkCompleto = p => location.origin + '/?perfil=' + linkPerfil(p).replace(/^#perfil\//, '');   // sin '#': así no se rompe al pegarlo en instagram u otras apps
 async function copiarTexto(t){ try { await navigator.clipboard.writeText(t); return true; } catch {}
   try { const a = document.createElement('textarea'); a.value = t; a.setAttribute('readonly', ''); a.style.position = 'fixed'; a.style.opacity = '0'; document.body.appendChild(a); a.select(); const ok = document.execCommand('copy'); a.remove(); return ok; } catch { return false; } }
 $('#p-compartir').onclick = async () => { const p = viendo || perfil(); if (!p) return; const url = linkCompleto(p), mio = perfil() && p.uid === perfil().uid;
