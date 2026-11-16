@@ -4244,7 +4244,7 @@ function mostrar(){
   if (id === 'chat' && reproUrl && innerWidth < 760 && !$('#repro').classList.contains('chico')) $('#repro-min').click();
   if (id === 'perfil'){ const buscado = perfilDeLink(arg), nuevo = buscado || perfil();
     if (arg && !buscado) llToast('no hay ningún perfil con ese nombre. puede que haya cambiado su nick.');
-    const bueno = linkPerfil(nuevo); if (arg && location.hash !== bueno) history.replaceState(null, '', bueno);   // un link viejo con número pasa a mostrar el nick
+    const bueno = linkPerfil(nuevo); if (location.hash !== bueno) history.replaceState(null, '', bueno);   // siempre se ve el link con el nick, también en tu propio perfil
     if (viendo !== nuevo){ const mismo = recargando && viendo && viendo.id === nuevo.id;   // al recargar: mismo perfil, misma pestaña y sin sumar otra visita
       viendo = nuevo; verFoto = null; if (!mismo) seccionPerfil = 'perfil'; cerrarFoto(); if (!esMio() && !mismo){ viendo.visitas++; sb.rpc('sumar_visita', {p:viendo.uid}).then(({error}) => { if (error) console.error(error); }); } }
     aplicar(viendo); pintar();                          // cada perfil se ve con el estilo de su dueño
@@ -4270,6 +4270,8 @@ function mostrar(){
   actualizarMenu();
   $$('.screen').forEach(s => s.classList.toggle('activa', s.id === id)); document.documentElement.classList.toggle('en-notis', id === 'notificaciones'); if (id !== 'perfil' && !ed.hidden) cerrarEd(); if (id === 'inicio' && arg){ resaltar = +arg; pintarFeed(); } else window.scrollTo(0,0); }
 window.addEventListener('hashchange', () => { visitaQuiereEntrar = false; mostrar(); });
+document.addEventListener('click', e => { const a = e.target.closest('a[href="#perfil"]'); if (!a || !perfil() || e.ctrlKey || e.metaKey) return;   // "mi perfil" lleva al link con tu nick, sin repetir el historial
+  e.preventDefault(); const bueno = linkPerfil(perfil()); if (location.hash === bueno) mostrar(); else location.hash = bueno; });
 
 /* ---------- Llamadas y videollamadas ----------
    El audio y el video viajan por Cloudflare Realtime (servidor de video + relevo). La página nunca ve las claves:
